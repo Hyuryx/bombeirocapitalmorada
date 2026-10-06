@@ -5,13 +5,14 @@ import './ElectricBorder.css';
 
 const ElectricBorder = ({
   children,
-  color = '#5227FF',
+  color = '#ef4444',
   speed = 1,
   chaos = 0.12,
   borderRadius = 24,
   className,
   style
 }) => {
+  color = '#ef4444';
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const animationRef = useRef(null);

@@ -1,4 +1,4 @@
-function initAnimations() {
+﻿function initAnimations() {
     // 1. Animação Cinematográfica Inicial (Logo e Videos)
     const initCinematic = () => {
         // Animação da Logo inicial
@@ -103,14 +103,50 @@ function initAnimations() {
         });
     }, observerOptions);
 
+    // Função para animar os cards de uma seção visível imediatamente (sem depender de scroll)
+    const animateVisibleCards = (container) => {
+        if (!container) return;
+        const cards = container.querySelectorAll('.card-evoluir, .info-card, .viatura-card, .card, img:not(.sidebar-logo)');
+        cards.forEach((el, index) => {
+            // Só anima se ainda estiver invisible (opacity 0 ou não definido pelo anime)
+            const currentOpacity = parseFloat(el.style.opacity);
+            if (isNaN(currentOpacity) || currentOpacity < 0.1) {
+                const animeType = el.getAttribute('data-anime') || 'fade-up';
+                const delay = (index % 5) * 80;
+                if (animeType === 'viatura') {
+                    anime({
+                        targets: el,
+                        translateY: [50, 0],
+                        scale: [0.95, 1],
+                        opacity: [0, 1],
+                        duration: 800,
+                        easing: 'easeOutQuart',
+                        delay: delay
+                    });
+                } else {
+                    anime({
+                        targets: el,
+                        translateY: [30, 0],
+                        opacity: [0, 1],
+                        duration: 700,
+                        easing: 'easeOutExpo',
+                        delay: delay
+                    });
+                }
+            }
+        });
+    };
+
     // Selecionar todos os elementos possíveis no site para animar
     // (Inclui viaturas, galerias, cards de regras, etc)
-    const animatableElements = document.querySelectorAll('.card-evoluir, .info-card, .nav-item, .evoluir-card-titulo, .viatura-card, .galeria-item, .card, [id^="view-"] img:not(.sidebar-logo)');
+    // Nota: .card-evoluir foi removido daqui pois ficam em seções ocultas e o IntersectionObserver
+    // não os detecta. Eles são animados pela função animateVisibleCards ao trocar de aba.
+    const animatableElements = document.querySelectorAll('.info-card, .nav-item, .evoluir-card-titulo, .viatura-card, .galeria-item, .card, [id^="view-"] img:not(.sidebar-logo)');
     
     animatableElements.forEach((el, index) => {
         el.style.opacity = '0';
         
-        if (el.classList.contains('card-evoluir') || el.classList.contains('card')) {
+        if (el.classList.contains('card')) {
             el.setAttribute('data-anime', 'fade-up');
             el.setAttribute('data-delay', (index % 5) * 100);
         } else if (el.classList.contains('info-card')) {
@@ -129,6 +165,12 @@ function initAnimations() {
         scrollObserver.observe(el);
     });
 
+    // Garantir que os cards da aba EVOLUIR (ativa por padrão) apareçam ao carregar
+    setTimeout(() => {
+        const activeEvoluirSection = document.querySelector('#curso-evoluir.active, .content-section.active');
+        animateVisibleCards(activeEvoluirSection);
+    }, 300);
+
     // 3. Efeito Magnético em Botões e Cards de Viaturas
     const interactiveElements = document.querySelectorAll('.evoluir-btn-modal, .nav-item, .viatura-card, .card');
     interactiveElements.forEach(el => {
@@ -140,6 +182,10 @@ function initAnimations() {
             // Reduz o peso do magnético para cards maiores
             const isLarge = el.classList.contains('card');
             const factor = isLarge ? 0.05 : 0.2;
+
+            // Variáveis para o Spotlight Effect
+            el.style.setProperty('--mouseX', `${e.clientX - rect.left}px`);
+            el.style.setProperty('--mouseY', `${e.clientY - rect.top}px`);
 
             anime({
                 targets: el,
@@ -187,22 +233,30 @@ function initAnimations() {
         });
     });
 
-    // 5. Interceptar as trocas de Aba para resetar animações dos cards visíveis
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => {
+    // 5. Interceptar trocas de Aba para animar cards da nova secao ativa
+    // Usa o evento 'tabChanged' disparado pelo script.js ao clicar em item da sidebar
+    window.addEventListener('tabChanged', (e) => {
+        const targetId = e.detail && e.detail.targetId;
+        setTimeout(() => {
+            const targetSection = targetId
+                ? document.getElementById(targetId)
+                : document.querySelector('.content-section.active');
+            if (targetSection) {
+                animateVisibleCards(targetSection);
+            }
+        }, 80);
+    });
+
+    // Fallback: intercepta cliques diretos nos itens da sidebar
+    document.querySelectorAll('.sidebar-nav li').forEach(item => {
         item.addEventListener('click', () => {
-            // Pequeno delay para esperar a nova aba ficar ativa
             setTimeout(() => {
-                const activeView = document.querySelector('.global-view.active');
-                if (activeView) {
-                    const viewElements = activeView.querySelectorAll('.card-evoluir, .info-card, .viatura-card, .card, img:not(.sidebar-logo)');
-                    viewElements.forEach(el => {
-                        el.style.opacity = '0';
-                        scrollObserver.unobserve(el);
-                        scrollObserver.observe(el); // Re-observa para disparar animação de entrada
-                    });
+                const globalView = item.closest('.global-view');
+                if (globalView) {
+                    const activeSection = globalView.querySelector('.content-section.active');
+                    animateVisibleCards(activeSection);
                 }
-            }, 50);
+            }, 100);
         });
     });
-});
+}

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Electric Border - Vanilla JS Implementation
  * Wrap elements with animated electric borders.
  */
@@ -290,25 +290,31 @@ class ElectricBorder {
     }
 }
 
-// Inicializar todas as classes .card
+// Inicializar ElectricBorder em todas as abas
 document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.card').forEach(card => {
-        // Ignorar se já foi inicializado
-        if (card.querySelector('.eb-content')) return;
+    function getColor(el) {
+        if (el.classList.contains('green-card'))  return '#10b981';
+        if (el.classList.contains('blue-card'))   return '#3b82f6';
+        if (el.classList.contains('yellow-card')) return '#f59e0b';
+        if (el.classList.contains('orange-card')) return '#f97316';
+        if (el.classList.contains('purple-card')) return '#8b5cf6';
+        if (el.classList.contains('cyan-card'))   return '#0ea5e9';
+        if (el.classList.contains('merito'))      return '#f59e0b';
+        return '#ef4444';
+    }
 
-        card.style.borderRadius = '16px';
+    function applyElectric(el, radiusPx) {
+        if (el.querySelector('.eb-content')) return;
+        el.style.borderRadius = radiusPx + 'px';
+        const color = getColor(el);
+        const eb = new ElectricBorder(el, { color, chaos: 0.38, speed: 1.8, borderRadius: radiusPx });
         
-        let color = '#ff1111'; // Padrão: vermelho intenso
-        
-        // Mapear as cores baseadas nas classes originais dos cards
-        if (card.classList.contains('red-card')) color = '#ff1111';
-        else if (card.classList.contains('blue-card')) color = '#00aaff';
-        else if (card.classList.contains('orange-card')) color = '#ff8800';
-        else if (card.classList.contains('green-card')) color = '#00ff44';
-        else if (card.classList.contains('yellow-card') || card.innerHTML.toLowerCase().includes('mérito') || card.innerHTML.toLowerCase().includes('merito')) color = '#ffdd00';
-        else if (card.classList.contains('purple-card')) color = '#a855f7';
-        else if (card.classList.contains('gray-card')) color = '#aaaaaa';
+        // Garante que o canvas ajusta o tamanho caso mude a aba
+        window.addEventListener('tabChanged', () => {
+            setTimeout(() => { eb.updateSize(); }, 50);
+            setTimeout(() => { eb.updateSize(); }, 200);
+        });
+    }
 
-        new ElectricBorder(card, { color, chaos: 0.4, speed: 2, borderRadius: 16 });
-    });
+    document.querySelectorAll('.card, .card-evoluir, .info-card').forEach(el => applyElectric(el, 12));
 });

@@ -41,36 +41,31 @@ export default function DynamicHTMLRenderer({ htmlString }) {
         return <></>;
       }
 
-      // Detectar cards de Viaturas para adicionar ElectricBorder
-      if (domNode.attribs && domNode.attribs.class && domNode.attribs.class.includes('card-viatura')) {
-        return (
-          <ElectricBorder 
-            borderRadius={16} 
-            color="#5227FF" 
-            className="flex-1"
-            style={{ marginBottom: '20px' }}
-          >
-            <div {...domNode.attribs} style={{ margin: 0, height: '100%' }}>
-              {domToReact(domNode.children, options)}
-            </div>
-          </ElectricBorder>
+      // Detectar cards para adicionar ElectricBorder
+      if (domNode.attribs && domNode.attribs.class) {
+        const classes = domNode.attribs.class.split(' ');
+        const isCard = classes.some(cls => 
+          cls === 'card' || 
+          cls === 'card-evoluir' || 
+          cls === 'viatura-card' || 
+          cls === 'info-card' || 
+          cls === 'hierarquia-card'
         );
-      }
-      
-      // Detectar cards de Evoluir para adicionar ElectricBorder
-      if (domNode.attribs && domNode.attribs.class && domNode.attribs.class.includes('card-evoluir')) {
-        return (
-          <ElectricBorder 
-            borderRadius={16} 
-            color={domNode.attribs.class.includes('merito') ? "#FBBF24" : "#10B981"} 
-            className="flex-1"
-            style={{ marginBottom: '20px' }}
-          >
-            <div {...domNode.attribs} style={{ margin: 0, height: '100%' }}>
-              {domToReact(domNode.children, options)}
-            </div>
-          </ElectricBorder>
-        );
+
+        if (isCard && domNode.name !== 'section') {
+          return (
+            <ElectricBorder 
+              borderRadius={16} 
+              color="#ef4444" 
+              className="flex-1"
+              style={{ marginBottom: '20px' }}
+            >
+              <div {...domNode.attribs} style={{ margin: 0, height: 'fit-content' }}>
+                {domToReact(domNode.children, options)}
+              </div>
+            </ElectricBorder>
+          );
+        }
       }
     }
   };

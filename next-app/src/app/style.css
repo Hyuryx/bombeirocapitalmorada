@@ -275,7 +275,7 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('/assets/background/sidebar.png');
+    background-image: url('../assets/background/sidebar.png');
     background-size: cover;
     background-position: top center;
     opacity: 0.35;
@@ -284,7 +284,7 @@ html {
 }
 
 .sidebar-cursos::before {
-    background-image: url('/assets/cursos/Siderbar.png');
+    background-image: url('../assets/cursos/Siderbar.png');
 }
 
 .sidebar-header {
@@ -316,7 +316,7 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('/assets/fotos/bg-inicial.jpg');
+    background-image: url('../assets/fotos/bg-inicial.jpg');
     background-color: var(--bg-dark);
     background-size: cover;
     background-position: center;
@@ -735,53 +735,53 @@ html {
 }
 
 .bg-default {
-    background-image: url('/assets/background/background.png');
+    background-image: url('../assets/background/background.png');
 }
 
 .bg-galeria {
-    background-image: url('/assets/galeria/background.png');
+    background-image: url('../assets/galeria/background.png');
     background-size: 100% 100% !important;
     background-position: center top !important;
 }
 
 .bg-avisos {
-    background-image: url('/assets/avisos-gerais/background.png');
+    background-image: url('../assets/avisos-gerais/background.png');
     background-size: 100% 100% !important;
     background-position: center top !important;
 }
 
 .bg-planilhas {
-    background-image: url('/assets/planilhas/background.png');
+    background-image: url('../assets/planilhas/background.png');
     background-size: 100% 100% !important;
     background-position: center top !important;
 }
 
 .bg-cursos {
-    background-image: url('/assets/cursos/background.png');
+    background-image: url('../assets/cursos/background.png');
     background-size: 100% 100% !important;
     background-position: center top !important;
 }
 
 .bg-modulacao {
-    background-image: url('/assets/modulacao/background.png');
+    background-image: url('../assets/modulacao/background.png');
     background-size: 100% 100% !important;
     background-position: center top !important;
 }
 
 .bg-viaturas {
-    background-image: url('/assets/viaturas/background.png');
+    background-image: url('../assets/viaturas/background.png');
     background-size: 100% 100% !important;
     background-position: center top !important;
 }
 
 .bg-regras {
-    background-image: url('/assets/regras/background.png');
+    background-image: url('../assets/regras/background.png');
     background-size: 100% 100% !important;
     background-position: center top !important;
 }
 
 .bg-hierarquia {
-    background-image: url('/assets/hierarquia/background.png');
+    background-image: url('../assets/hierarquia/background.png');
     background-size: 100% 100% !important;
     background-position: center top !important;
 }
@@ -1312,7 +1312,7 @@ html {
 }
 
 .bg-inicio {
-    background-image: url('/assets/inicio/inicio.png');
+    background-image: url('../assets/inicio/inicio.png');
     background-position: top center !important;
     opacity: 1 !important;
 }
@@ -1352,7 +1352,7 @@ html {
 
 /* --- Estilos da Aba Uniformes --- */
 .bg-uniformes {
-    background-image: url('/assets/uniformes/background.png');
+    background-image: url('../assets/uniformes/background.png');
     background-size: 100% 100% !important;
     background-position: center top !important;
 }
@@ -1560,7 +1560,7 @@ html.cbm-unlocked #login-screen {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('/assets/telalogin/background.png');
+    background-image: url('../assets/telalogin/background.png');
     background-size: cover;
     background-position: center;
     /* background removed */
@@ -1807,17 +1807,17 @@ body.locked {
 }
 
 @media (max-width: 768px) {
-    .bg-inicio { background-image: url('/assets/inicio/celular.png') !important; background-size: cover !important; background-position: center !important; }
-    .bg-viaturas { background-image: url('/assets/viaturas/celular.png') !important; background-size: cover !important; background-position: center !important; }
-    .bg-uniformes { background-image: url('/assets/uniformes/celular.png') !important; background-size: cover !important; background-position: center !important; }
-    .login-background { background-image: url('/assets/telalogin/celular.png') !important; background-size: cover !important; background-position: center !important; }
-    .bg-regras { background-image: url('/assets/regras/celular.png') !important; background-size: cover !important; background-position: center !important; }
-    .bg-planilhas { background-image: url('/assets/planilhas/celular.png') !important; background-size: cover !important; background-position: center !important; }
-    .bg-modulacao { background-image: url('/assets/modulacao/celular.png') !important; background-size: cover !important; background-position: center !important; }
-    .bg-hierarquia { background-image: url('/assets/hierarquia/celular.png') !important; background-size: cover !important; background-position: center !important; }
-    .bg-avisos { background-image: url('/assets/avisos-gerais/celular.png') !important; background-size: cover !important; background-position: center !important; }
-    .bg-cursos { background-image: url('/assets/cursos/celular.png') !important; background-size: cover !important; background-position: center !important; }
-    .bg-galeria { background-image: url('/assets/galeria/celular.png') !important; background-size: cover !important; background-position: center !important; }
+    .bg-inicio { background-image: url('../assets/inicio/celular.png') !important; background-size: cover !important; background-position: center !important; }
+    .bg-viaturas { background-image: url('../assets/viaturas/celular.png') !important; background-size: cover !important; background-position: center !important; }
+    .bg-uniformes { background-image: url('../assets/uniformes/celular.png') !important; background-size: cover !important; background-position: center !important; }
+    .login-background { background-image: url('../assets/telalogin/celular.png') !important; background-size: cover !important; background-position: center !important; }
+    .bg-regras { background-image: url('../assets/regras/celular.png') !important; background-size: cover !important; background-position: center !important; }
+    .bg-planilhas { background-image: url('../assets/planilhas/celular.png') !important; background-size: cover !important; background-position: center !important; }
+    .bg-modulacao { background-image: url('../assets/modulacao/celular.png') !important; background-size: cover !important; background-position: center !important; }
+    .bg-hierarquia { background-image: url('../assets/hierarquia/celular.png') !important; background-size: cover !important; background-position: center !important; }
+    .bg-avisos { background-image: url('../assets/avisos-gerais/celular.png') !important; background-size: cover !important; background-position: center !important; }
+    .bg-cursos { background-image: url('../assets/cursos/celular.png') !important; background-size: cover !important; background-position: center !important; }
+    .bg-galeria { background-image: url('../assets/galeria/celular.png') !important; background-size: cover !important; background-position: center !important; }
     
     .entry-screen {
         background-size: contain !important;
@@ -2635,3 +2635,38 @@ html {
 }
 
 
+
+
+/* OVERRIDE ALL TO RED AND FIX PADDING */
+.green-card, .yellow-card, .blue-card, .orange-card, .purple-card, .cyan-card, .rgb-card, .card-evoluir, .card-evoluir.merito {
+    border-top-color: #ef4444 !important;
+    background-color: rgba(239, 68, 68, 0.06) !important;
+    animation: redNeonPulse 3s ease-in-out infinite !important;
+}
+.card-evoluir:hover, .card-evoluir.merito:hover {
+    border-color: rgba(239, 68, 68, 0.8) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 20px rgba(239, 68, 68, 0.4) !important;
+}
+.card, .info-card {
+    padding: 10px !important;
+    height: fit-content !important;
+}
+
+/* SPOTLIGHT EFFECT */
+.card::before, .card-evoluir::before, .info-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle 300px at var(--mouseX, -999px) var(--mouseY, -999px), rgba(255, 255, 255, 0.08), transparent 80%);
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+}
+.card:hover::before, .card-evoluir:hover::before, .info-card:hover::before {
+    opacity: 1;
+}
