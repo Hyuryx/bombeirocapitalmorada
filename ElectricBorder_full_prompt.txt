@@ -1,0 +1,13 @@
+<USER_REQUEST>
+npx shadcn@latest add @react-bits/ElectricBorder-JS-CSS
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-10-06T01:32:15-03:00.
+
+The user's current state is as follows:
+Active Document: d:\Modulaçaocapitalmorada\css\style.css (LANGUAGE_CSS)
+Cursor is on line: 1
+Other open documents:
+- d:\Modulaçaocapitalmorada\css\style.css (LANGUAGE_CSS)
+- d:\Modulaçaocapitalmorada\index.html (LANGUAGE_HTML)
+</ADDITIONAL_METADATA>

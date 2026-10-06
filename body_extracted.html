@@ -1,0 +1,2715 @@
+
+    <!-- Tela de Login / Bloqueio -->
+    <div id="login-screen">
+        <div class="login-background"></div>
+        <div class="login-container">
+            <img src="assets/fotos/logo-capital.png" alt="Logo Capital" class="login-logo">
+            <div id="login-clock" style="text-align: center; color: white; margin-bottom: 20px;">
+                <div id="login-time" style="font-size: 3rem; font-weight: 800; letter-spacing: 2px; line-height: 1;">
+                    00:00:00</div>
+                <div id="login-date" style="font-size: 1rem; color: #ccc; margin-top: 5px;">Data</div>
+            </div>
+            <h2>PORTAL CBM</h2>
+            <div class="login-input-group">
+                <input type="password" id="login-password" placeholder="Digite a senha de acesso..." autocomplete="off">
+                <button id="login-submit">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
+            </div>
+            <p id="login-error" style="display: none;">Senha incorreta. Tente novamente.</p>
+        </div>
+    </div>
+
+    <!-- Global Navigation -->
+    <nav class="global-navbar">
+        <div class="nav-brand">
+            <img src="assets/fotos/logo-capital.png" alt="Logo" class="nav-logo">
+            <span class="nav-title">PORTAL CBM</span>
+            <button id="btn-toggle-effects" class="btn-toggle-effects"
+                title="Desativar/Ativar Efeitos Gráficos (Modo Desempenho)" aria-label="Alternar Efeitos">
+                <svg class="icon-eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg class="icon-eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="display: none;">
+                    <path
+                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                    </path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+                <span class="effects-btn-text">Efeitos: ON</span>
+            </button>
+        </div>
+
+        <!-- Botão Menu Mobile -->
+        <div class="mobile-menu-btn" id="mobile-menu-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </div>
+
+        <ul class="nav-tabs" id="nav-tabs">
+            <li class="nav-item active" data-global-target="view-inicio">INÍCIO</li>
+            <li class="nav-item" data-global-target="view-avisos">AVISOS GERAIS</li>
+            <li class="nav-item" data-global-target="view-regras">REGRAS</li>
+            <li class="nav-item" data-global-target="view-uniformes">UNIFORMES</li>
+            <li class="nav-item" data-global-target="view-cursos">CURSOS</li>
+            <li class="nav-item" data-global-target="view-modulacao">MODULAÇÃO</li>
+            <li class="nav-item" data-global-target="view-viaturas">VIATURAS</li>
+            <li class="nav-item" data-global-target="view-hierarquia">HIERARQUIA</li>
+            <li class="nav-item" data-global-target="view-planilhas">PLANILHA</li>
+            <li class="nav-item" data-global-target="view-galeria">GALERIA</li>
+        </ul>
+    </nav>
+
+    <div class="particles" id="particles-js"></div>
+
+    <!-- Tela de Início (Temporária) -->
+        <div id="view-inicio" class="global-view temp-view active">
+        <!-- Sequence of Videos -->
+        <div id="video-sequence-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -2;">
+            <video id="bg-video-inicio-1" muted playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease-in-out; opacity: 1;"></video>
+            <video id="bg-video-inicio-2" muted playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease-in-out; opacity: 0;"></video>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const videoFiles = [
+                    'assets/inicio/videos/inicio1.mp4',
+                    'assets/inicio/videos/inicio2.mp4',
+                    'assets/inicio/videos/inicio3.mp4',
+                    'assets/inicio/videos/inicio4.mp4',
+                    'assets/inicio/videos/inicio5.mp4',
+                    'assets/inicio/videos/inicio6.mp4',
+                    'assets/inicio/videos/inicio7.mp4',
+                    'assets/inicio/videos/inicio8.mp4'
+                ];
+                let currentIndex = 0;
+                const v1 = document.getElementById('bg-video-inicio-1');
+                const v2 = document.getElementById('bg-video-inicio-2');
+                if(!v1 || !v2) return;
+                let activeVideo = v1;
+                let nextVideo = v2;
+
+                v1.src = videoFiles[0];
+                v1.load();
+                v1.play().catch(e => console.log('Autoplay blocked:', e));
+
+                v2.src = videoFiles[1];
+                v2.load();
+
+                function playNextVideo() {
+                    currentIndex = (currentIndex + 1) % videoFiles.length;
+                    
+                    nextVideo.play().then(() => {
+                        activeVideo.style.opacity = 0;
+                        nextVideo.style.opacity = 1;
+
+                        setTimeout(() => {
+                            let temp = activeVideo;
+                            activeVideo = nextVideo;
+                            nextVideo = temp;
+
+                            nextVideo.pause();
+                            nextVideo.currentTime = 0;
+                            nextVideo.isFading = false;
+                            nextVideo.src = videoFiles[(currentIndex + 1) % videoFiles.length];
+                            nextVideo.load();
+                        }, 1000);
+                    }).catch(e => console.log('Autoplay blocked:', e));
+                }
+
+                function handleTimeUpdate(e) {
+                    const v = e.target;
+                    // Start crossfade 1 second before end
+                    if (!v.isFading && v.duration > 0 && (v.duration - v.currentTime <= 1.0)) {
+                        v.isFading = true;
+                        playNextVideo();
+                    }
+                }
+
+                v1.addEventListener('timeupdate', handleTimeUpdate);
+                v2.addEventListener('timeupdate', handleTimeUpdate);
+            });
+        </script>
+        
+        
+
+        <!-- Logo Centralizada -->
+        <div id="inicio-logo-container" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; pointer-events: none;">
+            <img src="assets/inicio/Logotipo Bombeiros Capital Morada.png" alt="Logo Capital Morada" style="width: 100%; max-width: 600px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8)); animation: fadeIn 2s ease-out;">
+        </div>
+
+        <footer class="site-footer"
+            style="position: absolute; bottom: 0; width: 100%; border-top: none; margin-top: 0; padding-bottom: 20px;">
+            <p>&copy; 2026 ERREJOTA. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <!-- Novas Abas Temporárias -->
+    <div id="view-cursos" class="global-view" style="display: none;">
+        <div class="background-overlay bg-cursos"></div>
+        <div class="app-container">
+            <!-- Sidebar Cursos -->
+            <aside class="sidebar sidebar-cursos" id="sidebar-cursos">
+                <div class="sidebar-logo-container"
+                    style="text-align: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px;">
+                    <img src="assets/iconesite/icone.png" class="sidebar-logo" alt="Logo Bombeiros"
+                        style="width: 80%; max-width: 150px; cursor: pointer; transition: transform 0.3s;"
+                        onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                </div>
+                <!-- Toggle Button -->
+                <button class="sidebar-toggle-btn" id="toggle-sidebar-cursos">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round" class="toggle-icon">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <nav class="sidebar-nav" style="display: flex; flex-direction: column; height: 100%;">
+                    <ul style="flex-grow: 1;">
+                        <li class="active" data-target="curso-evoluir" style="--active-color: #a855f7;">
+                            <svg class="anim-icon icon-evoluir" viewBox="0 0 24 24" stroke="#a855f7" stroke-width="2"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline class="evoluir-step1" points="17 11 12 6 7 11"></polyline>
+                                <polyline class="evoluir-step2" points="17 17 12 12 7 17"></polyline>
+                            </svg>
+                            <div style="display: flex; flex-direction: column;">
+                                <span>Evoluir</span>
+                            </div>
+                        </li>
+                        <li data-target="curso-aereo" style="--active-color: #3b82f6;">
+                            <svg class="anim-icon icon-aereo" viewBox="0 0 24 24" stroke="#3b82f6" stroke-width="1.5"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <line class="heli-rotor" x1="6" y1="5" x2="18" y2="5" />
+                                <line x1="12" y1="5" x2="12" y2="9" />
+                                <path d="M4 14a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v0a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" />
+                                <path d="M4 12H1" />
+                                <line class="heli-tail-rotor" x1="2" y1="10" x2="2" y2="14" />
+                                <line x1="7" y1="16" x2="7" y2="19" />
+                                <line x1="15" y1="16" x2="15" y2="19" />
+                                <line x1="5" y1="19" x2="17" y2="19" />
+                            </svg>
+                            <div style="display: flex; flex-direction: column;">
+                                <span>Curso de Piloto</span>
+                                <span style="font-size: 0.75em; opacity: 0.7;"><strong>10 PILOTOS EM
+                                        ATIVIDADE</strong></span>
+                            </div>
+                        </li>
+                        <li data-target="curso-aquatico" style="--active-color: #0ea5e9;">
+                            <svg class="anim-icon icon-water" viewBox="0 0 24 24" stroke="#0ea5e9">
+                                <path class="water-wave1" d="M2 12c2 0 4-4 8-4s6 4 8 4 6-4 8-4"></path>
+                                <path class="water-wave2" d="M2 16c2 0 4-4 8-4s6 4 8 4 6-4 8-4"></path>
+                            </svg>
+                            <div style="display: flex; flex-direction: column;">
+                                <span>Resgate Aquático</span>
+                            </div>
+                        </li>
+                        <li data-target="curso-montanha" style="--active-color: #10b981;">
+                            <svg class="anim-icon icon-mountain" viewBox="0 0 24 24" stroke="#10b981">
+                                <path class="mountain-path" d="M1 20l7-12 5 8 4-5 6 9z"></path>
+                            </svg>
+                            <div style="display: flex; flex-direction: column;">
+                                <span>Resgate em Montanha</span>
+                            </div>
+                        </li>
+                        <li data-target="curso-paraquedismo" style="--active-color: #f59e0b;">
+                            <svg class="anim-icon icon-parachute" viewBox="0 0 24 24" stroke="#f59e0b">
+                                <path class="parachute-top" d="M12 2C6.48 2 2 6.48 2 12h20c0-5.52-4.48-10-10-10z">
+                                </path>
+                                <path class="parachute-cord" d="M12 12v10"></path>
+                            </svg>
+                            <div style="display: flex; flex-direction: column;">
+                                <span>Paraquedismo</span>
+                            </div>
+                        </li>
+                        <li data-target="curso-coer" style="--active-color: #ef4444;">
+                            <svg class="anim-icon icon-coer" viewBox="0 0 24 24" stroke="#ef4444" stroke-width="2"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                <line x1="12" y1="8" x2="12" y2="14"></line>
+                                <line x1="9" y1="11" x2="15" y2="11"></line>
+                            </svg>
+                            <div style="display: flex; flex-direction: column;">
+                                <span>COER</span>
+                                <span style="font-size: 0.75em; opacity: 0.7;"><strong>Em andamento</strong></span>
+                            </div>
+                        </li>
+                        <li data-target="curso-tripulantes" style="--active-color: #06b6d4;">
+                            <svg class="anim-icon icon-tripulantes" viewBox="0 0 24 24" stroke="#06b6d4"
+                                stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <polyline points="16 11 18 13 22 9"></polyline>
+                            </svg>
+                            <div style="display: flex; flex-direction: column;">
+                                <span>Tripulantes</span>
+                                <span style="font-size: 0.75em; opacity: 0.7;"><strong>Em andamento</strong></span>
+                            </div>
+                        </li>
+                    </ul>
+
+                </nav>
+            </aside>
+
+            <!-- Main Content Cursos -->
+            <main class="main-content">
+                <section id="curso-evoluir" class="content-section active">
+                    <header class="section-header">
+                        <h1>🚀 COMO EVOLUIR</h1>
+                        <p>Confira abaixo o tempo e os requisitos de cada promoção na corporação.</p>
+                    </header>
+
+                    <!-- Banner de Introdução com Efeito RGB -->
+                    <div class="card info-card rgb-card" style="margin-bottom: 25px;">
+                        <div
+                            style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between;">
+                            <div>
+                                <h3
+                                    style="color: #fff; font-size: 1.35rem; display: flex; align-items: center; gap: 10px; margin: 0 0 8px 0;">
+                                    <span>🎖️</span> Plano de Carreira e Progressão Funcional
+                                </h3>
+                                <p
+                                    style="color: #d1d5db; margin: 0; max-width: 850px; line-height: 1.6; font-size: 0.95rem;">
+                                    A evolução no Corpo de Bombeiros é conquistada através de <strong>tempo de serviço
+                                        dedicado</strong>, <strong>conclusão dos cursos obrigatórios</strong> e
+                                    <strong>reconhecimento por mérito operacional</strong>. Clique em qualquer card
+                                    abaixo para abrir os detalhes completos no modal com os requisitos da patente.
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                <div
+                                    style="background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.35); padding: 8px 16px; border-radius: 8px; text-align: center;">
+                                    <div style="font-size: 1.25rem; font-weight: 800; color: #60a5fa;">13</div>
+                                    <div
+                                        style="font-size: 0.72rem; color: #93c5fd; text-transform: uppercase; font-weight: 600;">
+                                        Etapas</div>
+                                </div>
+                                <div
+                                    style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); padding: 8px 16px; border-radius: 8px; text-align: center;">
+                                    <div style="font-size: 1.25rem; font-weight: 800; color: #34d399;">10+</div>
+                                    <div
+                                        style="font-size: 0.72rem; color: #6ee7b7; text-transform: uppercase; font-weight: 600;">
+                                        Cursos</div>
+                                </div>
+                                <div
+                                    style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.35); padding: 8px 16px; border-radius: 8px; text-align: center;">
+                                    <div style="font-size: 1.25rem; font-weight: 800; color: #fbbf24;">3</div>
+                                    <div
+                                        style="font-size: 0.72rem; color: #fde68a; text-transform: uppercase; font-weight: 600;">
+                                        Mérito</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grid com as 13 Etapas de Evolução -->
+                    <div class="evoluir-grid">
+
+                        <!-- 1. Contratação -> Aluno -->
+                        <div class="card-evoluir" data-titulo="Contratação ➔ Aluno"
+                            data-tempo="Imediato (Na Contratação)" data-tipo="Início de Carreira"
+                            data-cursos="Modulação e Atendimento Externo"
+                            data-detalhes="Ao ser contratado, você recebe a patente de <strong>Aluno</strong> e os cursos iniciais de <strong>Modulação e Atendimento Externo</strong>."
+                            data-obs="Início da formação básica e integração às rotinas do Corpo de Bombeiros."
+                            data-frase="O ponto de partida de uma nobre missão dedicada a salvar vidas com disciplina e honra.">
+                            <div>
+                                <div class="evoluir-card-header">
+                                    <span class="evoluir-badge-contrato">📌 Contratação</span>
+                                    <span style="font-size: 0.75rem; color: #9ca3af;">Etapa 1/13</span>
+                                </div>
+                                <div class="evoluir-card-titulo">Contratação ➔ Aluno</div>
+                                <div class="evoluir-cursos-box">
+                                    <div class="evoluir-cursos-label">Cursos Iniciais:</div>
+                                    <div class="evoluir-tags-container">
+                                        <span class="evoluir-tag-curso verde">📻 Modulação</span>
+                                        <span class="evoluir-tag-curso verde">🚑 Atendimento Externo</span>
+                                    </div>
+                                </div>
+                                <div class="evoluir-frase-preview">
+                                    "O ponto de partida de uma nobre missão dedicada a salvar vidas com disciplina e
+                                    honra."
+                                </div>
+                            </div>
+                            <button class="evoluir-btn-modal" type="button">
+                                <span>Ver Detalhes</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- 2. Aluno -> Soldado -->
+                        <div class="card-evoluir" data-titulo="Aluno ➔ Soldado" data-tempo="3 dias"
+                            data-tipo="Tempo de Serviço"
+                            data-cursos="Modulação, Atendimento Externo, Envio de Placas e CNH"
+                            data-detalhes="Ao se tornar Soldado, você deve se aperfeiçoar em <strong>Modulação e Atendimento Externo</strong>, além de enviar as <strong>Placas e a CNH</strong>."
+                            data-obs="Documentação obrigatória: Placas veiculares e Carteira Nacional de Habilitação (CNH)."
+                            data-frase="A base operacional e a prontidão para responder com eficiência em qualquer emergência da corporação.">
+                            <div>
+                                <div class="evoluir-card-header">
+                                    <span class="evoluir-badge-tempo">⏱️ 3 dias</span>
+                                    <span style="font-size: 0.75rem; color: #9ca3af;">Etapa 2/13</span>
+                                </div>
+                                <div class="evoluir-card-titulo">Aluno ➔ Soldado</div>
+                                <div class="evoluir-cursos-box">
+                                    <div class="evoluir-cursos-label">Requisitos & Documentos:</div>
+                                    <div class="evoluir-tags-container">
+                                        <span class="evoluir-tag-curso azul">📻 Modulação</span>
+                                        <span class="evoluir-tag-curso azul">🚑 Atendimento Externo</span>
+                                        <span class="evoluir-tag-curso dourado">📄 Envio de Placas & CNH</span>
+                                    </div>
+                                </div>
+                                <div class="evoluir-frase-preview">
+                                    "A base operacional e a prontidão para responder com eficiência em qualquer
+                                    emergência da corporação."
+                                </div>
+                            </div>
+                            <button class="evoluir-btn-modal" type="button">
+                                <span>Ver Detalhes</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- 3. Soldado -> Cabo -->
+                        <div class="card-evoluir" data-titulo="Soldado ➔ Cabo" data-tempo="25 horas"
+                            data-tipo="Tempo de Serviço" data-cursos="Mod/Ext OK"
+                            data-detalhes="Requisito de <strong>Mod/Ext OK</strong> (aprovação e validação prática de Modulação e Atendimento Externo)."
+                            data-obs="Cumprimento mínimo de 25 horas ativas com conduta disciplinar aprovada."
+                            data-frase="A graduação que solidifica a postura exemplar e a liderança sobre as primeiras linhas de combate.">
+                            <div>
+                                <div class="evoluir-card-header">
+                                    <span class="evoluir-badge-tempo">⏱️ 25 horas</span>
+                                    <span style="font-size: 0.75rem; color: #9ca3af;">Etapa 3/13</span>
+                                </div>
+                                <div class="evoluir-card-titulo">Soldado ➔ Cabo</div>
+                                <div class="evoluir-cursos-box">
+                                    <div class="evoluir-cursos-label">Requisito Obrigatório:</div>
+                                    <div class="evoluir-tags-container">
+                                        <span class="evoluir-tag-curso verde">✅ Mod/Ext OK</span>
+                                    </div>
+                                </div>
+                                <div class="evoluir-frase-preview">
+                                    "A graduação que solidifica a postura exemplar e a liderança sobre as primeiras
+                                    linhas de combate."
+                                </div>
+                            </div>
+                            <button class="evoluir-btn-modal" type="button">
+                                <span>Ver Detalhes</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- 4. Cabo -> 3° Sargento -->
+                        <div class="card-evoluir" data-titulo="Cabo ➔ 3° Sargento" data-tempo="50 horas"
+                            data-tipo="Tempo de Serviço" data-cursos="🧑✈️ Tripulante, 🪂 Paraquedista"
+                            data-detalhes="Requisitos: <strong>🧑✈️ Tripulante</strong> e <strong>🪂 Paraquedista</strong> devidamente concluídos e certificados."
+                            data-obs="Habilitação tática para operações aerotransportadas e salvamentos especiais."
+                            data-frase="Preparado para o salto e pronto para liderar guarnições nos cenários mais desafiadores.">
+                            <div>
+                                <div class="evoluir-card-header">
+                                    <span class="evoluir-badge-tempo">⏱️ 50 horas</span>
+                                    <span style="font-size: 0.75rem; color: #9ca3af;">Etapa 4/13</span>
+                                </div>
+                                <div class="evoluir-card-titulo">Cabo ➔ 3° Sargento</div>
+                                <div class="evoluir-cursos-box">
+                                    <div class="evoluir-cursos-label">Cursos Obrigatórios:</div>
+                                    <div class="evoluir-tags-container">
+                                        <span class="evoluir-tag-curso azul">🧑✈️ Tripulante</span>
+                                        <span class="evoluir-tag-curso dourado">🪂 Paraquedista</span>
+                                    </div>
+                                </div>
+                                <div class="evoluir-frase-preview">
+                                    "Preparado para o salto e pronto para liderar guarnições nos cenários mais
+                                    desafiadores."
+                                </div>
+                            </div>
+                            <button class="evoluir-btn-modal" type="button">
+                                <span>Ver Detalhes</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- 5. 3° Sargento -> 2° Sargento -->
+                        <div class="card-evoluir" data-titulo="3° Sargento ➔ 2° Sargento" data-tempo="70 horas"
+                            data-tipo="Tempo de Serviço" data-cursos="🚤 COER"
+                            data-detalhes="Requisito: <strong>🚤 COER</strong> (Comando de Operações de Emergência e Resgate)."
+                            data-obs="Domínio avançado em manobras de emergência, controle de viaturas especiais e suporte tático."
+                            data-frase="Capacitação tática de elite e comando eficiente em situações críticas de alta pressão.">
+                            <div>
+                                <div class="evoluir-card-header">
+                                    <span class="evoluir-badge-tempo">⏱️ 70 horas</span>
+                                    <span style="font-size: 0.75rem; color: #9ca3af;">Etapa 5/13</span>
+                                </div>
+                                <div class="evoluir-card-titulo">3° Sargento ➔ 2° Sargento</div>
+                                <div class="evoluir-cursos-box">
+                                    <div class="evoluir-cursos-label">Curso Obrigatório:</div>
+                                    <div class="evoluir-tags-container">
+                                        <span class="evoluir-tag-curso azul">🚤 COER</span>
+                                    </div>
+                                </div>
+                                <div class="evoluir-frase-preview">
+                                    "Capacitação tática de elite e comando eficiente em situações críticas de alta
+                                    pressão."
+                                </div>
+                            </div>
+                            <button class="evoluir-btn-modal" type="button">
+                                <span>Ver Detalhes</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- 6. 2° Sargento -> 1° Sargento -->
+                        <div class="card-evoluir" data-titulo="2° Sargento ➔ 1° Sargento" data-tempo="90 horas"
+                            data-tipo="Tempo de Serviço" data-cursos="Instrutor - Externo/Modulação, Instrutor Geral"
+                            data-detalhes="Requisitos: <strong>Instrutor - Externo/Modulação</strong> e qualificação como <strong>Instrutor</strong>."
+                            data-obs="Transmissão de conhecimento e formação pedagógica de novos recrutas e soldados."
+                            data-frase="Ensinar é liderar: o conhecimento repassado com rigor e disciplina salva vidas no futuro.">
+                            <div>
+                                <div class="evoluir-card-header">
+                                    <span class="evoluir-badge-tempo">⏱️ 90 horas</span>
+                                    <span style="font-size: 0.75rem; color: #9ca3af;">Etapa 6/13</span>
+                                </div>
+                                <div class="evoluir-card-titulo">2° Sargento ➔ 1° Sargento</div>
+                                <div class="evoluir-cursos-box">
+                                    <div class="evoluir-cursos-label">Qualificações Obrigatórias:</div>
+                                    <div class="evoluir-tags-container">
+                                        <span class="evoluir-tag-curso">🎓 Instrutor - Externo/Mod</span>
+                                        <span class="evoluir-tag-curso">🎖️ Instrutor</span>
+                                    </div>
+                                </div>
+                                <div class="evoluir-frase-preview">
+                                    "Ensinar é liderar: o conhecimento repassado com rigor e disciplina salva vidas no
+                                    futuro."
+                                </div>
+                            </div>
+                            <button class="evoluir-btn-modal" type="button">
+                                <span>Ver Detalhes</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- 7. 1° Sargento -> Sub-Tenente -->
+                        <div class="card-evoluir" data-titulo="1° Sargento ➔ Sub-Tenente" data-tempo="120 horas"
+                            data-tipo="Tempo de Serviço" data-cursos="🌊 Resgate Aquático, Vistoria"
+                            data-detalhes="Requisitos: <strong>🌊 Resgate Aquático</strong> e formação de <strong>Vistoria</strong>."
+                            data-obs="A mais alta graduação das praças, sendo referência técnica e apoio primordial ao Comando."
+                            data-frase="A mais alta graduação das praças: guardião da disciplina e elo fundamental com o oficialato.">
+                            <div>
+                                <div class="evoluir-card-header">
+                                    <span class="evoluir-badge-tempo">⏱️ 120 horas</span>
+                                    <span style="font-size: 0.75rem; color: #9ca3af;">Etapa 7/13</span>
+                                </div>
+                                <div class="evoluir-card-titulo">1° Sargento ➔ Sub-Tenente</div>
+                                <div class="evoluir-cursos-box">
+                                    <div class="evoluir-cursos-label">Cursos Obrigatórios:</div>
+                                    <div class="evoluir-tags-container">
+                                        <span class="evoluir-tag-curso azul">🌊 Resgate Aquático</span>
+                                        <span class="evoluir-tag-curso dourado">📋 Vistoria</span>
+                                    </div>
+                                </div>
+                                <div class="evoluir-frase-preview">
+                                    "A mais alta graduação das praças: guardião da disciplina e elo fundamental com o
+                                    oficialato."
+                                </div>
+                            </div>
+                            <button class="evoluir-btn-modal" type="button">
+                                <span>Ver Detalhes</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- 8. Sub-Tenente -> Aspirante -->
+                        <div class="card-evoluir" data-titulo="Sub-Tenente ➔ Aspirante" data-tempo="150 horas"
+                            data-tipo="Tempo de Serviço" data-cursos="Instrutor - Resgate Aquático, Instrutor - COER"
+                            data-detalhes="Requisitos: <strong>Instrutor - Resgate Aquático</strong> e <strong>Instrutor - COER</strong>."
+                            data-obs="Ingresso no quadro de oficiais em formação, com atuação pedagógica de alto nível."
+                            data-frase="Transição para o oficialato unindo a bagagem operacional à liderança estratégica da tropa.">
+                            <div>
+                                <div class="evoluir-card-header">
+                                    <span class="evoluir-badge-tempo">⏱️ 150 horas</span>
+                                    <span style="font-size: 0.75rem; color: #9ca3af;">Etapa 8/13</span>
+                                </div>
+                                <div class="evoluir-card-titulo">Sub-Tenente ➔ Aspirante</div>
+                                <div class="evoluir-cursos-box">
+                                    <div class="evoluir-cursos-label">Especializações de Instrução:</div>
+                                    <div class="evoluir-tags-container">
+                                        <span class="evoluir-tag-curso azul">🌊 Instrutor - Aquático</span>
+                                        <span class="evoluir-tag-curso">🚤 Instrutor - COER</span>
+                                    </div>
+                                </div>
+                                <div class="evoluir-frase-preview">
+                                    "Transição para o oficialato unindo a bagagem operacional à liderança estratégica da
+                                    tropa."
+                                </div>
+                            </div>
+                            <button class="evoluir-btn-modal" type="button">
+                                <span>Ver Detalhes</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- 9. Aspirante -> 2° Tenente -->
+                        <div class="card-evoluir" data-titulo="Aspirante ➔ 2° Tenente" data-tempo="180 horas"
+                            data-tipo="Tempo de Serviço" data-cursos="⛰️ Resgate em Montanhas, Recrutador"
+                            data-detalhes="Requisitos: <strong>⛰️ Resgate em Montanhas</strong> e função ativa de <strong>Recrutador</strong>."
+                            data-obs="Oficial subalterno apto para o comando direto de ocorrências de grande porte e expansão do efetivo."
+                            data-frase="Nas alturas ou em solo, a liderança de pelotão pautada pela honra, coragem e eficácia.">
+                            <div>
+                                <div class="evoluir-card-header">
+                                    <span class="evoluir-badge-tempo">⏱️ 180 horas</span>
+                                    <span style="font-size: 0.75rem; color: #9ca3af;">Etapa 9/13</span>
+                                </div>
+                                <div class="evoluir-card-titulo">Aspirante ➔ 2° Tenente</div>
+                                <div class="evoluir-cursos-box">
+                                    <div class="evoluir-cursos-label">Requisitos Obrigatórios:</div>
+                                    <div class="evoluir-tags-container">
+                                        <span class="evoluir-tag-curso verde">⛰️ Resgate em Montanha</span>
+                                        <span class="evoluir-tag-curso dourado">🎯 Recrutador</span>
+                                    </div>
+                                </div>
+                                <div class="evoluir-frase-preview">
+                                    "Nas alturas ou em solo, a liderança de pelotão pautada pela honra, coragem e
+                                    eficácia."
+                                </div>
+                            </div>
+                            <button class="evoluir-btn-modal" type="button">
+                                <span>Ver Detalhes</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- 10. 2° Tenente -> 1° Tenente -->
+                        <div class="card-evoluir" data-titulo="2° Tenente ➔ 1° Tenente" data-tempo="210 horas"
+                            data-tipo="Tempo de Serviço" data-cursos="Instrutor - Resgate em Montanha"
+                            data-detalhes="Requisito: <strong>Instrutor - Resgate em Montanha</strong>."
+                            data-obs="Mestria consolidada em salvamentos verticais e capacidade de avaliação técnica da tropa."
+                            data-frase="Comando experiente e capacidade técnica para forjar novos especialistas de resgate vertical.">
+                            <div>
+                                <div class="evoluir-card-header">
+                                    <span class="evoluir-badge-tempo">⏱️ 210 horas</span>
+                                    <span style="font-size: 0.75rem; color: #9ca3af;">Etapa 10/13</span>
+                                </div>
+                                <div class="evoluir-card-titulo">2° Tenente ➔ 1° Tenente</div>
+                                <div class="evoluir-cursos-box">
+                                    <div class="evoluir-cursos-label">Qualificação de Instrução:</div>
+                                    <div class="evoluir-tags-container">
+                                        <span class="evoluir-tag-curso verde">⛰️ Instrutor - Montanha</span>
+                                    </div>
+                                </div>
+                                <div class="evoluir-frase-preview">
+                                    "Comando experiente e capacidade técnica para forjar novos especialistas de resgate
+                                    vertical."
+                                </div>
+                            </div>
+                            <button class="evoluir-btn-modal" type="button">
+                                <span>Ver Detalhes</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- 11. 1° Tenente -> Capitão -->
+                        <div class="card-evoluir merito" data-titulo="1° Tenente ➔ Capitão" data-tempo="Por Mérito"
+                            data-tipo="Promoção por Mérito" data-cursos="🚁 Resgate Aéreo, Instrutor - Tripulante, Instrutor de Paraquedista"
+                            data-detalhes="Promoção: <strong>Por Mérito</strong>. Requisitos técnicos: <strong>🚁 Resgate Aéreo</strong>, <strong>Instrutor - Tripulante</strong> e <strong>Instrutor de Paraquedista</strong>."
+                            data-obs="Comando de companhias operacionais, exigindo conduta militar irrepreensível e aprovação do Alto Comando."
+                            data-frase="O comando de companhia exige coragem, retidão moral e excelência operacional nos ares e em terra.">
+                            <div>
+                                <div class="evoluir-card-header">
+                                    <span class="evoluir-badge-merito">⭐ Por Mérito</span>
+                                    <span style="font-size: 0.75rem; color: #fbbf24;">Oficial Intermediário</span>
+                                </div>
+                                <div class="evoluir-card-titulo" style="color: #fbbf24;">⭐ 1° Tenente ➔ Capitão</div>
+                                <div class="evoluir-cursos-box">
+                                    <div class="evoluir-cursos-label">Requisitos Obrigatórios:</div>
+                                    <div class="evoluir-tags-container">
+                                        <span class="evoluir-tag-curso azul">🚁 Resgate Aéreo</span>
+                                        <span class="evoluir-tag-curso">🧑✈️ Instrutor - Tripulante</span>
+                                        <span class="evoluir-tag-curso">🪂 Instrutor de Paraquedista</span>
+                                    </div>
+                                </div>
+                                <div class="evoluir-frase-preview">
+                                    "O comando de companhia exige coragem, retidão moral e excelência operacional nos
+                                    ares e em terra."
+                                </div>
+                            </div>
+                            <button class="evoluir-btn-modal" type="button">
+                                <span>Ver Detalhes</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- 12. Capitão -> Major -->
+                        <div class="card-evoluir merito" data-titulo="Capitão ➔ Major" data-tempo="Por Mérito"
+                            data-tipo="Promoção por Mérito" data-cursos="Comando de Batalhão & Mérito Operacional"
+                            data-detalhes="Promoção: <strong>Por Mérito</strong>. Atribuição de oficial superior para coordenação de batalhões e unidades operacionais."
+                            data-obs="Avaliação de liderança estratégica, responsabilidade na gestão do efetivo e lealdade institucional."
+                            data-frase="A condução estratégica da tropa com sabedoria, justiça e visão de futuro.">
+                            <div>
+                                <div class="evoluir-card-header">
+                                    <span class="evoluir-badge-merito">⭐ Por Mérito</span>
+                                    <span style="font-size: 0.75rem; color: #fbbf24;">Oficial Superior</span>
+                                </div>
+                                <div class="evoluir-card-titulo" style="color: #fbbf24;">⭐ Capitão ➔ Major</div>
+                                <div class="evoluir-cursos-box">
+                                    <div class="evoluir-cursos-label">Critério de Ascensão:</div>
+                                    <div class="evoluir-tags-container">
+                                        <span class="evoluir-tag-curso dourado">⭐ Promoção por Mérito</span>
+                                        <span class="evoluir-tag-curso azul">🛡️ Comando de Batalhão</span>
+                                    </div>
+                                </div>
+                                <div class="evoluir-frase-preview">
+                                    "A condução estratégica da tropa com sabedoria, justiça e visão de futuro."
+                                </div>
+                            </div>
+                            <button class="evoluir-btn-modal" type="button">
+                                <span>Ver Detalhes</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- 13. Major -> Tenente-Coronel -->
+                        <div class="card-evoluir merito" data-titulo="Major ➔ Tenente-Coronel" data-tempo="Por Mérito"
+                            data-tipo="Promoção por Mérito" data-cursos="Estado-Maior & Alto Comando"
+                            data-detalhes="Promoção: <strong>Por Mérito</strong>. Alto oficialato encarregado da supervisão geral e apoio direto ao Comando Geral."
+                            data-obs="Decisão soberana do Comando Geral baseada no histórico exemplar de conduta e honra militar."
+                            data-frase="No topo da hierarquia, a honra de guiar homens e mulheres que juraram salvar vidas.">
+                            <div>
+                                <div class="evoluir-card-header">
+                                    <span class="evoluir-badge-merito">⭐ Por Mérito</span>
+                                    <span style="font-size: 0.75rem; color: #fbbf24;">Alto Comando</span>
+                                </div>
+                                <div class="evoluir-card-titulo" style="color: #fbbf24;">⭐ Major ➔ Tenente-Coronel</div>
+                                <div class="evoluir-cursos-box">
+                                    <div class="evoluir-cursos-label">Critério de Ascensão:</div>
+                                    <div class="evoluir-tags-container">
+                                        <span class="evoluir-tag-curso dourado">⭐ Promoção por Mérito</span>
+                                        <span class="evoluir-tag-curso">👑 Estado-Maior</span>
+                                    </div>
+                                </div>
+                                <div class="evoluir-frase-preview">
+                                    "No topo da hierarquia, a honra de guiar homens e mulheres que juraram salvar
+                                    vidas."
+                                </div>
+                            </div>
+                            <button class="evoluir-btn-modal" type="button">
+                                <span>Ver Detalhes</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section id="curso-aereo" class="content-section" style="display: none;">
+                    <header class="section-header">
+                        <h1>Curso de Piloto</h1>
+                        <p>"Quando o acesso terrestre termina, começa a missão da equipe aérea."</p>
+                    </header>
+
+                    <div class="content-box"
+                        style="padding: 10px; background: transparent; border: none; box-shadow: none; backdrop-filter: none; display: flex; justify-content: center;">
+                        <img src="assets/cursos/aereo/1.png" alt="Curso de Resgate Aéreo"
+                            style="width: 100%; max-width: 600px; border-radius: 8px;">
+                    </div>
+
+                    <div class="cards-grid" style="margin-top: 20px;">
+                        <div class="card info-card blue-card" style="grid-column: 1 / -1;">
+                            <h3>O Curso de Resgate Aéreo</h3>
+                            <p>É uma das especializações mais prestigiadas do Corpo de Bombeiros, destinada aos
+                                militares que desejam atuar em operações de alta complexidade utilizando aeronaves como
+                                principal meio de resposta.<br><br>
+                                A formação prepara o operador para realizar resgates em locais de difícil acesso,
+                                prestar apoio em grandes ocorrências, transportar vítimas em estado crítico e atuar em
+                                conjunto com pilotos e equipes terrestres. Cada missão exige disciplina, preparo
+                                técnico, comunicação eficiente e total comprometimento com a segurança
+                                operacional.<br><br>
+                                Ao concluir todas as etapas, o militar estará apto a integrar oficialmente a equipe de
+                                Resgate Aéreo da corporação.</p>
+
+                            <div style="margin-top: 20px;">
+                                <p style="color: var(--text-muted);"><strong>Requisitos para o Curso de Piloto:</strong>
+                                </p>
+                                <ul
+                                    style="color: var(--text-muted); list-style: disc; margin-left: 20px; margin-top: 5px;">
+                                    <li>Curso de Paraquedismo;</li>
+                                    <li>Curso de Resgate Aquático;</li>
+                                    <li>Curso de Resgate em Montanha;</li>
+                                    <li><strong>Aspirante:</strong> Treinamento com autorização;</li>
+                                    <li><strong>Tenente 2:</strong> Pode prestar a prova.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="card info-card green-card">
+                            <h3>Objetivo do Curso</h3>
+                            <p>Capacitar o militar para atuar em operações aéreas de salvamento, desenvolvendo
+                                conhecimentos técnicos, habilidades práticas e capacidade de tomada de decisão em
+                                ambientes de alta complexidade.</p>
+                        </div>
+
+                        <div class="card info-card orange-card">
+                            <h3>Requisitos</h3>
+                            <p>Para ingressar no Curso de Resgate Aéreo, o militar deverá:</p>
+                            <ul style="margin-top: 8px; margin-left: 20px; color: var(--text-muted);">
+                                <li>Estar devidamente ativo na corporação;</li>
+                                <li>Demonstrar disciplina e comprometimento;</li>
+                                <li>Possuir bom desempenho operacional;</li>
+                                <li>Ter aprovação da coordenação de cursos, quando necessário.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2 style="margin: 30px 0 15px; font-size: 1.5rem; color: #fff;">Estrutura do Curso</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">O Curso de Resgate Aéreo é dividido em
+                        três fases eliminatórias, onde cada etapa avalia diferentes competências do aluno. Somente os
+                        militares aprovados em uma fase poderão prosseguir para a seguinte.</p>
+
+                    <div class="cards-grid">
+                        <!-- FASE I -->
+                        <div class="card info-card purple-card" style="grid-column: 1 / -1;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                                <img src="assets/cursos/aereo/2.png" alt="Fase I - Solo"
+                                    style="width: 100%; max-width: 350px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>FASE I — Qualificação em Resgate Urbano</h3>
+                                    <p><strong>Objetivo:</strong> Apresentar ao aluno todos os fundamentos necessários
+                                        para atuação em operações aéreas.</p>
+                                    <p style="margin-top: 10px;"><strong>Conteúdo:</strong></p>
+                                    <ul style="margin-top: 5px; margin-left: 20px; color: var(--text-muted);">
+                                        <li>Introdução ao Resgate Aéreo;</li>
+                                        <li>Normas de segurança operacional;</li>
+                                        <li>Equipamentos utilizados;</li>
+                                        <li>Comunicação entre piloto e operador;</li>
+                                        <li>Procedimentos de embarque e desembarque;</li>
+                                        <li>Organização da equipe durante a missão.</li>
+                                    </ul>
+                                    <p style="margin-top: 10px;"><strong>Avaliação:</strong> O militar deverá demonstrar
+                                        conhecimento teórico e executar corretamente todos os procedimentos básicos
+                                        apresentados durante a instrução.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FASE II -->
+                        <div class="card info-card yellow-card" style="grid-column: 1 / -1;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                                <img src="assets/cursos/aereo/3.png" alt="Fase II - Asas"
+                                    style="width: 100%; max-width: 350px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>FASE II — Qualificação em Resgate Aquático</h3>
+                                    <p>Após concluir a etapa de fundamentos, o militar inicia o treinamento prático em
+                                        operações aéreas, enfrentando cenários que exigem precisão na pilotagem,
+                                        estabilidade da aeronave e perfeita coordenação entre piloto e operador.</p>
+                                    <p style="margin-top: 10px;">Nesta fase, o foco é desenvolver a confiança em voo e
+                                        preparar a equipe para atuar em ambientes complexos, principalmente sobre áreas
+                                        aquáticas e regiões de difícil acesso.</p>
+                                    <p style="margin-top: 10px;"><strong>Durante esta etapa serão realizados
+                                            treinamentos como:</strong></p>
+                                    <ul style="margin-top: 5px; margin-left: 20px; color: var(--text-muted);">
+                                        <li>Procedimentos de comunicação e tomada de decisão sob pressão.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FASE III -->
+                        <div class="card info-card red-card" style="grid-column: 1 / -1;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                                <img src="assets/cursos/aereo/4.png" alt="Fase III - Águia"
+                                    style="width: 100%; max-width: 350px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>FASE III — Qualificação em Resgate em Montanha</h3>
+                                    <p>A última fase representa uma operação completa. O aluno será colocado diante de
+                                        diferentes cenários de emergência onde deverá aplicar todos os conhecimentos
+                                        adquiridos durante o curso.</p>
+                                    <p style="margin-top: 10px;"><strong>As ocorrências poderão envolver:</strong></p>
+                                    <ul style="margin-top: 5px; margin-left: 20px; color: var(--text-muted);">
+                                        <li>Acidentes em áreas de difícil acesso;</li>
+                                        <li>Resgates em montanhas;</li>
+                                        <li>Evacuação aeromédica;</li>
+                                        <li>Transporte emergencial de vítimas.</li>
+                                    </ul>
+                                    <p style="margin-top: 10px;">A pessoa será avaliada como um piloto profissional,
+                                        será avaliado todos os tipos de comportamento.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 style="margin: 30px 0 15px; font-size: 1.5rem; color: #fff;">Critérios de Aprovação &
+                        Certificação</h2>
+
+                    <div class="cards-grid">
+                        <div class="card info-card green-card">
+                            <h3>Critérios Avaliados</h3>
+                            <p>O militar deverá obter desempenho satisfatório em todas as fases para receber sua
+                                certificação, sendo avaliado em:</p>
+                            <ul style="margin-top: 8px; margin-left: 20px; color: var(--text-muted);">
+                                <li>Disciplina e Trabalho em equipe;</li>
+                                <li>Comunicação e Segurança operacional;</li>
+                                <li>Conhecimento técnico e Cumprimento dos protocolos;</li>
+                                <li>Controle emocional e Tomada de decisão.</li>
+                            </ul>
+                        </div>
+
+                        <div class="card info-card blue-card">
+                            <h3>Competências Desenvolvidas</h3>
+                            <ul style="margin-top: 8px; margin-left: 20px; color: var(--text-muted);">
+                                <li>Liderança operacional;</li>
+                                <li>Comunicação eficiente;</li>
+                                <li>Trabalho em equipe e Gestão de riscos;</li>
+                                <li>Rapidez na tomada de decisões;</li>
+                                <li>Precisão técnica e Organização operacional;</li>
+                                <li>Controle emocional em situações críticas.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="cards-grid" style="margin-top: 20px;">
+                        <div class="card info-card purple-card" style="grid-column: 1 / -1;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center;">
+                                <img src="assets/cursos/aereo/5.png" alt="Certificação"
+                                    style="width: 100%; max-width: 400px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>Após a Certificação</h3>
+                                    <p>Ao concluir o Curso de Resgate Aéreo, o militar estará autorizado a integrar
+                                        oficialmente a equipe, participar de operações com aeronaves, apoiar ocorrências
+                                        complexas, realizar transporte aeromédico e auxiliar outras equipes
+                                        especializadas.</p>
+                                    <h3 style="margin-top: 15px;">Importância da Especialização</h3>
+                                    <p>O Resgate Aéreo representa uma das áreas mais estratégicas da corporação. Sua
+                                        atuação possibilita alcançar locais inacessíveis por vias terrestres, reduzir
+                                        significativamente o tempo de resposta e aumentar as chances de sucesso em
+                                        operações de salvamento.</p>
+                                    <p
+                                        style="margin-top: 10px; font-size: 1.1rem; color: var(--primary-green); font-style: italic; text-align: center;">
+                                        "Voamos acima dos obstáculos para chegar onde a esperança ainda precisa pousar."
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="curso-aquatico" class="content-section">
+                    <header class="section-header">
+                        <h1>Resgate Aquático</h1>
+                        <p>"Onde a força da água desafia a sobrevivência, nasce a missão do especialista em Resgate
+                            Aquático."</p>
+                    </header>
+
+                    <div class="content-box"
+                        style="padding: 10px; background: transparent; border: none; box-shadow: none; display: flex; justify-content: center;">
+                        <img src="assets/cursos/aquatico/capa.png" alt="Curso de Resgate Aquático"
+                            style="width: 100%; max-width: 600px; border-radius: 8px;">
+                    </div>
+
+                    <div class="cards-grid" style="margin-top: 20px;">
+                        <div class="card info-card blue-card" style="grid-column: 1 / -1;">
+                            <h3>O Curso de Resgate Aquático</h3>
+                            <p>É destinado aos militares que desejam atuar em operações de salvamento em rios, lagos,
+                                represas, cachoeiras, áreas alagadas e regiões costeiras.<br><br>
+                                Durante a formação, o militar desenvolverá técnicas de navegação, busca, salvamento e
+                                extração de vítimas em ambientes aquáticos, aprendendo a atuar com rapidez, segurança e
+                                eficiência mesmo diante de fortes correntezas e cenários de difícil acesso.<br><br>
+                                A especialização exige excelente preparo físico, controle emocional, raciocínio rápido e
+                                domínio das técnicas de resgate em água. Ao concluir todas as etapas, o militar estará
+                                apto a integrar oficialmente a Equipe de Resgate Aquático da corporação.</p>
+                        </div>
+
+                        <div class="card info-card green-card">
+                            <h3>Objetivo do Curso</h3>
+                            <p>Capacitar o militar para executar operações de busca, salvamento e resgate em ambientes
+                                aquáticos, utilizando embarcações, técnicas de navegação, procedimentos de mergulho e
+                                protocolos de atendimento a vítimas.</p>
+                        </div>
+
+                        <div class="card info-card orange-card">
+                            <h3>Requisitos</h3>
+                            <p>Para ingressar no Curso de Resgate Aquático, o militar deverá:</p>
+                            <ul style="margin-top: 8px; margin-left: 20px; color: var(--text-muted);">
+                                <li>Estar devidamente ativo na corporação;</li>
+                                <li>Demonstrar disciplina e comprometimento;</li>
+                                <li>Possuir bom condicionamento físico;</li>
+                                <li>Estar apto para atividades em ambiente aquático;</li>
+                                <li>Possuir autorização da coordenação de cursos, quando necessário.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2 style="margin: 30px 0 15px; font-size: 1.5rem; color: #fff;">Estrutura do Curso</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">O Curso de Resgate Aquático é dividido em
+                        três fases eliminatórias, desenvolvidas para preparar o militar para diferentes cenários
+                        operacionais encontrados em missões reais. Cada etapa avalia habilidades específicas, sendo
+                        necessário obter aprovação para prosseguir.</p>
+
+                    <div class="cards-grid">
+                        <!-- FASE I -->
+                        <div class="card info-card purple-card" style="grid-column: 1 / -1;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                                <img src="assets/cursos/aquatico/fase1.png" alt="Fase I - Navegação"
+                                    style="width: 100%; max-width: 350px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>Fase I — Navegação (Controle da Embarcação)</h3>
+                                    <p>A primeira fase é destinada ao domínio da embarcação. O militar aprenderá
+                                        técnicas de pilotagem, controle e navegação em ambientes de difícil acesso,
+                                        desenvolvendo precisão nas manobras e segurança durante as operações.</p>
+                                    <p style="margin-top: 10px;"><strong>Durante esta etapa serão realizados
+                                            treinamentos como:</strong></p>
+                                    <ul style="margin-top: 5px; margin-left: 20px; color: var(--text-muted);">
+                                        <li>Pilotagem de embarcação de resgate;</li>
+                                        <li>Navegação em rios e lagos;</li>
+                                        <li>Aproximação segura em áreas rochosas;</li>
+                                        <li>Manobras em cachoeiras e corredeiras;</li>
+                                        <li>Controle da embarcação em espaços reduzidos;</li>
+                                        <li>Posicionamento para operações de salvamento;</li>
+                                        <li>Técnicas de infiltração em locais de difícil acesso.</li>
+                                    </ul>
+                                    <p style="margin-top: 10px;"><strong>Objetivo da Fase:</strong> Avaliar a capacidade
+                                        do militar em controlar a embarcação com segurança, precisão e estabilidade,
+                                        preparando-o para conduzir equipes de resgate em qualquer ambiente aquático.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FASE II -->
+                        <div class="card info-card yellow-card" style="grid-column: 1 / -1;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                                <img src="assets/cursos/aquatico/fase2.png" alt="Fase II - Correnteza"
+                                    style="width: 100%; max-width: 350px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>Fase II — Correnteza (Resgate Operacional)</h3>
+                                    <p>Após dominar a navegação, o militar inicia os treinamentos de salvamento em
+                                        correntezas e áreas de alto risco. Nesta etapa serão simuladas ocorrências onde
+                                        será necessário localizar, alcançar e retirar vítimas presas em ambientes
+                                        aquáticos hostis.</p>
+                                    <p style="margin-top: 10px;"><strong>Durante esta etapa serão realizados
+                                            treinamentos como:</strong></p>
+                                    <ul style="margin-top: 5px; margin-left: 20px; color: var(--text-muted);">
+                                        <li>Resgate de vítimas em correntezas;</li>
+                                        <li>Extração de vítimas presas entre rochas;</li>
+                                        <li>Salvamento em áreas de cachoeira;</li>
+                                        <li>Resgate de vítimas presas em árvores ou obstáculos naturais;</li>
+                                        <li>Transporte seguro da vítima até zona de segurança;</li>
+                                        <li>Coordenação entre equipe de apoio;</li>
+                                        <li>Não utiliza barco &rarr; Apenas para locomoção;</li>
+                                        <li>Não utiliza helicóptero &rarr; Apenas para locomoção;</li>
+                                        <li>Atendimento sob pressão e gerenciamento de riscos.</li>
+                                    </ul>
+                                    <p style="margin-top: 10px;"><strong>Objetivo da Fase:</strong> Atuar como um teste
+                                        especializado onde os bombeiros devem desenvolver habilidades de subir
+                                        correntezas longas, localizar a vítima, achar um local seguro e controlar os
+                                        mecanismos de resgate (desembarcar e salvar a pessoa de forma segura).</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FASE III -->
+                        <div class="card info-card red-card" style="grid-column: 1 / -1;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                                <img src="assets/cursos/aquatico/fase3.png" alt="Fase III - Profundezas"
+                                    style="width: 100%; max-width: 350px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>Fase III — Profundezas (Busca e Recuperação)</h3>
+                                    <p>A última fase representa a certificação operacional do militar. O aluno deverá
+                                        realizar operações completas de busca subaquática, empregando técnicas de
+                                        localização, mergulho e resgate de vítimas em ambientes de baixa visibilidade.
+                                    </p>
+                                    <p style="margin-top: 10px;">Durante a avaliação, o militar deverá demonstrar
+                                        capacidade para localizar sobreviventes em áreas submersas e conduzi-los com
+                                        segurança até a superfície.</p>
+                                    <p style="margin-top: 10px;"><strong>Durante esta etapa serão avaliados:</strong>
+                                    </p>
+                                    <ul style="margin-top: 5px; margin-left: 20px; color: var(--text-muted);">
+                                        <li>Resgate da vítima;</li>
+                                        <li>Trabalho em equipe;</li>
+                                        <li>Montagem de estratégia;</li>
+                                        <li>Atenção no perímetro;</li>
+                                        <li>Dedução de onde está a vítima;</li>
+                                        <li>Comunicação com a aeronave.</li>
+                                    </ul>
+                                    <p style="margin-top: 10px;"><strong>Objetivo da Fase:</strong> Avaliar toda a
+                                        preparação técnica do militar em missões de busca e resgate subaquático,
+                                        simulando operações reais de alta complexidade.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 style="margin: 30px 0 15px; font-size: 1.5rem; color: #fff;">Critérios de Aprovação &
+                        Certificação</h2>
+
+                    <div class="cards-grid">
+                        <div class="card info-card green-card">
+                            <h3>Critérios Avaliados</h3>
+                            <p>O militar deverá obter desempenho satisfatório em todas as fases para receber sua
+                                certificação, sendo avaliado em:</p>
+                            <ul style="margin-top: 8px; margin-left: 20px; color: var(--text-muted);">
+                                <li>Disciplina e Condicionamento físico;</li>
+                                <li>Controle emocional e Pilotagem da embarcação;</li>
+                                <li>Técnicas de resgate e Trabalho em equipe;</li>
+                                <li>Comunicação e Segurança operacional;</li>
+                                <li>Cumprimento dos protocolos e Precisão durante as operações.</li>
+                            </ul>
+                        </div>
+
+                        <div class="card info-card blue-card">
+                            <h3>Competências Desenvolvidas</h3>
+                            <ul style="margin-top: 8px; margin-left: 20px; color: var(--text-muted);">
+                                <li>Pilotagem de embarcações e Navegação operacional;</li>
+                                <li>Busca subaquática e Técnicas de mergulho;</li>
+                                <li>Gestão de riscos e Trabalho em equipe;</li>
+                                <li>Comunicação eficiente e Tomada rápida de decisão;</li>
+                                <li>Resistência física e Precisão operacional.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="cards-grid" style="margin-top: 20px;">
+                        <div class="card info-card purple-card" style="grid-column: 1 / -1;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center;">
+                                <img src="assets/cursos/aquatico/certificado.png" alt="Certificação"
+                                    style="width: 100%; max-width: 400px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>Após a Certificação</h3>
+                                    <p>Ao concluir o Curso de Resgate Aquático, o militar estará habilitado para
+                                        integrar oficialmente a equipe, pilotar embarcações, atuar em resgates
+                                        aquáticos, buscas subaquáticas, apoiar enchentes e atuar em operações
+                                        integradas.</p>
+                                    <h3 style="margin-top: 15px;">Importância da Especialização</h3>
+                                    <p>O Resgate Aquático desempenha um papel essencial nas operações da corporação,
+                                        permitindo a atuação em ambientes onde o acesso terrestre é limitado ou
+                                        inexistente. O militar especializado torna-se referência em ocorrências
+                                        envolvendo águas, preservando vidas onde a força da água é o maior desafio.</p>
+                                    <p
+                                        style="margin-top: 10px; font-size: 1.1rem; color: var(--primary-green); font-style: italic; text-align: center;">
+                                        "Onde a correnteza desafia a esperança, o especialista em Resgate Aquático
+                                        encontra o caminho para salvar vidas."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="curso-montanha" class="content-section" style="position: relative; min-height: 500px;">
+                    <header class="section-header">
+                        <h1>Resgate em Montanha</h1>
+                        <p>"Nas alturas, a coragem e a técnica se encontram para salvar vidas onde poucos ousam chegar."
+                        </p>
+                    </header>
+
+                    <div class="content-box"
+                        style="padding: 10px; background: transparent; border: none; box-shadow: none; display: flex; justify-content: center;">
+                        <img src="assets/cursos/montanha/capa.png" alt="Curso de Resgate em Montanha"
+                            style="width: 100%; max-width: 600px; border-radius: 8px;">
+                    </div>
+
+                    <div class="cards-grid" style="margin-top: 20px;">
+                        <div class="card info-card blue-card" style="grid-column: 1 / -1; min-height: 150px;">
+                            <h3>O Curso de Resgate em Montanha</h3>
+                            <p>É destinado aos militares que desejam atuar em operações de busca e salvamento em áreas
+                                montanhosas, encostas e terrenos acidentados de difícil acesso.<br><br>
+                                Durante a formação, o militar aprenderá técnicas de progressão em terreno irregular,
+                                resgate em ribanceiras, utilização de aeronaves em locais remotos e o emprego do comando
+                                rastejar (F9) para condução de vítimas.</p>
+                        </div>
+
+                        <div class="card info-card green-card" style="min-height: 150px;">
+                            <h3>Objetivo do Curso</h3>
+                            <p>Capacitar o militar para executar operações de resgate em montanhas com segurança,
+                                dominando técnicas terrestres e aéreas para localização, abordagem e extração de vítimas
+                                em terrenos de difícil acesso.</p>
+                        </div>
+
+                        <div class="card info-card orange-card" style="min-height: 150px;">
+                            <h3>Requisitos</h3>
+                            <ul style="margin-top: 8px; margin-left: 20px; color: var(--text-muted);">
+                                <li>Estar ativo na corporação;</li>
+                                <li>Demonstrar cautela e técnica;</li>
+                                <li>Possuir bom controle na condução de vítimas.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="cards-grid" style="margin-top: 20px;">
+                        <div class="card info-card purple-card" style="grid-column: 1 / -1; min-height: 200px;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                                <img src="assets/cursos/montanha/1.png" alt="Módulo I - Progressão em Terreno"
+                                    style="width: 100%; max-width: 350px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>1ª ETAPA — RESGATE TERRESTRE E ASCENSÃO</h3>
+                                    <p>Nesta primeira etapa, o bombeiro deverá iniciar a operação a partir de um local
+                                        seguro, realizando a descida da montanha a pé, de maneira cautelosa e
+                                        controlada.<br><br>
+                                        Durante o percurso, o bombeiro deverá localizar e alcançar uma vítima
+                                        inconsciente, realizar a abordagem e iniciar o procedimento de resgate.<br><br>
+                                        Após alcançar a vítima, o bombeiro deverá retornar ao ponto seguro, realizando a
+                                        ascensão da montanha com a vítima, sempre priorizando a segurança durante o
+                                        deslocamento.</p>
+                                    <p style="margin-top: 10px;"><strong>Objetivo da etapa:</strong> desenvolver o
+                                        domínio da movimentação em terrenos montanhosos, o deslocamento seguro durante o
+                                        resgate e, principalmente, aprimorar a utilização do comando F9 → Rastejar para
+                                        a movimentação e condução da vítima.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card info-card yellow-card" style="grid-column: 1 / -1; min-height: 200px;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                                <img src="assets/cursos/montanha/2.png" alt="Módulo II - Resgate Vertical"
+                                    style="width: 100%; max-width: 350px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>2ª ETAPA — LOCALIZAÇÃO E RESGATE AÉREO</h3>
+                                    <p>Nesta etapa, a equipe deverá realizar uma operação de busca utilizando uma
+                                        aeronave de resgate.<br><br>
+                                        Uma vítima inconsciente estará localizada em alguma região das montanhas,
+                                        podendo estar em uma área de difícil visualização ou acesso. A equipe deverá
+                                        utilizar a aeronave para realizar a busca e localização da vítima, identificando
+                                        o local adequado para iniciar o resgate.<br><br>
+                                        Após localizar a vítima, o bombeiro deverá realizar o desembarque da aeronave em
+                                        um ponto seguro e apropriado, prosseguindo a pé até a vítima para realizar o
+                                        resgate.</p>
+                                    <p style="margin-top: 10px;"><strong>Objetivo da etapa:</strong> aprimorar a
+                                        capacidade de localização de vítimas em regiões montanhosas, desenvolver a
+                                        percepção durante o sobrevoo e ensinar o bombeiro a identificar locais adequados
+                                        para desembarque e início da operação terrestre.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card info-card red-card" style="grid-column: 1 / -1; min-height: 200px;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                                <img src="assets/cursos/montanha/4.png" alt="Módulo III - Operações Integradas"
+                                    style="width: 100%; max-width: 350px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>3ª ETAPA — DESEMBARQUE TÁTICO E RESGATE EM ÁREA DE DIFÍCIL ACESSO</h3>
+                                    <p>Nesta etapa, a vítima estará localizada em uma região montanhosa de difícil
+                                        acesso, exigindo maior atenção, planejamento e cautela por parte da equipe de
+                                        resgate.<br><br>
+                                        A equipe deverá realizar a aproximação com a aeronave e executar um desembarque
+                                        tático, escolhendo cuidadosamente o local e o momento adequado para deixar a
+                                        aeronave.<br><br>
+                                        Após o desembarque, os bombeiros deverão se deslocar até a vítima, realizar sua
+                                        abordagem e efetuar a retirada da área. A vítima deverá ser conduzida até a
+                                        aeronave de forma segura, evitando quedas ou exposição desnecessária aos riscos
+                                        do terreno.<br><br>
+                                        Após o embarque da vítima, a equipe deverá retornar à aeronave e realizar a
+                                        retirada do local com segurança.</p>
+                                    <p style="margin-top: 10px;"><strong>Objetivo da etapa:</strong> desenvolver a
+                                        capacidade de atuação em áreas de difícil acesso, trabalhando o desembarque
+                                        tático, a movimentação segura da equipe, o transporte da vítima e o retorno à
+                                        aeronave de maneira organizada e eficiente.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cards-grid" style="margin-top: 20px;">
+                        <div class="card info-card green-card" style="min-height: 150px;">
+                            <h3>Critérios Avaliados</h3>
+                            <ul style="margin-top: 8px; margin-left: 20px; color: var(--text-muted);">
+                                <li>Domínio da movimentação em terrenos acidentados;</li>
+                                <li>Aplicação correta do comando F9;</li>
+                                <li>Segurança no desembarque de aeronave;</li>
+                                <li>Trabalho em equipe.</li>
+                            </ul>
+                        </div>
+
+                        <div class="card info-card blue-card" style="min-height: 150px;">
+                            <h3>Competências Desenvolvidas</h3>
+                            <ul style="margin-top: 8px; margin-left: 20px; color: var(--text-muted);">
+                                <li>Resgate e ascensão terrestre;</li>
+                                <li>Localização aérea em áreas complexas;</li>
+                                <li>Desembarque tático e extração;</li>
+                                <li>Tomada de decisão em risco.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="cards-grid" style="margin-top: 20px;">
+                        <div class="card info-card purple-card" style="grid-column: 1 / -1; min-height: 200px;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center;">
+                                <img src="assets/cursos/montanha/certificado.png" alt="Certificação"
+                                    style="width: 100%; max-width: 400px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>Após a Certificação</h3>
+                                    <p>Ao concluir o Curso de Resgate em Montanha, o militar estará habilitado para
+                                        realizar operações em áreas de encostas e elevações acidentadas, desempenhando
+                                        um papel crucial na equipe de Busca e Salvamento da corporação.</p>
+                                    <h3 style="margin-top: 15px;">Importância da Especialização</h3>
+                                    <p>Esta especialização garante que as equipes de socorro possuam o domínio técnico
+                                        necessário para atuar nos ambientes mais desafiadores, assegurando a
+                                        sobrevivência de vítimas em locais remotos e reafirmando o compromisso
+                                        operacional da instituição.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="curso-paraquedismo" class="content-section">
+                    <header class="section-header">
+                        <h1>Paraquedismo</h1>
+                        <p>"Quando a missão começa antes do pouso, cada salto representa uma oportunidade de salvar
+                            vidas."</p>
+                    </header>
+
+                    <div class="content-box"
+                        style="padding: 10px; background: transparent; border: none; box-shadow: none; display: flex; justify-content: center;">
+                        <img src="assets/cursos/paraquedismo/capa.png" alt="Curso de Paraquedismo"
+                            style="width: 100%; max-width: 600px; border-radius: 8px;">
+                    </div>
+
+                    <div class="cards-grid" style="margin-top: 20px;">
+                        <div class="card info-card blue-card" style="grid-column: 1 / -1;">
+                            <h3>O Curso de Paraquedismo</h3>
+                            <p>É destinado aos militares que desejam atuar em operações especiais de inserção aérea,
+                                acesso rápido a áreas remotas e apoio a missões de alta complexidade.<br><br>
+                                Durante a formação, o militar aprenderá técnicas de salto operacional, controle em queda
+                                livre, navegação sob velame, precisão de pouso e procedimentos de emergência,
+                                preparando-se para atuar em cenários onde o acesso terrestre ou aéreo convencional é
+                                inviável.<br><br>
+                                Mais do que aprender a saltar, o operador desenvolve disciplina, controle emocional e
+                                tomada de decisão em situações extremas.<br><br>
+                                Ao concluir o curso, o militar estará apto a integrar oficialmente a Equipe de
+                                Paraquedismo Operacional da corporação.</p>
+
+                            <div style="margin-top: 20px;">
+                                <ul style="color: var(--text-muted); list-style: none; padding-left: 0;">
+                                    <li style="margin-bottom: 8px;"><strong>Etapa 1 - Cercado:</strong> Orientações e
+                                        entendimento de como funciona o para-quedas.</li>
+                                    <li style="margin-bottom: 8px;"><strong>Etapa 2 - Aquático:</strong> Salto com pouso
+                                        em barco em movimento (Igual como funciona no modo história do GTA) ou em solo
+                                        com um caminhão de guincho (Zancudo).</li>
+                                    <li style="margin-bottom: 8px;"><strong>Etapa 3 - Ambientes Verticais:</strong>
+                                        Salto com agilidade (Agência de empregos).</li>
+                                    <li style="margin-bottom: 8px;"><strong>Etapa 4 - Eólica:</strong> A soma de todo o
+                                        trabalho anterior.</li>
+                                </ul>
+                                <p style="color: var(--text-muted); margin-top: 15px;"><strong>Critérios de
+                                        avaliação:</strong> Passar nas 4 etapas.</p>
+                                <p style="margin-top: 15px; font-weight: bold; color: #4aa3ff; font-size: 1.1em;">[ 2
+                                    Horas ] Média do curso</p>
+                            </div>
+                        </div>
+
+                        <div class="card info-card green-card">
+                            <h3>Objetivo do Curso</h3>
+                            <p>Capacitar o militar para executar operações aerotransportadas com segurança, precisão e
+                                eficiência, utilizando técnicas de paraquedismo operacional em missões de busca, resgate
+                                e apoio especializado.</p>
+                        </div>
+
+                        <div class="card info-card orange-card">
+                            <h3>Requisitos</h3>
+                            <p>Para ingressar no Curso de Paraquedismo, o militar deverá:</p>
+                            <ul style="margin-top: 8px; margin-left: 20px; color: var(--text-muted);">
+                                <li>Estar ativo na corporação;</li>
+                                <li>Demonstrar disciplina e comprometimento;</li>
+                                <li>Possuir excelente condicionamento físico;</li>
+                                <li>Não possuir restrições para atividades em altura;</li>
+                                <li>Ser aprovado pela coordenação de cursos.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2 style="margin: 30px 0 15px; font-size: 1.5rem; color: #fff;">Estrutura do Curso</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">O Curso de Paraquedismo é composto por
+                        treinamentos progressivos que desenvolvem técnicas de salto, controle do equipamento e atuação
+                        em diferentes cenários operacionais. Cada atividade simula missões reais enfrentadas por equipes
+                        especializadas de resgate.</p>
+
+                    <div class="cards-grid">
+                        <!-- Módulo I -->
+                        <div class="card info-card purple-card" style="grid-column: 1 / -1;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                                <img src="assets/cursos/paraquedismo/1.png" alt="Módulo I - Salto Livre"
+                                    style="width: 100%; max-width: 350px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>Módulo I — Salto Livre</h3>
+                                    <p>Nesta etapa, o militar desenvolverá domínio sobre a saída da aeronave,
+                                        estabilidade corporal durante a queda livre e abertura segura do paraquedas.</p>
+                                    <p style="margin-top: 10px;"><strong>Conteúdo:</strong></p>
+                                    <ul style="margin-top: 5px; margin-left: 20px; color: var(--text-muted);">
+                                        <li>Procedimentos pré-salto;</li>
+                                        <li>Saída da aeronave;</li>
+                                        <li>Controle corporal em queda livre;</li>
+                                        <li>Estabilidade durante o salto;</li>
+                                        <li>Abertura do velame;</li>
+                                        <li>Verificação dos equipamentos;</li>
+                                        <li>Procedimentos de emergência.</li>
+                                    </ul>
+                                    <p style="margin-top: 10px;"><strong>Objetivo:</strong> Desenvolver segurança,
+                                        confiança e domínio técnico durante todas as fases do salto.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Módulo II -->
+                        <div class="card info-card yellow-card" style="grid-column: 1 / -1;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                                <img src="assets/cursos/paraquedismo/2.png" alt="Módulo II - Ambientes Verticais"
+                                    style="width: 100%; max-width: 350px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>Módulo II — Ambientes Verticais</h3>
+                                    <p>Após dominar os fundamentos do salto, o militar será treinado para realizar
+                                        inserções sobre ambientes verticais.</p>
+                                    <p style="margin-top: 10px;"><strong>Conteúdo:</strong></p>
+                                    <ul style="margin-top: 5px; margin-left: 20px; color: var(--text-muted);">
+                                        <li>Reconhecimento da área de inserção;</li>
+                                        <li>Saída técnica da estrutura;</li>
+                                        <li>Abertura em baixa altitude;</li>
+                                        <li>Controle e correção da trajetória;</li>
+                                        <li>Pouso de precisão;</li>
+                                        <li>Protocolos de segurança operacional.</li>
+                                    </ul>
+                                    <p style="margin-top: 10px;"><strong>Objetivo:</strong> Preparar o operador para
+                                        missões em ambientes verticais, garantindo segurança durante a descida e após o
+                                        pouso.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Módulo III -->
+                        <div class="card info-card red-card" style="grid-column: 1 / -1;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                                <img src="assets/cursos/paraquedismo/3.png"
+                                    alt="Módulo III - Inserção em Áreas de Eólica"
+                                    style="width: 100%; max-width: 350px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>Módulo III — Inserção em Áreas de Eólica</h3>
+                                    <p>A última etapa do curso simula missões de alta complexidade. O militar será
+                                        lançado em cenários que exigem precisão absoluta no pouso, avaliando sua
+                                        capacidade de controlar o paraquedas em regiões montanhosas, áreas urbanas e
+                                        locais de difícil acesso.</p>
+                                    <p style="margin-top: 10px;"><strong>Conteúdo:</strong></p>
+                                    <ul style="margin-top: 5px; margin-left: 20px; color: var(--text-muted);">
+                                        <li>Precisão de pouso;</li>
+                                        <li>Aproximação em zonas restritas;</li>
+                                        <li>Controle sob condições adversas;</li>
+                                        <li>Missão operacional completa.</li>
+                                    </ul>
+                                    <p style="margin-top: 10px;"><strong>Objetivo:</strong> Capacitar o militar para
+                                        executar inserções em qualquer tipo de terreno com máxima precisão e segurança.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 style="margin: 30px 0 15px; font-size: 1.5rem; color: #fff;">Critérios de Aprovação &
+                        Certificação</h2>
+
+                    <div class="cards-grid">
+                        <div class="card info-card green-card">
+                            <h3>Critérios Avaliados</h3>
+                            <p>Durante todo o curso serão avaliados:</p>
+                            <ul style="margin-top: 8px; margin-left: 20px; color: var(--text-muted);">
+                                <li>Disciplina e Controle emocional;</li>
+                                <li>Procedimentos de segurança e Controle do equipamento;</li>
+                                <li>Precisão nos pousos;</li>
+                                <li>Comunicação e Tomada de decisão;</li>
+                                <li>Trabalho em equipe e Cumprimento dos protocolos.</li>
+                            </ul>
+                        </div>
+
+                        <div class="card info-card blue-card">
+                            <h3>Competências Desenvolvidas</h3>
+                            <ul style="margin-top: 8px; margin-left: 20px; color: var(--text-muted);">
+                                <li>Controle em queda livre e Navegação sob velame;</li>
+                                <li>Precisão de pouso e Gerenciamento de riscos;</li>
+                                <li>Liderança e Comunicação operacional;</li>
+                                <li>Controle emocional e Tomada rápida de decisão;</li>
+                                <li>Segurança em operações aerotransportadas.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="cards-grid" style="margin-top: 20px;">
+                        <div class="card info-card purple-card" style="grid-column: 1 / -1;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center;">
+                                <img src="assets/cursos/paraquedismo/certificado.png" alt="Certificação"
+                                    style="width: 100%; max-width: 400px; border-radius: 8px;">
+                                <div style="flex: 1; min-width: 300px;">
+                                    <h3>Após a Certificação</h3>
+                                    <p>Ao concluir o Curso de Paraquedismo, o militar estará habilitado para integrar
+                                        oficialmente a Equipe de Paraquedismo, executar inserções aéreas operacionais,
+                                        atuar em operações especiais, apoiar equipes de resgate (terrestre, aquático e
+                                        aéreo), realizar pousos de precisão e participar de missões de alta
+                                        complexidade.</p>
+                                    <h3 style="margin-top: 15px;">Importância da Especialização</h3>
+                                    <p>O Paraquedismo Operacional permite que a corporação alcance locais onde nenhum
+                                        outro meio consegue chegar com rapidez. O especialista torna-se um operador
+                                        altamente capacitado para atuar em missões especiais, oferecendo resposta
+                                        imediata em cenários críticos e garantindo maior eficiência nas operações de
+                                        salvamento.</p>
+                                    <p
+                                        style="margin-top: 10px; font-size: 1.1rem; color: var(--primary-green); font-style: italic; text-align: center;">
+                                        "Antes mesmo de tocar o solo, a missão de salvar vidas já começou."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="curso-coer" class="content-section"
+                    style="display: none; position: relative; min-height: 500px;">
+                    <div
+                        style="position: absolute; top: 10%; left: 0; width: 100%; height: 80%; display: flex; justify-content: center; align-items: flex-start; z-index: 10; pointer-events: none;">
+                        <h2
+                            style="color: white; font-size: 3rem; background: rgba(0,0,0,0.8); padding: 20px 40px; border-radius: 10px; border: 2px solid #ef4444; text-align: center; margin-top: 100px;">
+                            EM DESENVOLVIMENTO</h2>
+                    </div>
+
+                    <div style="filter: blur(8px); pointer-events: none; user-select: none;">
+                        <header class="section-header">
+                            <h1>COER — Comando de Operações de Emergência e Resgate</h1>
+                            <p>"Força de elite, resposta tática imediata e salvamento em ambientes hostis."</p>
+                        </header>
+
+                        <div class="cards-grid" style="margin-top: 20px;">
+                            <div class="card info-card red-card" style="grid-column: 1 / -1;">
+                                <h3>Comando de Operações de Emergência e Resgate (COER)</h3>
+                                <p>O <strong>COER</strong> é o grupamento especializado de resposta rápida e
+                                    intervenções táticas do Corpo de Bombeiros. Sua doutrina é voltada para missões de
+                                    alta complexidade em cenários extremos, desastres naturais, inundações severas,
+                                    buscas em áreas remotas e apoio operacional em incidentes críticos.<br><br>
+                                    O operador COER passa por rigoroso treinamento físico, psicológico e técnico,
+                                    dominando manobras com embarcações táticas, resgate vertical sob intempérie,
+                                    primeiros socorros táticos e liderança sob estresse operacional.<br><br>
+                                    Ao concluir a capacitação, o militar recebe o brevê oficial do COER e passa a
+                                    integrar a tropa de pronto-emprego da corporação.</p>
+
+                                <div style="margin-top: 20px;">
+                                    <p style="color: var(--text-muted);"><strong>Requisitos para o Curso COER:</strong>
+                                    </p>
+                                    <ul
+                                        style="color: var(--text-muted); list-style: disc; margin-left: 20px; margin-top: 5px;">
+                                        <li>Estar em serviço ativo e com conceito operacional favorável;</li>
+                                        <li>Graduação mínima exigida pela Diretriz de Ensino;</li>
+                                        <li>Aprovação no Teste de Aptidão Física (TAF) de Alta Performance;</li>
+                                        <li>Cursos pré-requisitos: Resgate Aquático concluído;</li>
+                                        <li>Autorização formal da Coordenação Geral de Cursos.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="card info-card orange-card">
+                                <h3>Objetivo do Curso</h3>
+                                <p>Capacitar o bombeiro militar a planejar, coordenar e executar manobras de resgate em
+                                    condições extremas de risco, preservando vidas através de disciplina tática
+                                    absoluta.</p>
+                            </div>
+
+                            <div class="card info-card yellow-card">
+                                <h3>Áreas de Emprego</h3>
+                                <p>Intervenções em enchentes e correntezas, operações com botes e motos aquáticas de
+                                    resgate, busca e resgate em estruturas colapsadas (BREC) e salvamento em áreas
+                                    conflagradas.</p>
+                            </div>
+                        </div>
+
+                        <h2 style="margin: 30px 0 15px; font-size: 1.5rem; color: #fff;">Estrutura do Curso COER</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 20px;">O treinamento é composto por 3 fases
+                            eliminatórias de alto rigor:</p>
+
+                        <div class="cards-grid">
+                            <div class="card info-card purple-card" style="grid-column: 1 / -1;">
+                                <h3>FASE I — Doutrina Tática e Resiliência Operacional</h3>
+                                <p>Instrução de ambientação tática, sobrevivência em ambientes inóspitos, protocolos de
+                                    comunicação de emergência, marcha operacional e salvamento sob pressão.</p>
+                            </div>
+
+                            <div class="card info-card blue-card" style="grid-column: 1 / -1;">
+                                <h3>FASE II — Salvamento Tático e Operações Especiais</h3>
+                                <p>Manejo de embarcações de resgate em correntezas e mar aberto, nós e amarrações
+                                    táticas, transposição de obstáculos e primeiros socorros táticos.</p>
+                            </div>
+
+                            <div class="card info-card red-card" style="grid-column: 1 / -1;">
+                                <h3>FASE III — Simulações Críticas e Formação</h3>
+                                <p>Operação simulada ininterrupta de 48 horas, gerenciamento de múltiplas vítimas em
+                                    cenários de desastre e cerimônia de entrega do distintivo COER.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="curso-tripulantes" class="content-section"
+                    style="display: none; position: relative; min-height: 500px;">
+                    <div
+                        style="position: absolute; top: 10%; left: 0; width: 100%; height: 80%; display: flex; justify-content: center; align-items: flex-start; z-index: 10; pointer-events: none;">
+                        <h2
+                            style="color: white; font-size: 3rem; background: rgba(0,0,0,0.8); padding: 20px 40px; border-radius: 10px; border: 2px solid #06b6d4; text-align: center; margin-top: 100px;">
+                            EM DESENVOLVIMENTO</h2>
+                    </div>
+
+                    <div style="filter: blur(8px); pointer-events: none; user-select: none;">
+                        <header class="section-header">
+                            <h1>Tripulantes Operacionais</h1>
+                            <p>"Olhos e braços do resgate nos céus, conectando a aeronave à vida no solo."</p>
+                        </header>
+
+                        <div class="cards-grid" style="margin-top: 20px;">
+                            <div class="card info-card blue-card" style="grid-column: 1 / -1;">
+                                <h3>O Curso de Tripulante Operacional</h3>
+                                <p>O <strong>Tripulante Operacional</strong> é o especialista indispensável nas
+                                    operações com helicópteros e aeronaves do Corpo de Bombeiros. Trabalhando em
+                                    perfeita sintonia com o piloto, é responsável pela segurança do voo na cabine,
+                                    operação dos sistemas de guincho elétrico, descidas de rapel aéreo e desembarque
+                                    direto na água (<em>helocasting</em>).<br><br>
+                                    Além da habilidade técnica com os equipamentos da aeronave, o tripulante possui
+                                    formação avançada de resgate aeromédico, realizando a abordagem primária,
+                                    imobilização e estabilização de vítimas em locais inacessíveis por terra.<br><br>
+                                    A formação exige precisão milimétrica, controle do medo de altura e total domínio
+                                    dos protocolos internacionais de segurança de voo.</p>
+
+                                <div style="margin-top: 20px;">
+                                    <p style="color: var(--text-muted);"><strong>Requisitos para o Curso de
+                                            Tripulantes:</strong></p>
+                                    <ul
+                                        style="color: var(--text-muted); list-style: disc; margin-left: 20px; margin-top: 5px;">
+                                        <li>Curso de Resgate Aquático concluído e homologado;</li>
+                                        <li>Curso de Paraquedismo Operacional concluído;</li>
+                                        <li>Aprovação em Inspeção de Saúde e Teste Físico de Aviação;</li>
+                                        <li>Autorização da Chefia do Grupamento de Resgate Aéreo.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="card info-card cyan-card">
+                                <h3>Funções a Bordo</h3>
+                                <p>Inspeção pré-voo dos equipamentos de salvamento, coordenação de embarque e
+                                    desembarque, orientação visual de aproximação ao piloto e operação de guincho
+                                    elétrico de resgate.</p>
+                            </div>
+
+                            <div class="card info-card green-card">
+                                <h3>Atuação Aeromédica</h3>
+                                <p>Manejo de prancha rígida e maca de ribalta no ar, suporte básico e avançado de vida
+                                    durante o voo até a entrega no heliponto do hospital de trauma.</p>
+                            </div>
+                        </div>
+
+                        <h2 style="margin: 30px 0 15px; font-size: 1.5rem; color: #fff;">Fases da Formação de
+                            Tripulantes</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 20px;">O curso integra instruções teóricas
+                            aeronáuticas com treinos práticos diários em aeronaves:</p>
+
+                        <div class="cards-grid">
+                            <div class="card info-card yellow-card" style="grid-column: 1 / -1;">
+                                <h3>FASE I — Fundamentos Aeronáuticos e Segurança de Cabine</h3>
+                                <p>Aerodinâmica básica de helicópteros, segurança de zona de pouso (LZ), fraseologia
+                                    aeronáutica via headset e procedimentos de emergência em voo.</p>
+                            </div>
+
+                            <div class="card info-card orange-card" style="grid-column: 1 / -1;">
+                                <h3>FASE II — Manobras Especiais e Operação de Guincho</h3>
+                                <p>Práticas intensivas de descida em rapel aéreo, operação da maca de içamento, resgate
+                                    na água com puçá e sinalização para o piloto.</p>
+                            </div>
+
+                            <div class="card info-card purple-card" style="grid-column: 1 / -1;">
+                                <h3>FASE III — Simulações Integradas e Voo Noturno</h3>
+                                <p>Cenários reais de resgate em montanha e mar sob baixa visibilidade, resgate conjunto
+                                    com equipes de solo e homologação como Tripulante Ativo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <footer class="site-footer">
+                    <p>&copy; 2026 ERREJOTA. Todos os direitos reservados.</p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <div id="view-uniformes" class="global-view" style="display: none;">
+        <div class="background-overlay bg-uniformes"></div>
+        <main class="main-content" style="height: 100%; overflow-y: auto;">
+            <section class="content-section active">
+                <header class="section-header">
+                    <h1>Uniformes e Fardamentos</h1>
+                    <p>Catálogo oficial de uniformes do Corpo de Bombeiros Capital Morada.</p>
+                </header>
+                <div class="cards-grid">
+                    <div class="card info-card green-card">
+                        <h3>SOLDADO, CABO E SARGENTO</h3>
+                        <img src="assets/uniformes/1.png" alt="Soldado, Cabo e Sargento"
+                            data-title="SOLDADO, CABO E SARGENTO"
+                            data-desc="<div class='modal-info-item'><strong style='color: #3b82f6;'>Masculino:</strong><p>Mãos - 30<br>Calça - 341 7<br>Camisa - 288 1<br>Sapato - 150<br>Mochila - 163<br>Jaqueta - 796 2 - ALUNO<br>Jaqueta - 804 7 - SOLDADO<br>Jaqueta - 804 9 - CABO<br>Jaqueta - 804 8 - SARGENTO<br>Mascara - 120 (Opcional)<br>Chapéu - 280 (Opcional)<br>Brincos - 1</p></div><div class='modal-info-item'><strong style='color: #ec4899;'>Feminino:</strong><p>Mãos - 44<br>Calça - 472 0<br>Camisa - 576 1<br>Sapato - 159<br>Camisa - 15<br>Jaqueta - 1047 - ALUNO<br>Jaqueta - 1039 3 - SOLDADO<br>Jaqueta - 1039 2 - CABO<br>Jaqueta - 1039 4 - SARGENTO<br>Mochila - 197<br>Brincos - 1</p></div>"
+                            style="width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                    </div>
+                    <div class="card info-card blue-card">
+                        <h3>SUBTENENTE</h3>
+                        <img src="assets/uniformes/2.png" alt="Subtenente" data-title="SUBTENENTE"
+                            data-desc="<div class='modal-info-item'><strong style='color: #3b82f6;'>Masculino:</strong><p>Mãos - 30<br>Calça - 341 2<br>Sapato - 150<br>Camisa - 288 1<br>Jaqueta - 799<br>Brincos - 1</p></div><div class='modal-info-item'><strong style='color: #ec4899;'>Feminino:</strong><p>Mãos - 44<br>Calça - 471<br>Sapato - 159<br>Camisa - 576 2<br>Jaqueta - 1050<br>Brincos - 1</p></div>"
+                            style="width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                    </div>
+                    <div class="card info-card purple-card">
+                        <h3>ASPIRANTE, TENENTE 2 E TENENTE 1</h3>
+                        <img src="assets/uniformes/3.png" alt="Tenente" data-title="ASPIRANTE, TENENTE 2 E TENENTE 1"
+                            data-desc="<div class='modal-info-item'><strong style='color: #3b82f6;'>Masculino:</strong><p>Mãos - 30<br>Calça - 341 2<br>Sapato - 150<br>Camisa - 288 1<br>Jaqueta - 796 1<br>Brincos - 1</p></div><div class='modal-info-item'><strong style='color: #ec4899;'>Feminino:</strong><p>Mãos - 44<br>Calça - 471<br>Sapato - 159<br>Camisa - 576 2<br>Jaqueta - 1047 2<br>Brincos - 1</p></div>"
+                            style="width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                    </div>
+                    <div class="card info-card orange-card">
+                        <h3>UNIFORME DE RESGATE AÉREO 1</h3>
+                        <img src="assets/uniformes/4.png" alt="Resgate Aéreo" data-title="UNIFORME DE RESGATE AÉREO 1"
+                            data-desc="<div class='modal-info-item'><strong style='color: #3b82f6;'>Masculino:</strong><p>Mãos - 31<br>Calça - 195 1<br>Sapato - 145 1<br>Colar - 112<br>Camisa - 297<br>Jaqueta - 797<br>Chapéu - 115 (Opcional)<br>Brincos - 1</p></div><div class='modal-info-item'><strong style='color: #ec4899;'>Feminino:</strong><p>Mãos - 44<br>Calça - 474<br>Sapato - 159<br>Jaqueta - 1048<br>Brincos - 1</p></div>"
+                            style="width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                    </div>
+                    <div class="card info-card red-card">
+                        <h3>UNIFORME DE RESGATE AÉREO 2</h3>
+                        <img src="assets/uniformes/5.png" alt="Resgate Aéreo 2" data-title="UNIFORME DE RESGATE AÉREO 2"
+                            data-desc="<div class='modal-info-item'><strong style='color: #3b82f6;'>Masculino:</strong><p>Mãos - 33<br>Calça - 341 2<br>Sapato - 150<br>Camisa - 294<br>Jaqueta - 798<br>Brincos - 1</p></div><div class='modal-info-item'><strong style='color: #ec4899;'>Feminino:</strong><p>Mãos - 36<br>Calça - 474<br>Sapato - 159<br>Camisa - 2<br>Jaqueta - 1049<br>Brincos - 1</p></div>"
+                            style="width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                    </div>
+                </div>
+            </section>
+            <!-- Rodapé Centralizado -->
+            <footer class="site-footer">
+                <p>&copy; 2026 ERREJOTA. Todos os direitos reservados.</p>
+            </footer>
+        </main>
+    </div>
+
+    <div id="view-avisos" class="global-view temp-view"
+        style="display: none; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 50px;">
+        <div class="background-overlay bg-avisos"></div>
+        <h1
+            style="color: #fff; font-size: 3rem; letter-spacing: 5px; text-shadow: 0 0 10px rgba(255,255,255,0.2); margin-top: 50px;">
+            AVISOS GERAIS</h1>
+        <section class="avisos-gerais" style="width: 100%; max-width: 800px; overflow-y: auto; max-height: 60vh;">
+            <div id="lista-avisos-gerais"></div>
+        </section>
+        <footer class="site-footer"
+            style="position: absolute; bottom: 0; width: 100%; border-top: none; margin-top: 0; padding-bottom: 20px;">
+            <p>&copy; 2026 ERREJOTA. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <div id="view-planilhas" class="global-view temp-view"
+        style="display: none; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 50px;">
+        <div class="background-overlay bg-planilhas"></div>
+        <h1
+            style="color: #fff; font-size: 3rem; letter-spacing: 5px; text-shadow: 0 0 10px rgba(255,255,255,0.2); margin-top: 50px; position: relative; z-index: 2;">
+            PLANILHA</h1>
+
+        <div
+            style="position: relative; z-index: 2; width: 90%; max-width: 1200px; height: 60vh; margin-top: 20px; border-radius: 10px; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.5); background: #fff;">
+            <!-- Botão de Expandir -->
+            <button onclick="document.getElementById('planilha-iframe').requestFullscreen()"
+                style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; z-index: 10; font-weight: bold; transition: all 0.3s;"
+                onmouseover="this.style.background='rgba(0,0,0,0.9)'"
+                onmouseout="this.style.background='rgba(0,0,0,0.7)'">
+                ⛶ Expandir Tela Cheia
+            </button>
+            <iframe id="planilha-iframe"
+                src="https://docs.google.com/spreadsheets/d/1rnK19wQkGAWG907tO530ReVBcpRFu-4VN7QzdbIFgbo/htmlembed?widget=true&headers=false"
+                width="100%" height="100%" frameborder="0" style="background: white;"></iframe>
+        </div>
+
+        <footer class="site-footer"
+            style="position: absolute; bottom: 0; width: 100%; border-top: none; margin-top: 0; padding-bottom: 20px;">
+            <p>&copy; 2026 ERREJOTA. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <div id="view-modulacao" class="global-view" style="display: none;">
+        <div class="background-overlay bg-modulacao"></div>
+
+        <div class="app-container">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar-modulacao">
+                <div class="sidebar-logo-container"
+                    style="text-align: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px;">
+                    <img src="assets/iconesite/icone.png" class="sidebar-logo" alt="Logo Bombeiros"
+                        style="width: 80%; max-width: 150px; cursor: pointer; transition: transform 0.3s;"
+                        onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                </div>
+                <!-- Toggle Button -->
+                <button class="sidebar-toggle-btn" id="toggle-sidebar-modulacao">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round" class="toggle-icon">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li class="active" data-target="home">
+                            <svg class="anim-icon icon-home" viewBox="0 0 24 24" stroke="#00d2ff">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg> Início
+                        </li>
+                        <li data-target="codigos-q">
+                            <svg class="anim-icon icon-q-code" viewBox="0 0 24 24" stroke="#10b981">
+                                <circle cx="9" cy="12" r="5"></circle>
+                                <line x1="12.5" y1="15.5" x2="15" y2="18"></line>
+                                <path class="wave1" d="M17 9c1 1 1 3 0 4"></path>
+                                <path class="wave2" d="M20 7c2 2 2 6 0 8"></path>
+                            </svg> Códigos Q
+                        </li>
+                        <li data-target="alfabeto-fonetico">
+                            <svg class="anim-icon icon-head" viewBox="0 0 24 24" stroke="#b142ff">
+                                <circle cx="8" cy="8" r="4"></circle>
+                                <path d="M8 14c-4 0-6 2-6 6h12c0-4-2-6-6-6z"></path>
+                                <path class="wave1" d="M15 8c1.5 1.5 1.5 4.5 0 6"></path>
+                                <path class="wave2" d="M18 5c3 3 3 9 0 12"></path>
+                            </svg> Alfabeto Fonético
+                        </li>
+                        <li data-target="numeracao-fonetica">
+                            <svg class="anim-icon icon-number" viewBox="0 0 24 24" stroke="#ff8c00">
+                                <text x="4" y="18" font-size="18" font-family="monospace" font-weight="bold" fill="none"
+                                    stroke="#ff8c00">7</text>
+                                <path class="wave1" d="M14 8c1.5 1.5 1.5 4.5 0 6"></path>
+                                <path class="wave2" d="M17 5c3 3 3 9 0 12"></path>
+                            </svg> Numeração Fonética
+                        </li>
+                        <li data-target="padrao-radio">
+                            <svg class="anim-icon icon-radio" viewBox="0 0 24 24" stroke="#fde047">
+                                <rect x="6" y="8" width="10" height="14" rx="2"></rect>
+                                <line x1="9" y1="8" x2="9" y2="3"></line>
+                                <path class="wave1" d="M14 4c1 1 1 3 0 4"></path>
+                                <path class="wave2" d="M17 2c2 2 2 6 0 8"></path>
+                            </svg> Padrão de Rádio
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+
+                <section id="home" class="content-section active">
+                    <header class="section-header">
+                        <h1>Apresentação</h1>
+                        <p>Apostila Geral de Modulação - Capital Morada</p>
+                    </header>
+                    <div class="cards-grid">
+                        <div class="card info-card red-card">
+                            <h3>Objetivo da Apostila</h3>
+                            <p>Orientar os membros sobre como modular corretamente, como organizar informações pelo
+                                rádio, códigos a utilizar, e como reconhecer as principais viaturas. Guia prático
+                                atualizável.</p>
+                        </div>
+                        <div class="card info-card green-card">
+                            <h3>O que é modulação?</h3>
+                            <p>Forma correta de se comunicar pelo rádio. Significa transmitir informações de maneira
+                                clara, objetiva, organizada e compreensível para todos na ocorrência.</p>
+                        </div>
+                        <div class="card info-card blue-card">
+                            <h3>Princípios Básicos</h3>
+                            <p><strong>Clareza:</strong> Fale sem pressa e sem cortar palavras.<br>
+                                <strong>Objetividade:</strong> Transmita somente o necessário.<br>
+                                <strong>Organização:</strong> Identifique quem chama e quem recebe.<br>
+                                <strong>Respeito:</strong> Postura profissional na frequência.
+                            </p>
+                        </div>
+                        <div class="card info-card orange-card">
+                            <h3>Na prática, modular é informar:</h3>
+                            <p>1. Quem está falando<br>2. Para quem é a mensagem<br>3. Qual é a situação<br>4. Onde está
+                                acontecendo<br>5. Qual apoio é necessário</p>
+                        </div>
+                    </div>
+                    <div class="radio-atual-wrapper">
+                        <div class="radio-atual-container">
+                            <svg class="radio-atual-icon" viewBox="0 0 24 24" fill="none" stroke="#00f0ff"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="6" y="9" width="12" height="12" rx="2" fill="rgba(0, 240, 255, 0.15)"></rect>
+                                <line x1="9" y1="9" x2="9" y2="3"></line>
+                                <circle cx="10" cy="13" r="1" fill="#00f0ff"></circle>
+                                <circle cx="14" cy="13" r="1" fill="#00f0ff"></circle>
+                                <circle cx="10" cy="17" r="1" fill="#00f0ff"></circle>
+                                <circle cx="14" cy="17" r="1" fill="#00f0ff"></circle>
+                                <path d="M14 4c1.2 1.2 1.2 3.6 0 4.8"></path>
+                                <path d="M17 2c2.5 2.5 2.5 7.5 0 10"></path>
+                            </svg>
+                            <h1 class="radio-atual-title">RÁDIO ATUAL - 1228</h1>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="codigos-q" class="content-section">
+                    <header class="section-header">
+                        <h1>Códigos Q</h1>
+                        <p>Conjunto de abreviações para tornar a comunicação rápida e padronizada.</p>
+                    </header>
+                    <div class="content-box"
+                        style="padding: 10px; background: transparent; border: none; box-shadow: none; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                        <img src="assets/codigos de comunicaçao/codigoq.png" alt="Guia Visual Código Q"
+                            style="max-width: 48%; border-radius: 8px; cursor: pointer; flex: 1 1 300px;">
+                        <img src="assets/codigos de comunicaçao/codigo_de_intensidade.png" alt="Código de Intensidade"
+                            style="max-width: 48%; border-radius: 8px; cursor: pointer; flex: 1 1 300px;">
+                    </div>
+
+                    <h2 style="margin: 20px 0 10px; font-size: 1.2rem; color: #fff;">Códigos Mais Importantes</h2>
+                    <div class="cards-grid">
+                        <div class="card info-card blue-card">
+                            <h3>QAP</h3>
+                            <p>Está na escuta? Verifica se alguém está ouvindo.<br><em>"Bombeiro 01, QAP?"</em></p>
+                        </div>
+                        <div class="card info-card green-card">
+                            <h3>QSL</h3>
+                            <p>Entendido / Mensagem recebida.<br><em>"QSL, em deslocamento."</em></p>
+                        </div>
+                        <div class="card info-card yellow-card">
+                            <h3>QTH</h3>
+                            <p>Localização / Endereço.<br><em>"Informe seu QTH."</em></p>
+                        </div>
+                        <div class="card info-card orange-card">
+                            <h3>QTI</h3>
+                            <p>Rota / Deslocamento.<br><em>"Equipe em QTI sentido hospital."</em></p>
+                        </div>
+                        <div class="card info-card purple-card">
+                            <h3>QRR</h3>
+                            <p>Pedido de apoio / Reforço.<br><em>"Solicito QRR no QTH."</em></p>
+                        </div>
+                        <div class="card info-card red-card">
+                            <h3>QSM</h3>
+                            <p>Repita a mensagem. Usado quando falha.<br><em>"QSM, transmissão cortada."</em></p>
+                        </div>
+                        <div class="card info-card blue-card">
+                            <h3>QRX</h3>
+                            <p>Aguarde. Momento antes de responder.<br><em>"QRX, verificando a vítima."</em></p>
+                        </div>
+                        <div class="card info-card yellow-card">
+                            <h3>QTO / QTX / QRT</h3>
+                            <p><strong>QTO:</strong> Deslocando/Saindo.<br><strong>QTX:</strong> Manter
+                                acompanhamento.<br><strong>QRT:</strong> Encerrar transmissão.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="alfabeto-fonetico" class="content-section">
+                    <header class="section-header">
+                        <h1>Alfabeto Fonético</h1>
+                        <p>Utilizado para soletrar nomes, placas, e endereços com precisão.</p>
+                    </header>
+                    <div class="content-box"
+                        style="padding: 10px; background: transparent; border: none; box-shadow: none;">
+                        <img src="assets/codigos de comunicaçao/fonetico.png" alt="Guia Alfabeto Fonético"
+                            style="max-width: 100%; border-radius: 8px;">
+                    </div>
+
+                    <h2 style="margin: 20px 0 10px; font-size: 1.2rem; color: #fff;">Tabela Fonética</h2>
+                    <div class="card info-card purple-card" style="width: 100%;">
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; text-align: center;">
+                            <div><strong style="color: var(--primary-green);">A</strong><br>Alfa</div>
+                            <div><strong style="color: var(--primary-green);">B</strong><br>Bravo</div>
+                            <div><strong style="color: var(--primary-green);">C</strong><br>Charlie</div>
+                            <div><strong style="color: var(--primary-green);">D</strong><br>Delta</div>
+                            <div><strong style="color: var(--primary-green);">E</strong><br>Echo</div>
+                            <div><strong style="color: var(--primary-green);">F</strong><br>Fox</div>
+                            <div><strong style="color: var(--primary-green);">G</strong><br>Golf</div>
+                            <div><strong style="color: var(--primary-green);">H</strong><br>Hotel</div>
+                            <div><strong style="color: var(--primary-green);">I</strong><br>Índia</div>
+                            <div><strong style="color: var(--primary-green);">J</strong><br>Juliet</div>
+                            <div><strong style="color: var(--primary-green);">K</strong><br>Kilo</div>
+                            <div><strong style="color: var(--primary-green);">L</strong><br>Lima</div>
+                            <div><strong style="color: var(--primary-green);">M</strong><br>Mike</div>
+                            <div><strong style="color: var(--primary-green);">N</strong><br>November</div>
+                            <div><strong style="color: var(--primary-green);">O</strong><br>Oscar</div>
+                            <div><strong style="color: var(--primary-green);">P</strong><br>Papa</div>
+                            <div><strong style="color: var(--primary-green);">Q</strong><br>Quebec</div>
+                            <div><strong style="color: var(--primary-green);">R</strong><br>Romeu</div>
+                            <div><strong style="color: var(--primary-green);">S</strong><br>Sierra</div>
+                            <div><strong style="color: var(--primary-green);">T</strong><br>Tango</div>
+                            <div><strong style="color: var(--primary-green);">U</strong><br>Uniform</div>
+                            <div><strong style="color: var(--primary-green);">V</strong><br>Victor</div>
+                            <div><strong style="color: var(--primary-green);">W</strong><br>Whiskey</div>
+                            <div><strong style="color: var(--primary-green);">X</strong><br>X-Ray</div>
+                            <div><strong style="color: var(--primary-green);">Y</strong><br>Yankee</div>
+                            <div><strong style="color: var(--primary-green);">Z</strong><br>Zulu</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="numeracao-fonetica" class="content-section">
+                    <header class="section-header">
+                        <h1>Numeração Fonética</h1>
+                        <p>Padroniza a transmissão dos números pelo rádio.</p>
+                    </header>
+                    <div class="content-box"
+                        style="padding: 10px; background: transparent; border: none; box-shadow: none;">
+                        <img src="assets/codigos de comunicaçao/numeros.png" alt="Guia Numeração Fonética"
+                            style="max-width: 100%; border-radius: 8px;">
+                    </div>
+
+                    <h2 style="margin: 20px 0 10px; font-size: 1.2rem; color: #fff;">Tabela Numérica</h2>
+                    <div class="card info-card blue-card" style="width: 100%;">
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; text-align: center;">
+                            <div><strong style="color: var(--primary-green); font-size: 1.2rem;">1</strong><br>Primeiro
+                            </div>
+                            <div><strong style="color: var(--primary-green); font-size: 1.2rem;">2</strong><br>Segundo
+                            </div>
+                            <div><strong style="color: var(--primary-green); font-size: 1.2rem;">3</strong><br>Terceiro
+                            </div>
+                            <div><strong style="color: var(--primary-green); font-size: 1.2rem;">4</strong><br>Quarto
+                            </div>
+                            <div><strong style="color: var(--primary-green); font-size: 1.2rem;">5</strong><br>Quinto
+                            </div>
+                            <div><strong style="color: var(--primary-green); font-size: 1.2rem;">6</strong><br>Sexto
+                            </div>
+                            <div><strong style="color: var(--primary-green); font-size: 1.2rem;">7</strong><br>Sétimo
+                            </div>
+                            <div><strong style="color: var(--primary-green); font-size: 1.2rem;">8</strong><br>Oitavo
+                            </div>
+                            <div><strong style="color: var(--primary-green); font-size: 1.2rem;">9</strong><br>Nono
+                            </div>
+                            <div><strong style="color: var(--primary-green); font-size: 1.2rem;">0</strong><br>Nulo /
+                                Negativo</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="padrao-radio" class="content-section">
+                    <header class="section-header">
+                        <h1>Padrão de Comunicações CBM</h1>
+                        <p>Modelos visuais de comunicação para situações comuns de serviço.</p>
+                    </header>
+                    <div class="cards-grid" style="padding: 10px;">
+                        <img src="assets/comunicaçao de entrada e saida de serviço/comunicaçao.png"
+                            alt="Comunicação CBM" style="max-width: 100%; border-radius: 8px;">
+                        <img src="assets/comunicaçao de entrada e saida de serviço/radio_entrada_e_saida.png"
+                            alt="Entrada e Saída" style="max-width: 100%; border-radius: 8px;">
+                        <img src="assets/comunicaçao de entrada e saida de serviço/pausa.png" alt="Pausa"
+                            style="max-width: 100%; border-radius: 8px;">
+                        <img src="assets/comunicaçao de entrada e saida de serviço/deslocamento.png" alt="Deslocamento"
+                            style="max-width: 100%; border-radius: 8px;">
+                    </div>
+                    <div class="cards-grid" style="margin-top: 20px;">
+                        <div class="card info-card purple-card">
+                            <h3>Comunicação Voltada ao Bombeiro</h3>
+                            <p>Foco em assistência, orientação, cuidado e segurança da vítima. Diferente da policial, o
+                                contato inicial deve buscar acalmar e prestar apoio. Informe apenas dados necessários:
+                                local, tipo, vítimas, riscos, apoio.</p>
+                        </div>
+                        <div class="card info-card yellow-card">
+                            <h3>Boas Práticas</h3>
+                            <p>Mantenha tom calmo; evite expor dados desnecessários; não grite; não discuta; confirme
+                                com QSL; peça QSM quando necessário.</p>
+                        </div>
+                    </div>
+
+                    <h2 style="margin: 20px 0 10px; font-size: 1.2rem; color: #fff;">Exemplo de Comunicação Correta</h2>
+                    <div class="card info-card green-card" style="width: 100%;">
+                        <p style="margin-bottom: 12px; color: var(--text-muted); font-style: italic;">
+                            <strong>Narrador:</strong> Uma solicitação de chamada é aberta na rede. A Central aciona a
+                            unidade disponível para deslocamento até a última QRU informada.
+                        </p>
+
+                        <p style="margin-bottom: 8px;"><strong>Central:</strong> “QAP Subtenente RJ?”</p>
+                        <p style="margin-bottom: 15px;"><strong>Subtenente RJ:</strong> “QAP Central, Subtenente RJ na
+                            escuta. Indo na última QRU, QSL.”</p>
+
+                        <p style="margin-bottom: 8px;"><strong>Central:</strong> “QSL RJ. Desloque até a última QRU
+                            informada e, ao chegar na QTH, repasse a situação na rede.”</p>
+                        <p style="margin-bottom: 15px;"><strong>Subtenente RJ:</strong> “QSL Central. Subtenente RJ em
+                            QTI sentido à QRU.”</p>
+
+                        <p style="margin-bottom: 12px; color: var(--text-muted); font-style: italic;">
+                            <strong>Narrador:</strong> O Subtenente RJ realiza o deslocamento até o local da ocorrência
+                            e, ao chegar na área, faz o primeiro informe para a Central.
+                        </p>
+
+                        <p style="margin-bottom: 8px;"><strong>Subtenente RJ:</strong> “QAP Central, Subtenente RJ já
+                            estou na QTH. Há muitos feridos no local, irei realizar o salvamento dos mesmos. QSL.”</p>
+                        <p style="margin-bottom: 8px;"><strong>Central:</strong> “QSL RJ. Qualquer informe, joga na
+                            rede. QSL.”</p>
+                        <p style="margin-bottom: 15px;"><strong>Subtenente RJ:</strong> “QSL Central.”</p>
+
+                        <p style="margin-bottom: 12px; color: var(--text-muted); font-style: italic;">
+                            <strong>Narrador:</strong> Após o atendimento, salvamento e estabilização da área, o
+                            Subtenente RJ informa o encerramento da ocorrência.
+                        </p>
+
+                        <p style="margin-bottom: 8px;"><strong>Subtenente RJ:</strong> “QAP Central, código 4 na área.
+                            Subtenente RJ retornando à QTI da base. QSL.”</p>
+                        <p style="margin-bottom: 15px;"><strong>Central:</strong> “QSL RJ. TKS pelo informe.”</p>
+
+                        <p style="margin-bottom: 0; color: var(--text-muted); font-style: italic;">
+                            <strong>Narrador:</strong> Com o código 4 informado, a ocorrência é finalizada e a unidade
+                            retorna para a base em segurança.
+                        </p>
+                    </div>
+                </section>
+
+                </section>
+
+                <!-- Rodapé Centralizado -->
+                <footer class="site-footer">
+                    <p>&copy; 2026 ERREJOTA. Todos os direitos reservados.</p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <!-- Novas Abas Extras com Conteúdo Movido -->
+    <div id="view-viaturas" class="global-view" style="display: none;">
+        <div class="background-overlay bg-viaturas"></div>
+        <main class="main-content" style="height: 100%; overflow-y: auto;">
+            <section id="viaturas-qsv" class="content-section active">
+                <header class="section-header">
+                    <h1>Posições e Viaturas (QSV)</h1>
+                    <p>Funções na viatura e catálogo oficial.</p>
+                </header>
+                <div class="cards-grid" style="margin-bottom: 20px;">
+                    <div class="card info-card blue-card">
+                        <h3>P1 - Condutor</h3>
+                        <p>Responsável pela condução segura, rota, posicionamento da viatura e atenção ao trânsito.</p>
+                    </div>
+                    <div class="card info-card orange-card">
+                        <h3>P2 - Comunicação</h3>
+                        <p>Pode modular com a Central, repassar informações importantes e auxiliar na organização da
+                            ocorrência.</p>
+                    </div>
+                    <div class="card info-card green-card">
+                        <h3>P3 - Apoio Operacional</h3>
+                        <p>Auxilia na sinalização, atendimento, equipamentos, segurança do local e demais funções.</p>
+                    </div>
+                </div>
+                <div class="cards-grid">
+                    <div class="card info-card red-card">
+                        <h3>QSV-01: Protesto</h3>
+                        <img src="assets/viaturas/protesto.png" alt="QSV-01" data-title="QSV-01: Protesto"
+                            data-desc="<div class='modal-info-item'><strong>📖 CATÁLOGO DE QSV</strong><p>Registro visual oficial dos veículos operacionais do Corpo de Bombeiros Capital Morada.</p></div><div class='modal-info-item'><strong>👁️ REFERÊNCIA VISUAL</strong><p>Imagem padrão para identificação da viatura para protesto.</p></div><div class='modal-info-item'><strong>🔥 USO OPERACIONAL</strong><p>Empregada em ações de protesto e presença preventiva em ocorrências de grande público ou risco elevado.</p></div>"
+                            style="width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                    </div>
+                    <div class="card info-card red-card">
+                        <h3>QSV-02: SUV de Resgate</h3>
+                        <img src="assets/viaturas/jaguar.png" alt="QSV-02" data-title="QSV-02: SUV de Resgate"
+                            data-desc="<div class='modal-info-item'><strong>📖 CATÁLOGO DE QSV</strong><p>Registro visual oficial dos veículos operacionais do Corpo de Bombeiros Capital Morada.</p></div><div class='modal-info-item'><strong>👁️ REFERÊNCIA VISUAL</strong><p>Imagem padrão para identificação da viatura SUV de Resgate.</p></div><div class='modal-info-item'><strong>🔥 USO OPERACIONAL</strong><p>Viatura de resposta rápida, ágil e versátil, com capacidade para carregar equipamentos essenciais de Suporte Básico de Vida (SBV) e trauma.</p></div>"
+                            style="width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                    </div>
+                    <div class="card info-card red-card">
+                        <h3>QSV-03: Moto Resgate</h3>
+                        <img src="assets/viaturas/moto.png" alt="QSV-03" data-title="QSV-03: Moto Resgate"
+                            data-desc="<div class='modal-info-item'><strong>📖 CATÁLOGO DE QSV</strong><p>Registro visual oficial dos veículos operacionais do Corpo de Bombeiros Capital Morada.</p></div><div class='modal-info-item'><strong>👁️ REFERÊNCIA VISUAL</strong><p>Imagem padrão para identificação da viatura Moto Resgate.</p></div><div class='modal-info-item'><strong>🔥 USO OPERACIONAL</strong><p>Viatura de altíssima agilidade (batedor). Primeira resposta em locais de trânsito intenso, garantindo atendimento imediato até a chegada da viatura principal.</p></div>"
+                            style="width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                    </div>
+                    <div class="card info-card red-card">
+                        <h3>QSV-04: Pickup Resgate</h3>
+                        <img src="assets/viaturas/caminhotes.png" alt="QSV-04" data-title="QSV-04: Pickup Resgate"
+                            data-desc="<div class='modal-info-item'><strong>📖 CATÁLOGO DE QSV</strong><p>Registro visual oficial dos veículos operacionais do Corpo de Bombeiros Capital Morada.</p></div><div class='modal-info-item'><strong>👁️ REFERÊNCIA VISUAL</strong><p>Imagem padrão para identificação da viatura Pickup Resgate.</p></div><div class='modal-info-item'><strong>🔥 USO OPERACIONAL</strong><p>Viatura utilitária para transporte de pranchas longas, equipamentos pesados de desencarceramento e apoio logístico em terrenos irregulares.</p></div>"
+                            style="width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                    </div>
+                    <div class="card info-card red-card">
+                        <h3>QSV-05: Aspirante</h3>
+                        <img src="assets/viaturas/aspirante.png" alt="QSV-05" data-title="QSV-05: Aspirante"
+                            data-desc="<div class='modal-info-item'><strong>📖 CATÁLOGO DE QSV</strong><p>Registro visual oficial dos veículos operacionais do Corpo de Bombeiros Capital Morada.</p></div><div class='modal-info-item'><strong>👁️ REFERÊNCIA VISUAL</strong><p>Imagem padrão para identificação da viatura Aspirante.</p></div><div class='modal-info-item'><strong>🔥 USO OPERACIONAL</strong><p>Empregada em ações estratégicas, coordenação de ocorrências e apoio à tomada de decisão.</p></div>"
+                            style="width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                    </div>
+                    <div class="card info-card red-card">
+                        <h3>QSV-06: Helicóptero</h3>
+                        <img src="assets/viaturas/helicoptero.png" alt="QSV-06" data-title="QSV-06: Helicóptero"
+                            data-desc="<div class='modal-info-item'><strong>📖 CATÁLOGO DE QSV</strong><p>Registro visual oficial dos veículos operacionais do Corpo de Bombeiros Capital Morada.</p></div><div class='modal-info-item'><strong>👁️ REFERÊNCIA VISUAL</strong><p>Imagem padrão para identificação da aeronave oficial do Corpo de Bombeiros Capital Morada.</p></div><div class='modal-info-item'><strong>🔥 USO OPERACIONAL</strong><p>Empregada em missões de resgate, busca e salvamento e transporte aeromédico em áreas de difícil acesso.</p></div>"
+                            style="width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                    </div>
+                    <div class="card info-card red-card">
+                        <h3>QSV-07: Tenente</h3>
+                        <img src="assets/viaturas/caminhonete_tenente.png" alt="QSV-07" data-title="QSV-07: Tenente"
+                            data-desc="<div class='modal-info-item'><strong>📖 CATÁLOGO DE QSV</strong><p>Registro visual oficial dos veículos operacionais do Corpo de Bombeiros Capital Morada.</p></div><div class='modal-info-item'><strong>👁️ REFERÊNCIA VISUAL</strong><p>Imagem padrão para identificação da viatura Tenente.</p></div><div class='modal-info-item'><strong>🔥 USO OPERACIONAL</strong><p>Empregada em ações estratégicas, coordenação de ocorrências e apoio à tomada de decisão.</p></div>"
+                            style="width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                    </div>
+                    <div class="card info-card yellow-card">
+                        <h3>Comandos da QSV</h3>
+                        <img src="assets/viaturas/comandos_da_qsv.png" alt="Comandos da QSV"
+                            data-title="Comandos da QSV"
+                            data-desc="<div class='modal-info-item'><strong>📖 INSTRUÇÃO DE QSV</strong><p>Guia visual com os atalhos e comandos oficiais para as viaturas do Corpo de Bombeiros.</p></div><div class='modal-info-item'><strong>👁️ REFERÊNCIA VISUAL</strong><p>Controles de giroflex, rádio, sirenes e demais sistemas integrados do veículo.</p></div>"
+                            style="width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                    </div>
+                </div>
+            </section>
+            <!-- Rodapé Centralizado -->
+            <footer class="site-footer">
+                <p>&copy; 2026 ERREJOTA. Todos os direitos reservados.</p>
+            </footer>
+        </main>
+    </div>
+
+    <div id="view-regras" class="global-view" style="display: none;">
+        <div class="background-overlay bg-regras"></div>
+        <main class="main-content" style="height: 100%; overflow-y: auto;">
+            <section id="regras-condutas" class="content-section active">
+                <header class="section-header">
+                    <h1>Regras e Condutas</h1>
+                    <p>Postura operacional, restrições e diretrizes do departamento.</p>
+                </header>
+                <div class="cards-grid">
+                    <div class="card info-card blue-card">
+                        <h3>Respeito e Hierarquia</h3>
+                        <p>➤ Todo militar deverá respeitar superiores, subordinados e civis.<br>
+                            ➤ A hierarquia deverá ser seguida em qualquer situação operacional.<br>
+                            ➤ Discussões, desrespeito ou insubordinação serão punidos.<br>
+                            ➤ Ordens diretas só poderão ser contestadas após a ocorrência.</p>
+                    </div>
+
+                    <div class="card info-card orange-card">
+                        <h3>Conduta Operacional</h3>
+                        <p>➤ É obrigatório manter postura profissional em serviço.<br>
+                            ➤ O uso correto do rádio é essencial durante ocorrências.<br>
+                            ➤ É proibido abandonar viaturas sem autorização.<br>
+                            ➤ Todo chamado deverá ser atendido com prioridade e responsabilidade.<br>
+                            ➤ Código 4 deverá ser informado ao finalizar qualquer ocorrência.<br>
+                            ➤ É extremamente proibido qualquer tipo de corrupção dentro da corporação.<br>
+                            ➤ Favorecimentos, abuso de autoridade, recebimento de vantagens ilegais ou quebra de conduta
+                            ética resultarão em expulsão imediata.</p>
+                    </div>
+
+                    <div class="card info-card green-card">
+                        <h3>Comunicação via Rádio</h3>
+                        <p>➤ Evitar flood, gritos ou brincadeiras no rádio.<br>
+                            ➤ Utilizar linguagem operacional e objetiva.<br>
+                            ➤ Sempre identificar patente e nome ao iniciar transmissão.</p>
+                    </div>
+
+                    <div class="card info-card purple-card">
+                        <h3>Viaturas e Aeronaves</h3>
+                        <p>➤ Viaturas deverão ser utilizadas apenas em serviço.<br>
+                            ➤ É proibido dirigir de forma irresponsável sem necessidade operacional.<br>
+                            ➤ Abastecimento e organização da viatura são responsabilidade da equipe.<br>
+                            ➤ Danos causados por mau uso poderão gerar punição.<br>
+                            ➤ É extremamente proibido utilizar helicópteros da corporação sem possuir a
+                            habilitação/licença necessária.<br>
+                            ➤ O uso indevido de aeronaves poderá resultar em suspensão severa ou expulsão da corporação.
+                        </p>
+                    </div>
+
+                    <div class="card info-card yellow-card">
+                        <h3>Fardamento</h3>
+                        <p>➤ O uso do fardamento é obrigatório em serviço.<br>
+                            ➤ É proibido misturar peças inadequadas ou usar acessórios exagerados.<br>
+                            ➤ O militar deverá manter aparência organizada e profissional.</p>
+                    </div>
+
+                    <div class="card info-card red-card">
+                        <h3>Punições</h3>
+                        <p>➤ As punições poderão incluir:</p>
+                        <ul style="margin-top: 5px; margin-left: 20px;">
+                            <li>Advertência verbal</li>
+                            <li>Advertência escrita</li>
+                            <li>Suspensão</li>
+                            <li>Rebaixamento</li>
+                            <li>Expulsão</li>
+                        </ul>
+                    </div>
+
+                    <div class="card info-card blue-card">
+                        <h3>Disposições Finais</h3>
+                        <p>➤ Todo integrante do CBM deverá prezar pela disciplina, honra e compromisso.<br>
+                            ➤ O desconhecimento das regras não isenta punições.<br>
+                            ➤ Este regulamento poderá ser atualizado pelo Comando Geral.</p>
+                    </div>
+                </div>
+            </section>
+            <!-- Rodapé Centralizado -->
+            <footer class="site-footer">
+                <p>&copy; 2026 ERREJOTA. Todos os direitos reservados.</p>
+            </footer>
+        </main>
+    </div>
+
+    <div id="view-hierarquia" class="global-view" style="display: none;">
+        <div class="background-overlay bg-hierarquia"></div>
+        <main class="main-content" style="height: 100%; overflow-y: auto;">
+            <section id="hierarquia-lista" class="content-section active">
+                <header class="section-header">
+                    <h1>Hierarquia e Patentes</h1>
+                    <p>Estrutura organizacional e patentes do Corpo de Bombeiros.</p>
+                </header>
+                <div class="cards-grid">
+                    <div class="card info-card red-card" style="grid-column: 1 / -1;">
+                        <h3>Hierarquia do Bombeiro</h3>
+                        <p>A hierarquia é um sistema de organização que distribui pessoas em diferentes níveis de
+                            autoridade e responsabilidade. Ela estabelece uma cadeia de comando em que os níveis
+                            superiores coordenam e supervisionam os inferiores, garantindo disciplina, organização,
+                            respeito e eficiência nas operações do Corpo de Bombeiro.<br><br>
+                            O respeito à hierarquia é um dos princípios fundamentais da corporação. Cada bombeiro possui
+                            funções e responsabilidades específicas, contribuindo para o trabalho em equipe e para o bom
+                            funcionamento das operações de emergência.</p>
+                    </div>
+
+                    <div class="card info-card cyan-card">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 1.35rem;">Recruta <span
+                                    style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(RC)</span>
+                            </h3>
+                            <img src="assets/hierarquia/patentes bombeir/recruta.png" alt="Recruta"
+                                class="card-insignia" data-title="Recruta (RC)"
+                                data-desc="Insígnia oficial de Recruta do Corpo de Bombeiros.">
+                        </div>
+                        <p>Integrante em período inicial de formação, responsável por aprender os procedimentos, normas
+                            e fundamentos da corporação, preparando-se para exercer as atribuições de Soldado.</p>
+                    </div>
+
+                    <div class="card info-card blue-card">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 1.35rem;">Soldado <span
+                                    style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(SD)</span>
+                            </h3>
+                            <img src="assets/hierarquia/patentes bombeir/soldado.png" alt="Soldado"
+                                class="card-insignia" data-title="Soldado (SD)"
+                                data-desc="Insígnia oficial de Soldado do Corpo de Bombeiros.">
+                        </div>
+                        <p>Atua diretamente nas atividades operacionais, atendendo ocorrências, salvamentos e demais
+                            missões, sempre sob orientação e comando dos militares de maior graduação.</p>
+                    </div>
+
+                    <div class="card info-card green-card">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 1.35rem;">Cabo <span
+                                    style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(CB)</span>
+                            </h3>
+                            <img src="assets/hierarquia/patentes bombeir/cabo.png" alt="Cabo" class="card-insignia"
+                                data-title="Cabo (CB)" data-desc="Insígnia oficial de Cabo do Corpo de Bombeiros.">
+                        </div>
+                        <p>Militar experiente que auxilia na liderança das equipes, orienta Soldados durante o serviço e
+                            contribui para a organização e execução das atividades operacionais.</p>
+                    </div>
+
+                    <div class="card info-card yellow-card">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 1.35rem;">3º Sargento <span
+                                    style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(3º
+                                    SGT)</span></h3>
+                            <img src="assets/hierarquia/patentes bombeir/3 sgt.png" alt="3º Sargento"
+                                class="card-insignia" data-title="3º Sargento (3º SGT)"
+                                data-desc="Insígnia oficial de 3º Sargento do Corpo de Bombeiros.">
+                        </div>
+                        <p>Primeiro nível entre os Sargentos, atua na supervisão de equipes, orientação dos militares e
+                            apoio aos superiores na organização e execução das operações.</p>
+                    </div>
+
+                    <div class="card info-card yellow-card">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 1.35rem;">2º Sargento <span
+                                    style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(2º
+                                    SGT)</span></h3>
+                            <img src="assets/hierarquia/patentes bombeir/2 sgt.png" alt="2º Sargento"
+                                class="card-insignia" data-title="2º Sargento (2º SGT)"
+                                data-desc="Insígnia oficial de 2º Sargento do Corpo de Bombeiros.">
+                        </div>
+                        <p>Supervisiona equipes e atividades operacionais, auxilia na instrução dos militares e
+                            contribui para o cumprimento das ordens, procedimentos e missões da unidade.</p>
+                    </div>
+
+                    <div class="card info-card orange-card">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 1.35rem;">1º Sargento <span
+                                    style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(1º
+                                    SGT)</span></h3>
+                            <img src="assets/hierarquia/patentes bombeir/1 sgt.png" alt="1º Sargento"
+                                class="card-insignia" data-title="1º Sargento (1º SGT)"
+                                data-desc="Insígnia oficial de 1º Sargento do Corpo de Bombeiros.">
+                        </div>
+                        <p>Sargento de maior graduação, exerce papel de liderança e referência para a tropa, auxiliando
+                            o comando na disciplina, organização e coordenação das equipes.</p>
+                    </div>
+
+                    <div class="card info-card orange-card">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 1.35rem;">Subtenente <span
+                                    style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(SUB
+                                    TEN)</span></h3>
+                            <img src="assets/hierarquia/patentes bombeir/sub-tenente.png" alt="Subtenente"
+                                class="card-insignia" data-title="Subtenente (SUB TEN)"
+                                data-desc="Insígnia oficial de Subtenente do Corpo de Bombeiros.">
+                        </div>
+                        <p>Praça de maior graduação, atua diretamente no apoio ao comando, orientando os militares mais
+                            novos e transmitindo sua experiência técnica e operacional à tropa.</p>
+                    </div>
+
+                    <div class="card info-card purple-card">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 1.35rem;">Aspirante a Oficial <span
+                                    style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(ASP)</span>
+                            </h3>
+                            <img src="assets/hierarquia/patentes bombeir/aspirante.png" alt="Aspirante a Oficial"
+                                class="card-insignia" data-title="Aspirante a Oficial (ASP)"
+                                data-desc="Insígnia oficial de Aspirante a Oficial do Corpo de Bombeiros.">
+                        </div>
+                        <p>Militar em fase inicial do oficialato, desenvolvendo experiência prática de liderança e
+                            comando enquanto se prepara para assumir plenamente as funções de Oficial.</p>
+                    </div>
+
+                    <div class="card info-card purple-card">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 1.35rem;">2º Tenente <span
+                                    style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(2º
+                                    TEN)</span></h3>
+                            <img src="assets/hierarquia/patentes bombeir/2 tenente.png" alt="2º Tenente"
+                                class="card-insignia" data-title="2º Tenente (2º TEN)"
+                                data-desc="Insígnia oficial de 2º Tenente do Corpo de Bombeiros.">
+                        </div>
+                        <p>Primeiro posto do oficialato, exerce funções de liderança direta, coordena equipes e auxilia
+                            no planejamento e condução das atividades operacionais da unidade.</p>
+                    </div>
+
+                    <div class="card info-card blue-card">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 1.35rem;">1º Tenente <span
+                                    style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(1º
+                                    TEN)</span></h3>
+                            <img src="assets/hierarquia/patentes bombeir/1 tenente.png" alt="1º Tenente"
+                                class="card-insignia" data-title="1º Tenente (1º TEN)"
+                                data-desc="Insígnia oficial de 1º Tenente do Corpo de Bombeiros.">
+                        </div>
+                        <p>Oficial com maior experiência de comando, responsável por liderar equipes, coordenar
+                            operações e apoiar seus superiores no planejamento das missões da unidade.</p>
+                    </div>
+
+                    <div class="card info-card green-card">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 1.35rem;">Capitão <span
+                                    style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(CAP)</span>
+                            </h3>
+                            <img src="assets/hierarquia/patentes bombeir/capitao.png" alt="Capitão"
+                                class="card-insignia" data-title="Capitão (CAP)"
+                                data-desc="Insígnia oficial de Capitão do Corpo de Bombeiros.">
+                        </div>
+                        <p>Oficial responsável pelo comando e coordenação de equipes e unidades, planejando operações,
+                            supervisionando missões e garantindo o cumprimento das diretrizes.</p>
+                    </div>
+
+                    <div class="card info-card yellow-card">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 1.35rem;">Major <span
+                                    style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(MAJ)</span>
+                            </h3>
+                            <img src="assets/hierarquia/patentes bombeir/major.png" alt="Major" class="card-insignia"
+                                data-title="Major (MAJ)" data-desc="Insígnia oficial de Major do Corpo de Bombeiros.">
+                        </div>
+                        <p>Oficial superior responsável pela coordenação operacional e administrativa, auxiliando no
+                            planejamento, supervisão e gerenciamento das atividades da corporação.</p>
+                    </div>
+
+                    <div class="card info-card orange-card">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 1.35rem;">Tenente-Coronel <span
+                                    style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(TCEL)</span>
+                            </h3>
+                            <img src="assets/hierarquia/patentes bombeir/tenente coronel.png" alt="Tenente-Coronel"
+                                class="card-insignia" data-title="Tenente-Coronel (TCEL)"
+                                data-desc="Insígnia oficial de Tenente-Coronel do Corpo de Bombeiros.">
+                        </div>
+                        <p>Oficial superior que auxilia diretamente o Coronel na administração e no comando,
+                            supervisionando unidades e garantindo o cumprimento das normas e missões.</p>
+                    </div>
+
+                    <div class="card info-card red-card">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+                            <h3 style="margin: 0; font-size: 1.35rem;">Coronel <span
+                                    style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(CEL)</span>
+                            </h3>
+                            <img src="assets/hierarquia/patentes bombeir/coronel.png" alt="Coronel"
+                                class="card-insignia" data-title="Coronel (CEL)"
+                                data-desc="Insígnia oficial de Coronel do Corpo de Bombeiros.">
+                        </div>
+                        <p>Posto mais elevado da estrutura apresentada, responsável pela liderança estratégica,
+                            planejamento, coordenação de grandes unidades e apoio à direção da corporação.</p>
+                    </div>
+
+                    <div class="card info-card red-card card-quadro-patentes"
+                        style="padding: 16px; display: flex; flex-direction: column;">
+                        <h3
+                            style="margin: 0 0 12px 0; font-size: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                            Quadro Geral de Patentes
+                            <span style="font-size: 0.65em; opacity: 0.7; font-weight: normal; color: #ef4444;">🔍
+                                Clique para ampliar</span>
+                        </h3>
+                        <div
+                            style="width: 100%; flex: 1; min-height: 380px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 8px; position: relative;">
+                            <img src="assets/hierarquia/patentes.png" alt="Quadro de Patentes do Corpo de Bombeiros"
+                                data-title="CORPO DE BOMBEIROS - PATENTES DA MENOR À MAIOR"
+                                data-desc="Estrutura completa das patentes e insígnias do Corpo de Bombeiros: Praças e Oficiais."
+                                style="width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 8px; cursor: pointer; display: block; transition: transform 0.3s ease, filter 0.3s ease;"
+                                onmouseover="this.style.transform='scale(1.02)'; this.style.filter='brightness(1.08)';"
+                                onmouseout="this.style.transform='scale(1)'; this.style.filter='brightness(1)';">
+                        </div>
+                    </div>
+
+                    <div class="card info-card purple-card card-principios-hierarquia"
+                        style="display: flex; flex-direction: column; justify-content: center;">
+                        <h3 style="margin-bottom: 14px;">Princípios da Hierarquia</h3>
+                        <p style="margin: 0; line-height: 1.8; font-size: 0.95rem;">
+                            ➤ Respeitar os superiores e tratar os subordinados com profissionalismo.<br>
+                            ➤ Cumprir ordens legais e manter a disciplina.<br>
+                            ➤ Trabalhar em equipe para garantir a segurança de todos.<br>
+                            ➤ Agir com ética, responsabilidade e comprometimento.<br>
+                            ➤ Representar a corporação com respeito dentro e fora do serviço.
+                        </p>
+                    </div>
+
+                    <div class="card info-card blue-card" style="grid-column: 1 / -1; text-align: center;">
+                        <p style="font-size: 1.15rem; font-style: italic;">"A hierarquia e a disciplina são os pilares
+                            que sustentam a organização, a eficiência e a excelência do Corpo de Bombeiro."</p>
+                    </div>
+                </div>
+            </section>
+            <!-- Rodapé Centralizado -->
+            <footer class="site-footer">
+                <p>&copy; 2026 ERREJOTA. Todos os direitos reservados.</p>
+            </footer>
+        </main>
+    </div>
+
+    <div id="view-galeria" class="global-view" style="display: none;">
+        <div class="background-overlay bg-galeria"></div>
+        <main class="main-content" style="height: 100%; overflow-y: auto;">
+            <section id="galeria" class="content-section active">
+                <header class="section-header">
+                    <h1>Galeria da Corporação</h1>
+                    <p>Registros fotográficos e vídeos</p>
+                </header>
+                <!-- Menu de Pastas da Galeria -->
+                <div id="galeria-menu"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; margin: 40px auto; padding: 0 20px; width: 100%; max-width: 1200px;">
+                    <div style="width: 100%; aspect-ratio: 1 / 1; cursor: pointer; border-radius: 15px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; border: 2px solid rgba(255, 68, 68, 0.3);"
+                        onclick="openGalleryFolder('videos')"
+                        onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 20px rgba(255, 68, 68, 0.5)'; this.style.borderColor='#ff4444'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.3)'; this.style.borderColor='rgba(255, 68, 68, 0.3)'">
+                        <img src="assets/galeria/videos.png" alt="Vídeos" class="no-lightbox"
+                            style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                    </div>
+                    <div style="width: 100%; aspect-ratio: 1 / 1; cursor: pointer; border-radius: 15px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; border: 2px solid rgba(255, 68, 68, 0.3);"
+                        onclick="openGalleryFolder('fotos')"
+                        onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 20px rgba(255, 68, 68, 0.5)'; this.style.borderColor='#ff4444'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.3)'; this.style.borderColor='rgba(255, 68, 68, 0.3)'">
+                        <img src="assets/galeria/foto.png" alt="Fotos" class="no-lightbox"
+                            style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                    </div>
+                </div>
+
+                <!-- Área de Conteúdo da Galeria -->
+                <div id="galeria-content-area" style="display: none; margin-top: 20px;">
+                    <button onclick="closeGalleryFolder()"
+                        style="background: rgba(255, 68, 68, 0.8); border: 1px solid #ff4444; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; margin-bottom: 20px; transition: background 0.3s ease;"
+                        onmouseover="this.style.background='rgba(255, 68, 68, 1)'"
+                        onmouseout="this.style.background='rgba(255, 68, 68, 0.8)'">
+                        &#8592; Voltar para Pastas
+                    </button>
+
+                    <div class="content-box">
+                        <!-- Tab: Vídeos -->
+                        <div id="galeria-videos" class="gallery-content-tab" style="display: none;">
+                            <div class="video-gallery-grid">
+                                <div class="video-item">
+                                    <iframe src="https://www.youtube.com/embed/EkhytKX_Ue4" allowfullscreen></iframe>
+                                </div>
+                                <div class="video-item">
+                                    <iframe src="https://www.youtube.com/embed/oCqNOgw4JgM" allowfullscreen></iframe>
+                                </div>
+                                <div class="video-item">
+                                    <iframe src="https://www.youtube.com/embed/mqoHq8FV6UE" allowfullscreen></iframe>
+                                </div>
+                                <div class="video-item">
+                                    <iframe src="https://www.youtube.com/embed/3FQVe8WqF2I" allowfullscreen></iframe>
+                                </div>
+                                <div class="video-item">
+                                    <iframe src="https://www.youtube.com/embed/YDnmfjE8H1g" allowfullscreen></iframe>
+                                </div>
+                                <div class="video-item">
+                                    <iframe src="https://www.youtube.com/embed/giQRNsU1dD0" allowfullscreen></iframe>
+                                </div>
+                                <div class="video-item">
+                                    <iframe src="https://www.youtube.com/embed/UwYz2mHm9pI" allowfullscreen></iframe>
+                                </div>
+                                <div class="video-item">
+                                    <iframe src="https://www.youtube.com/embed/Gu6FSwEWLTU" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab: Fotos -->
+                        <div id="galeria-fotos" class="gallery-content-tab" style="display: none;">
+                            <div class="video-gallery-grid">
+                                <div class="video-item">
+                                    <img src="assets/galeria/fotos/medusa.png" alt="Medusa">
+                                </div>
+                                <div class="video-item">
+                                    <img src="assets/galeria/fotos/1.png" alt="Foto 1">
+                                </div>
+                                <div class="video-item">
+                                    <img src="assets/galeria/fotos/2.png" alt="Foto 2">
+                                </div>
+                                <div class="video-item">
+                                    <img src="assets/galeria/fotos/3.png" alt="Foto 3">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Rodapé Centralizado -->
+            <footer class="site-footer">
+                <p>&copy; 2026 ERREJOTA. Todos os direitos reservados.</p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Modal Destaque Aba -->
+    <div id="modal-destaque" class="modal-destaque">
+        <div class="modal-destaque-content">
+            <button class="modal-destaque-close" aria-label="Fechar">&times;</button>
+            <img id="modal-destaque-img" src="" alt="Imagem Destaque" class="modal-destaque-img">
+            <div id="modal-destaque-overlay" class="modal-destaque-text-overlay">
+                <button class="modal-destaque-text-close" aria-label="Fechar texto">&times;</button>
+                <div id="modal-destaque-text" class="modal-destaque-text-content">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Aviso de Preços / Evento (Abertura Inicial / F5) -->
+    <div id="modal-evento-precos" class="modal-evento-precos" aria-hidden="true">
+        <div class="modal-evento-backdrop"></div>
+        <div class="modal-evento-container">
+            <button id="modal-evento-close" class="modal-evento-close" title="Fechar aviso (ESC)"
+                aria-label="Fechar">&times;</button>
+            <div class="modal-evento-img-wrapper">
+                <img src="assets/eventos/precos1.png" alt="Aviso de Preços e Eventos" class="modal-evento-img"
+                    loading="eager">
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Imagens (Lightbox) -->
+    <div id="image-modal" class="modal">
+        <span class="modal-close">&times;</span>
+        <div class="modal-wrapper">
+            <div class="modal-image-container">
+                <img class="modal-content" id="modal-img">
+            </div>
+            <div class="modal-info-panel" id="modal-info-panel">
+                <h2 id="modal-title"></h2>
+                <p id="modal-desc"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes - Como Evoluir (RGB em Volta) -->
+    <div id="modal-evoluir" class="modal-evoluir" aria-hidden="true">
+        <div class="modal-evoluir-container">
+            <button id="modal-evoluir-close" class="modal-evoluir-close" title="Fechar (ESC)"
+                aria-label="Fechar">&times;</button>
+            <div class="modal-evoluir-header">
+                <span id="modal-evoluir-tag" class="evoluir-badge-tempo">Etapa</span>
+                <h2 id="modal-evoluir-titulo" class="modal-evoluir-titulo">Título da Promoção</h2>
+            </div>
+
+            <div class="modal-evoluir-section">
+                <div class="modal-evoluir-section-label">
+                    <span>⏱️</span> Tempo Mínimo de Serviço
+                </div>
+                <div class="modal-evoluir-box">
+                    <p id="modal-evoluir-tempo" style="color: #60a5fa; font-size: 1.1rem; font-weight: 700; margin: 0;">
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-evoluir-section">
+                <div class="modal-evoluir-section-label">
+                    <span>📚</span> Cursos & Especializações Obrigatórias
+                </div>
+                <div class="modal-evoluir-box">
+                    <div id="modal-evoluir-cursos" class="evoluir-tags-container"></div>
+                </div>
+            </div>
+
+            <div class="modal-evoluir-section" id="modal-evoluir-obs-wrapper">
+                <div class="modal-evoluir-section-label">
+                    <span>📋</span> Requisitos e Diretrizes Adicionais
+                </div>
+                <div class="modal-evoluir-box">
+                    <p id="modal-evoluir-detalhes"
+                        style="color: #cbd5e1; margin: 0; line-height: 1.5; font-size: 0.92rem;"></p>
+                    <p id="modal-evoluir-obs"
+                        style="color: #94a3b8; margin-top: 8px; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px;">
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-evoluir-frase-box">
+                <div
+                    style="font-size: 0.75rem; color: #c084fc; text-transform: uppercase; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;">
+                    ✨ Lema & Compromisso Operacional:
+                </div>
+                <p id="modal-evoluir-frase" class="modal-evoluir-frase-texto"></p>
+            </div>
+
+            <button id="modal-evoluir-btn-fechar" class="modal-evoluir-footer-btn" type="button">
+                Entendido / Fechar
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="js/script.js?v=2"></script>
+    <script src="js/notificacoes.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+    <script src="js/animations.js" defer></script>

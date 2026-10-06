@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const particlesContainer = document.getElementById('particles-js');
 
     // Inicializar particles.js (sem a parte do stats.js que é só para teste de performance)
-    if (particlesContainer) {
+    if (particlesContainer && typeof particlesJS !== 'undefined') {
         particlesJS("particles-js", {
             "particles": {
                 "number": { "value": 35, "density": { "enable": true, "value_area": 1000 } },
