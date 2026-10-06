@@ -27,7 +27,7 @@
 .eb-glow-2 {
     position: absolute;
     inset: 0;
-    opacity: 0.5;
+    opacity: 0.8; /* Aumentado para brilho mais forte */
     mix-blend-mode: screen;
 }
 
@@ -35,26 +35,46 @@
     position: relative;
     z-index: 2;
     height: 100%;
-    background: #0f172a;
+    background: transparent;
     border-radius: inherit;
     box-sizing: border-box;
 }
 
-/* Specific styling for Viaturas and Evoluir to handle the border */
-#view-viaturas .card,
-#curso-evoluir .card {
+/* Aplicar em TODOS os cards do site */
+.card {
     position: relative;
     border: none !important;
     background: transparent !important;
     box-shadow: none !important;
+    padding: 0 !important; /* Remove o gap entre o card e os raios */
 }
 
-#view-viaturas .card > div:not(.eb-layers):not(.eb-canvas-container),
-#curso-evoluir .card > div:not(.eb-layers):not(.eb-canvas-container) {
-    background: rgba(15, 23, 42, 0.95);
+/* Fundo Preto e Espaçamento da Criança */
+.card > .eb-content {
+    background: rgba(0, 0, 0, 0.85); /* Fundo Preto / Avermelhado bem escuro */
     border-radius: 16px;
-    height: 100%;
-    padding: 20px;
+    height: calc(100% - 4px); /* Espaço de 2px de gap */
+    margin: 2px; /* 1-2mm de distância do raio elétrico */
+    padding: 25px; /* Mantém o espaçamento original do card */
     position: relative;
     z-index: 2;
+    box-sizing: border-box;
+}
+
+/* APENAS os cards de Viaturas e Evoluir precisam do Flex Column para puxar a foto pra baixo */
+#view-viaturas .card > .eb-content,
+#curso-evoluir .card > .eb-content {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 12px; /* Reduz embaixo para a foto crescer */
+}
+
+/* Fazer as imagens dos cards irem até mais embaixo (apenas Viaturas e Evoluir) */
+#view-viaturas .card .eb-content img,
+#curso-evoluir .card .eb-content img {
+    margin-top: auto;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    padding-bottom: 2px; /* Deixando só uma brechinha */
 }

@@ -173,7 +173,7 @@ class ElectricBorder {
         this.amplitude = this.chaos;
         this.frequency = 10;
         this.baseFlatness = 0;
-        this.displacement = 10;
+        this.displacement = 14; // Aumentado de 10 para deixar o raio mais irregular e pontiagudo
         this.borderOffset = 15;
 
         // Start animation
@@ -225,7 +225,9 @@ class ElectricBorder {
         this.ctx.scale(dpr, dpr);
 
         this.ctx.strokeStyle = this.color;
-        this.ctx.lineWidth = 1.5;
+        this.ctx.lineWidth = 3.5; // Ainda mais espesso e visível
+        this.ctx.shadowBlur = 15; // Brilho no próprio canvas mais forte
+        this.ctx.shadowColor = this.color;
         this.ctx.lineCap = 'round';
         this.ctx.lineJoin = 'round';
 
@@ -288,19 +290,25 @@ class ElectricBorder {
     }
 }
 
-// Inicializar todas as classes .electric-border
+// Inicializar todas as classes .card
 document.addEventListener('DOMContentLoaded', () => {
-    // Iniciar viaturas com roxo
-    document.querySelectorAll('#view-viaturas .card').forEach(card => {
+    document.querySelectorAll('.card').forEach(card => {
+        // Ignorar se já foi inicializado
+        if (card.querySelector('.eb-content')) return;
+
         card.style.borderRadius = '16px';
-        new ElectricBorder(card, { color: '#8b5cf6', chaos: 0.15, borderRadius: 16 });
-    });
-    
-    // Iniciar evoluir (merito = amarelo, restante = verde)
-    document.querySelectorAll('#curso-evoluir .card').forEach(card => {
-        card.style.borderRadius = '16px';
-        const isMerito = card.innerHTML.toLowerCase().includes('mérito') || card.innerHTML.toLowerCase().includes('merito');
-        const color = isMerito ? '#fbbf24' : '#10b981';
-        new ElectricBorder(card, { color, chaos: 0.15, borderRadius: 16 });
+        
+        let color = '#ff1111'; // Padrão: vermelho intenso
+        
+        // Mapear as cores baseadas nas classes originais dos cards
+        if (card.classList.contains('red-card')) color = '#ff1111';
+        else if (card.classList.contains('blue-card')) color = '#00aaff';
+        else if (card.classList.contains('orange-card')) color = '#ff8800';
+        else if (card.classList.contains('green-card')) color = '#00ff44';
+        else if (card.classList.contains('yellow-card') || card.innerHTML.toLowerCase().includes('mérito') || card.innerHTML.toLowerCase().includes('merito')) color = '#ffdd00';
+        else if (card.classList.contains('purple-card')) color = '#a855f7';
+        else if (card.classList.contains('gray-card')) color = '#aaaaaa';
+
+        new ElectricBorder(card, { color, chaos: 0.4, speed: 2, borderRadius: 16 });
     });
 });
