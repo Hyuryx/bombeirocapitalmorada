@@ -24,3 +24,6 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.info-card { transition: all 0.3s ease; }
+.info-card:hover { transform: translateY(-4px) !important; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 18px rgba(168, 85, 247, 0.35) !important; }

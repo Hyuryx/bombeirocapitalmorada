@@ -1,0 +1,62 @@
+﻿.eb-canvas-container {
+    position: absolute;
+    inset: -15px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.eb-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.eb-layers {
+    position: absolute;
+    inset: -15px;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    border-radius: inherit;
+}
+
+.eb-glow-1,
+.eb-glow-2 {
+    position: absolute;
+    inset: 0;
+    opacity: 0.8;
+    mix-blend-mode: screen;
+}
+
+.eb-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    background: transparent !important; /* DEIXAR TRANSPARENTE PRA O CSS DO CARD APARECER */
+    border-radius: inherit;
+    box-sizing: border-box;
+}
+
+/* O card ja vai receber o background via style.css, entao so removemos a borda nativa senao fica duplo */
+.card, .info-card, .card-evoluir {
+    border: none !important;
+}
+
+#view-viaturas .card > .eb-content,
+#curso-evoluir .card-evoluir > .eb-content {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 12px;
+}
+
+#view-viaturas .card .eb-content img,
+#curso-evoluir .card-evoluir .eb-content img {
+    margin-top: auto;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    padding-bottom: 2px;
+}

@@ -122,44 +122,51 @@ async function fetchAvisosData() {
     elemento.className = [
       "notificacao-site",
       `notificacao-${aviso.prioridade}`,
-      aviso.piscar ? "notificacao-destaque" : ""
+      aviso.piscar ? "notificacao-destaque" : "",
+      "border-glow-card"
     ]
       .filter(Boolean)
       .join(" ");
 
     elemento.dataset.avisoId = aviso.id;
+    elemento.style.setProperty('--border-radius', '12px');
+    elemento.style.setProperty('--card-bg', '#120F17');
 
     elemento.innerHTML = `
-      <button
-        type="button"
-        class="notificacao-fechar"
-        aria-label="Fechar aviso"
-      >
-        ×
-      </button>
+      <span class="edge-light"></span>
+      <div class="border-glow-inner" style="padding: 16px; display: flex; flex-direction: column;">
+        <button
+          type="button"
+          class="notificacao-fechar"
+          aria-label="Fechar aviso"
+          style="position: absolute; top: 10px; right: 10px; background: transparent; border: none; color: #aaa; font-size: 20px; cursor: pointer; z-index: 10;"
+        >
+          ×
+        </button>
 
-      <div class="notificacao-cabecalho">
-        <span class="notificacao-categoria">
-          ${escaparHtml(aviso.categoria)}
-        </span>
+        <div class="notificacao-cabecalho" style="display: flex; gap: 8px; margin-bottom: 12px; z-index: 2;">
+          <span class="notificacao-categoria" style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase;">
+            ${escaparHtml(aviso.categoria)}
+          </span>
 
-        <span class="notificacao-prioridade">
-          ${escaparHtml(aviso.prioridade)}
-        </span>
+          <span class="notificacao-prioridade" style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase;">
+            ${escaparHtml(aviso.prioridade)}
+          </span>
+        </div>
+
+        <h2 style="font-size: 18px; margin: 0 0 8px 0; color: white; z-index: 2;">${escaparHtml(aviso.titulo)}</h2>
+
+        <p style="font-size: 14px; margin: 0; color: #ccc; z-index: 2;">${formatarTextoMarkdown(aviso.resumo || aviso.descricao)}</p>
+
+        ${["curso", "evento", "manutencao"].includes(aviso.categoria) && aviso.fim ? `
+        <div class="notificacao-rodape" style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 12px; color: #888; z-index: 2;">
+          <small>
+            Disponível até ${formatarEncerramento(aviso.fim)}
+          </small>
+          <small class="cronometro-aviso" data-fim="${aviso.fim}" style="font-weight: bold;"></small>
+        </div>
+        ` : ''}
       </div>
-
-      <h2>${escaparHtml(aviso.titulo)}</h2>
-
-      <p>${formatarTextoMarkdown(aviso.resumo || aviso.descricao)}</p>
-
-      ${["curso", "evento", "manutencao"].includes(aviso.categoria) && aviso.fim ? `
-      <div class="notificacao-rodape" style="display: flex; justify-content: space-between; align-items: center;">
-        <small>
-          Disponível até ${formatarEncerramento(aviso.fim)}
-        </small>
-        <small class="cronometro-aviso" data-fim="${aviso.fim}" style="font-weight: bold;"></small>
-      </div>
-      ` : ''}
     `;
 
     // Se já foi fechado antes pelo usuário, mantem escondido
@@ -174,11 +181,53 @@ async function fetchAvisosData() {
         salvarAvisoFechado(aviso.id); // Registra que o usuário fechou e salva no localStorage
       });
 
+    // Animação do BorderGlow (mouse move)
+    elemento.addEventListener('mousemove', (e) => {
+        const rect = elemento.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const cx = rect.width / 2;
+        const cy = rect.height / 2;
+        const dx = x - cx;
+        const dy = y - cy;
+        
+        let kx = Infinity, ky = Infinity;
+        if (dx !== 0) kx = cx / Math.abs(dx);
+        if (dy !== 0) ky = cy / Math.abs(dy);
+        const edge = Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
+        
+        let degrees = 0;
+        if (dx !== 0 || dy !== 0) {
+            const radians = Math.atan2(dy, dx);
+            degrees = radians * (180 / Math.PI) + 90;
+            if (degrees < 0) degrees += 360;
+        }
+
+        elemento.style.setProperty('--edge-proximity', (edge * 100).toFixed(3));
+        elemento.style.setProperty('--cursor-angle', degrees.toFixed(3) + 'deg');
+    });
+
+    elemento.addEventListener('mouseleave', () => {
+        elemento.style.setProperty('--edge-proximity', '0');
+    });
+
+    // Auto animação inicial (sweep-active)
+    elemento.classList.add('sweep-active');
+    setTimeout(() => {
+        elemento.classList.remove('sweep-active');
+    }, 4000); // Remove after animation
+
     return elemento;
   }
 
   function renderizar(avisos) {
     const central = obterContainer();
+
+    if (window.notificacoesExpiradas) {
+        central.style.display = "none";
+        return;
+    }
 
     // Mantem apenas os elementos novos, atualizando o html
     central.innerHTML = "";
@@ -190,6 +239,10 @@ async function fetchAvisosData() {
     // Se todos estiverem escondidos (display: none), esconde o central
     const todosEscondidos = Array.from(central.children).every(el => el.style.display === 'none');
     central.hidden = (avisos.length === 0 || todosEscondidos);
+    
+    if (!central.hidden && document.querySelector('#view-inicio.active')) {
+        central.style.display = 'flex';
+    }
   }
 
   async function carregarAvisos() {
@@ -262,6 +315,14 @@ async function fetchAvisosData() {
     );
 
     window.setInterval(atualizarCronometros, 1000);
+
+    setTimeout(() => {
+        window.notificacoesExpiradas = true;
+        const central = document.getElementById("central-notificacoes");
+        if (central) {
+            central.style.display = 'none';
+        }
+    }, 60000);
   }
 
   if (document.readyState === "loading") {
@@ -272,65 +333,30 @@ async function fetchAvisosData() {
 })();
 
 async function carregarAvisosGerais() {
-  const container = document.getElementById(
-    "lista-avisos-gerais"
-  );
-
-  if (!container) return;
-
+  // A aba Avisos Gerais agora é renderizada por um componente React (ReactAvisosGerais.jsx).
+  // Não fazemos mais innerHTML aqui para não quebrar o React.
+  
+  // Apenas populamos a variavel global caso o modal antigo precise (opcional)
   try {
     const avisos = await fetchAvisosData();
     const agora = new Date();
-
-    const avisosGerais = avisos
-      .filter((aviso) => {
-        const inicio = new Date(aviso.inicio);
-        
-        let isValidFim = false;
-        let expired = false;
-        if (aviso.fim && String(aviso.fim).trim() !== "" && String(aviso.fim) !== "null") {
-          const fim = new Date(aviso.fim);
-          if (!Number.isNaN(fim.getTime())) {
-            isValidFim = true;
-            expired = agora >= fim;
-          }
+    const avisosGerais = avisos.filter((aviso) => {
+      const inicio = new Date(aviso.inicio);
+      let isValidFim = false;
+      let expired = false;
+      if (aviso.fim && String(aviso.fim).trim() !== "" && String(aviso.fim) !== "null") {
+        const fim = new Date(aviso.fim);
+        if (!Number.isNaN(fim.getTime())) {
+          isValidFim = true;
+          expired = agora >= fim;
         }
-
-        return (
-          aviso.ativo &&
-          aviso.mostrarAvisosGerais &&
-          agora >= inicio &&
-          !expired
-        );
-      })
-      .sort((a, b) => {
-        return new Date(b.inicio) - new Date(a.inicio);
-      });
-
-    if (avisosGerais.length === 0) {
-      container.innerHTML = `
-        <p>Nenhum aviso disponível no momento.</p>
-      `;
-
-      return;
-    }
-
-    window.avisosData = avisosGerais; // Store globally for the modal
-
-    container.innerHTML = avisosGerais
-      .map((aviso, index) => {
-        const temFim = aviso.fim && String(aviso.fim).trim() !== "" && String(aviso.fim) !== "null";
-        return `
-          <article class="aviso-geral prioridade-${aviso.prioridade}" onclick="abrirModalAviso(${index})">
-            ${temFim ? `<span class="cronometro-aviso" data-fim="${aviso.fim}" style="display:none;"></span>` : ''}
-            <span class="aviso-badge">${aviso.categoria}</span>
-            <h3>${aviso.titulo}</h3>
-          </article>
-        `;
-      })
-      .join("");
+      }
+      return (aviso.ativo && aviso.mostrarAvisosGerais && agora >= inicio && !expired);
+    }).sort((a, b) => new Date(b.inicio) - new Date(a.inicio));
+    
+    window.avisosData = avisosGerais; 
   } catch (erro) {
-    console.error("Erro ao carregar avisos gerais:", erro);
+    console.error("Erro ao carregar avisos gerais no vanilla:", erro);
   }
 }
 
@@ -522,11 +548,20 @@ function formatarTextoMarkdown(valor = "") {
 }
 
 window.addEventListener('tabChanged', async (e) => {
+  const targetId = e.detail.targetId;
+
+  const central = document.getElementById("central-notificacoes");
+  if (central) {
+      if (targetId !== 'view-inicio' && targetId !== 'login-event') {
+          central.style.display = 'none';
+      } else if (!window.notificacoesExpiradas && !central.hidden) {
+          central.style.display = 'flex';
+      }
+  }
+
   const loginScreen = document.getElementById('login-screen');
   if (loginScreen && window.getComputedStyle(loginScreen).display !== 'none' && loginScreen.style.opacity !== '0') return;
 
-  const targetId = e.detail.targetId;
-  
   try {
     const avisos = await fetchAvisosData();
     const agora = new Date();
@@ -560,53 +595,8 @@ window.addEventListener('tabChanged', async (e) => {
       "Galeria": { id: "view-galeria" }
     };
 
-    let avisoDestaque = null;
-    
-    if (targetId === "login-event") {
-      for (const aviso of avisosAtivos) {
-        const isCurso = ["Curso de Piloto", "Resgate Aquático", "Resgate Montanha", "Paraquedismo", "Evoluir"].includes(aviso.titulo);
-        if (isCurso && aviso.imagem) {
-            avisoDestaque = aviso;
-            break;
-        }
-      }
-    }
-
-
-
     const modalDestaque = document.getElementById('modal-destaque');
-    if (modalDestaque && avisoDestaque) {
-      if (targetId === 'login-event' && sessionStorage.getItem('welcomeShown') === 'true') {
-        // Já mostrou o aviso nesta sessão, não mostra novamente em caso de F5
-        return;
-      }
-
-      if (targetId === 'login-event') {
-        sessionStorage.setItem('welcomeShown', 'true');
-      }
-
-      const imgEl = document.getElementById('modal-destaque-img');
-      const textEl = document.getElementById('modal-destaque-text');
-      const overlayEl = document.getElementById('modal-destaque-overlay');
-      
-      if (imgEl) imgEl.src = avisoDestaque.imagem;
-      
-      let hasText = false;
-      if (textEl) {
-          let conteudoText = '';
-          if (avisoDestaque.resumo) {
-             conteudoText += `<strong>${formatarTextoMarkdown(avisoDestaque.resumo)}</strong>\n\n`;
-          }
-          if (avisoDestaque.descricao) {
-             conteudoText += formatarTextoMarkdown(avisoDestaque.descricao);
-          }
-          textEl.innerHTML = conteudoText;
-          hasText = conteudoText.trim() !== '';
-      }
-      
-      modalDestaque.style.display = 'flex';
-      if (overlayEl) overlayEl.style.display = hasText ? 'block' : 'none';
-    } else if (modalDestaque) {
+    if (modalDestaque) {
         modalDestaque.style.display = 'none';
     }
 

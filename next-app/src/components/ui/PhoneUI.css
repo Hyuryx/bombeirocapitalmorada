@@ -1,0 +1,200 @@
+/* From Uiverse.io by laminelawal */ 
+.phone-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 40px 0;
+}
+
+.phoneContainer {
+  width: 185px;
+  height: 350px;
+  background-color: black;
+  border-radius: 20px;
+  position: relative;
+  transform: scale(1.8); /* Ampliado para melhor visualização */
+  transform-origin: center;
+}
+
+.screen {
+  width: 180px;
+  height: 340px;
+  background: rgb(255,196,196);
+  background: linear-gradient(167deg, rgba(255,196,196,1) 10%, rgba(45,138,253,1) 20%, rgba(34,193,195,1) 48%, rgba(211,216,255,1) 69%, rgba(0,164,24,1) 88%);
+  border-radius: 20px;
+  position: absolute;
+  top: 4px;
+  bottom: 2px;
+  right: 2px;
+  left: 2px;
+  box-sizing: border-box;
+  overflow: hidden; /* Importante para o swipe não vazar */
+}
+
+.camera {
+  width: 80px;
+  background-color: black;
+  position: absolute;
+  height: 20px;
+  top: 4%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  border-radius: 25px;
+  transition: 0.3s;
+  animation-name: callTransition;
+  animation-duration: 1.9s;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease;
+  z-index: 10;
+}
+
+@keyframes callTransition {
+  15% { width: 40px; }
+  95% { width: 95px; background-color: rgb(10, 10, 30); }
+}
+
+.camera:before {
+  content: "";
+  width: 15px;
+  height: 15px;
+  background-color: rgb(19, 19, 51);
+  position: absolute;
+  border-radius: 50%;
+  left: 5px;
+  top: 2px;
+}
+
+.camera:after {
+  content: "";
+  width: 5px;
+  height: 5px;
+  background-color: lightgreen;
+  position: absolute;
+  border-radius: 50%;
+  right: 5px;
+  top: 6px;
+}
+
+.appsSwipeContainer {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  bottom: 80px;
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none; /* Firefox */
+}
+.appsSwipeContainer::-webkit-scrollbar {
+  display: none; /* Safari/Chrome */
+}
+
+.appsPage {
+  min-width: 100%;
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.widgets {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  box-sizing: border-box;
+  margin-bottom: 15px;
+}
+
+.one, .two {
+  height: 70px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 8px;
+  text-align: center;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.two {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.apps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px 5px;
+  justify-items: center;
+}
+
+.oneApp, .twoApp {
+  width: 32px;
+  height: 32px;
+  background-color: rgba(255,255,255,0.8);
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.1s;
+  position: relative;
+}
+
+.oneApp:active, .twoApp:active {
+  transform: scale(0.9);
+}
+
+.appIcon {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.appName {
+  position: absolute;
+  bottom: -12px;
+  font-size: 6px;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.menuBar {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background: rgba(255,255,255,0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  height: 50px;
+}
+
+.menuBar::before {
+  content: "";
+  position: absolute;
+  width: 50px;
+  height: 4px;
+  background-color: rgba(255,255,255,0.5);
+  border-radius: 10px;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+}

@@ -1,67 +1,24 @@
 window.initApp = function() {
-    const particlesContainer = document.getElementById('particles-js');
-
-    // Inicializar particles.js (sem a parte do stats.js que é só para teste de performance)
-    if (particlesContainer && typeof particlesJS !== 'undefined') {
-        particlesJS("particles-js", {
-            "particles": {
-                "number": { "value": 35, "density": { "enable": true, "value_area": 1000 } },
-                "color": { "value": "#ffffff" },
-                "shape": {
-                    "type": "circle",
-                    "stroke": { "width": 0, "color": "#000000" }
-                },
-                "opacity": {
-                    "value": 0.25,
-                    "random": true,
-                    "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false }
-                },
-                "size": {
-                    "value": 2.5,
-                    "random": true,
-                    "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false }
-                },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 180,
-                    "color": "#ffffff",
-                    "opacity": 0.15,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 2.5,
-                    "direction": "none",
-                    "random": false,
-                    "straight": false,
-                    "out_mode": "out",
-                    "bounce": false,
-                    "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 }
-                }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": { "enable": true, "mode": ["grab", "repulse"] },
-                    "onclick": { "enable": true, "mode": "push" },
-                    "resize": true
-                },
-                "modes": {
-                    "grab": { "distance": 200, "line_linked": { "opacity": 0.8 } },
-                    "repulse": { "distance": 120, "duration": 0.4 },
-                    "push": { "particles_nb": 4 }
-                }
-            },
-            "retina_detect": true
-        });
-    }
 
     // Lógica da Navegação Global
     const globalNavItems = document.querySelectorAll('.nav-item');
     const globalViews = document.querySelectorAll('.global-view');
 
-    function switchGlobalView(targetId) {
+    window.switchGlobalView = function(targetId) {
         localStorage.setItem('activeTab', targetId);
+        
+        const gradientBg = document.getElementById('gradient-waves-bg');
+        if (gradientBg) {
+            gradientBg.style.transition = 'opacity 0.5s ease, visibility 0.5s ease';
+            if (targetId === 'view-inicio') {
+                gradientBg.style.opacity = '0';
+                gradientBg.style.visibility = 'hidden';
+            } else {
+                gradientBg.style.opacity = '1';
+                gradientBg.style.visibility = 'visible';
+            }
+        }
+
         globalNavItems.forEach(nav => {
             if(nav.getAttribute('data-global-target') === targetId) {
                 nav.classList.add('active');
@@ -399,6 +356,8 @@ window.initApp = function() {
     const activeTab = localStorage.getItem('activeTab');
     if (activeTab) {
         switchGlobalView(activeTab);
+    } else {
+        switchGlobalView('view-inicio');
     }
 
     // Lógica da Tela de Login / Bloqueio

@@ -1,28 +1,48 @@
 import fs from 'fs';
 import path from 'path';
-import DynamicHTMLRenderer from '@/components/DynamicHTMLRenderer';
+import Galaxy from '@/components/Galaxy';
+import NoSSRDynamicHTMLRenderer from '@/components/NoSSRDynamicHTMLRenderer';
 
-// Esta página agora é um Server Component no Next.js!
-// Toda vez que você der refresh, ela vai ler o seu index.html antigo e converter ele em React em tempo real.
+function readTab(name) {
+    const p = path.join(process.cwd(), 'src/components/abas', name, 'index.html');
+    if (fs.existsSync(p)) {
+        return fs.readFileSync(p, 'utf8');
+    }
+    return '';
+}
+
 export default function Home() {
-  // Caminho absoluto para o seu index.html que está FORA da pasta next-app
-  const htmlPath = path.join(process.cwd(), '../index.html');
+  const login = readTab('login');
+  const navbar = readTab('navbar');
+  const modais = readTab('modais');
   
-  let htmlContent = '';
-  try {
-    htmlContent = fs.readFileSync(htmlPath, 'utf8');
-  } catch (error) {
-    console.error("Não foi possível ler o arquivo index.html:", error);
-    return <div>Erro: Arquivo index.html não encontrado fora da pasta next-app!</div>;
-  }
-
-  // Extrair apenas o que está dentro do <body> para não duplicar <html> e <head> do layout.js
-  const bodyMatch = htmlContent.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-  let bodyContent = bodyMatch ? bodyMatch[1] : htmlContent;
+  const tabs = [
+      'inicio', 'cursos', 'uniformes', 'avisos', 'planilhas', 
+      'modulacao', 'viaturas', 'regras', 'hierarquia', 'galeria'
+  ];
+  const tabsContent = tabs.map(tab => readTab(tab)).join('');
+  
+  const htmlContent = (login + navbar + '<main class="global-view-container">' + tabsContent + '</main>' + modais).replace(/\r/g, '');
 
   return (
-    <>
-      <DynamicHTMLRenderer htmlString={bodyContent} />
-    </>
+    <div suppressHydrationWarning>
+      <div id="galaxy-bg" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -3, overflow: 'hidden' }}>
+        <Galaxy 
+          mouseRepulsion
+          mouseInteraction
+          density={1}
+          glowIntensity={0.3}
+          saturation={0}
+          hueShift={140}
+          twinkleIntensity={0.3}
+          rotationSpeed={0.1}
+          repulsionStrength={2}
+          autoCenterRepulsion={0}
+          starSpeed={0.5}
+          speed={1}
+        />
+      </div>
+      <NoSSRDynamicHTMLRenderer htmlString={htmlContent} />
+    </div>
   );
 }

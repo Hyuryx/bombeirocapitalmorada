@@ -23,7 +23,7 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const newAviso = await request.json();
+    const newAvisos = await request.json();
     const filePath = getAvisosFilePath();
     
     // Garantir que o diretório exista
@@ -32,20 +32,13 @@ export async function POST(request) {
       fs.mkdirSync(dir, { recursive: true });
     }
 
-    let avisos = [];
-    if (fs.existsSync(filePath)) {
-      const fileData = fs.readFileSync(filePath, 'utf8');
-      avisos = JSON.parse(fileData);
+    if (!Array.isArray(newAvisos)) {
+      throw new Error("A lista de avisos é inválida.");
     }
 
-    // Adiciona o novo aviso no início (mais recente)
-    newAviso.id = Date.now().toString();
-    newAviso.data = new Date().toISOString();
-    avisos.unshift(newAviso);
+    fs.writeFileSync(filePath, JSON.stringify(newAvisos, null, 2));
 
-    fs.writeFileSync(filePath, JSON.stringify(avisos, null, 2));
-
-    return NextResponse.json({ success: true, aviso: newAviso }, { status: 201 });
+    return NextResponse.json({ sucesso: true, mensagem: "Arquivo avisos.json atualizado!" }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: 'Erro ao salvar o aviso' }, { status: 500 });
   }
