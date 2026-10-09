@@ -1,0 +1,19 @@
+export default `<div id="view-inicio" class="global-view temp-view active">
+        <!-- Sequence of Videos -->
+        <div id="video-sequence-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -2;">
+            <video id="bg-video-inicio-1" muted="" playsinline="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease-in-out; opacity: 1;"></video>
+            <video id="bg-video-inicio-2" muted="" playsinline="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease-in-out; opacity: 0;"></video>
+        </div>
+        
+        
+        
+
+        <!-- Logo Centralizada -->
+        <div id="inicio-logo-container" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; pointer-events: none;">
+            <img src="assets/inicio/Logotipo Bombeiros Capital Morada.png" alt="Logo Capital Morada" style="width: 100%; max-width: 600px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8)); animation: fadeIn 2s ease-out;">
+        </div>
+
+        <footer class="site-footer" style="position: absolute; bottom: 0; width: 100%; border-top: none; margin-top: 0; padding-bottom: 20px;">
+            <p>© 2026 ERREJOTA. Todos os direitos reservados.</p>
+        </footer>
+    </div>`;
