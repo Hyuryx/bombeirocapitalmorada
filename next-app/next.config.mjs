@@ -3,6 +3,11 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    outputFileTracingIncludes: {
+      '/*': ['./src/components/abas/**/*.html'],
+    },
+  },
   async redirects() {
     return [
       {

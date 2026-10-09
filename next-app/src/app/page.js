@@ -2,27 +2,42 @@ import fs from 'fs';
 import path from 'path';
 import Galaxy from '@/components/Galaxy';
 import NoSSRDynamicHTMLRenderer from '@/components/NoSSRDynamicHTMLRenderer';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
-function readTab(name) {
-    const p = path.join(process.cwd(), 'src/components/abas', name, 'index.html');
-    if (fs.existsSync(p)) {
-        return fs.readFileSync(p, 'utf8');
-    }
-    return '';
-}
+export const dynamic = 'force-static';
 
 export default function Home() {
-  const login = readTab('login');
-  const navbar = readTab('navbar');
-  const modais = readTab('modais');
+  const readHTML = (relativePath) => {
+    try {
+      return fs.readFileSync(path.join(process.cwd(), relativePath), 'utf8');
+    } catch(e) {
+      console.log("Error reading", relativePath, e);
+      return '';
+    }
+  };
+
+  const login = readHTML('src/components/abas/login/index.html');
+  const navbar = readHTML('src/components/abas/navbar/index.html');
+  const modais = readHTML('src/components/abas/modais/index.html');
   
-  const tabs = [
-      'inicio', 'cursos', 'uniformes', 'avisos', 'planilhas', 
-      'modulacao', 'viaturas', 'regras', 'hierarquia', 'galeria'
-  ];
-  const tabsContent = tabs.map(tab => readTab(tab)).join('');
+  const tabsContent = [
+    readHTML('src/components/abas/inicio/index.html'),
+    readHTML('src/components/abas/cursos/index.html'),
+    readHTML('src/components/abas/uniformes/index.html'),
+    readHTML('src/components/abas/avisos/index.html'),
+    readHTML('src/components/abas/planilhas/index.html'),
+    readHTML('src/components/abas/modulacao/index.html'),
+    readHTML('src/components/abas/viaturas/index.html'),
+    readHTML('src/components/abas/regras/index.html'),
+    readHTML('src/components/abas/hierarquia/index.html'),
+    readHTML('src/components/abas/galeria/index.html')
+  ].join('');
   
   const htmlContent = (login + navbar + '<main class="global-view-container">' + tabsContent + '</main>' + modais).replace(/\r/g, '');
+
+  if (!htmlContent || htmlContent.length < 1000) {
+     console.error("HTML CONTENT IS TOO SMALL OR EMPTY! Length:", htmlContent.length);
+  }
 
   return (
     <div suppressHydrationWarning>
@@ -42,7 +57,9 @@ export default function Home() {
           speed={1}
         />
       </div>
-      <NoSSRDynamicHTMLRenderer htmlString={htmlContent} />
+      <ErrorBoundary>
+        <NoSSRDynamicHTMLRenderer htmlString={htmlContent} />
+      </ErrorBoundary>
     </div>
   );
 }
