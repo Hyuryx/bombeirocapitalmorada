@@ -7,20 +7,6 @@ const nextConfig = {
     outputFileTracingIncludes: {
       '/*': ['./src/components/abas/**/*.html'],
     },
-  },
-  async redirects() {
-    return [
-      {
-        source: '/login.html',
-        destination: '/',
-        permanent: true,
-      },
-      {
-        source: '/index.html',
-        destination: '/',
-        permanent: true,
-      }
-    ];
   }
 };
 
