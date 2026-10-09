@@ -1,6 +1,44 @@
 <div id="view-regras" class="global-view" style="display: none;">
+
+    <style id="regras-compress">
+      #view-regras .main-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+      #view-regras .section-header {
+        margin-bottom: 5px;
+      }
+      #view-regras .section-header h1 {
+        font-size: 1.8rem;
+        margin-bottom: 0;
+      }
+      #view-regras .cards-grid {
+        gap: 10px;
+      }
+      #view-regras .card {
+        padding: 10px !important;
+      }
+      #view-regras ul {
+        gap: 4px !important;
+      }
+      #view-regras li span {
+        font-size: 0.85rem;
+      }
+      #view-regras h3 {
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+      }
+      #view-regras .site-footer {
+        margin-top: auto;
+        padding: 10px 0;
+      }
+    </style>
+    
         <div class="background-overlay bg-regras"></div>
-        <main class="main-content" style="height: 100%; overflow-y: auto;">
+        <main class="main-content no-scrollbar" style="height: 100%; overflow-y: hidden;">
             <section id="regras-condutas" class="content-section active">
                 <header class="section-header">
                     <h1>Regras e Condutas</h1>
