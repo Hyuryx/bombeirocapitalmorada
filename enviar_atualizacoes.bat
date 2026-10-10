@@ -8,7 +8,8 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 echo =========================================
-echo    Enviando suas alteracoes para o GitHub...
+echo    ENVIAR ATUALIZACOES PARA O GITHUB
+echo    Versao Oficial (Atualizado: 09/10/2026)
 echo =========================================
 echo.
 
@@ -31,7 +32,6 @@ if %FS% EQU 0 if %AHEAD% EQU 0 (
     echo.
     echo =========================================
     echo [INFORMACAO] Nenhuma alteracao nova foi encontrada para enviar.
-    echo Lembre-se de SALVAR os arquivos no editor - pressione Ctrl + S.
     echo =========================================
     echo.
     pause
@@ -42,23 +42,25 @@ if %FS% GTR 0 (
     echo 2. Adicionando arquivos alterados...
     git add .
     echo.
-    echo 3. Criando commit das alteracoes...
-    git commit -m "Atualizacao automatica via script"
+    echo 3. Criando commit com a data e hora atual...
+    for /f "tokens=2 delims==" %%a in ('wmic OS Get localdatetime /value') do set "dt=%%a"
+    set "YY=%dt:~2,2%" & set "YYYY=%dt:~0,4%" & set "MM=%dt:~4,2%" & set "DD=%dt:~6,2%"
+    set "HH=%dt:~8,2%" & set "Min=%dt:~10,2%" & set "Sec=%dt:~12,2%"
+    
+    git commit -m "Atualizacao automatica - %DD%/%MM%/%YYYY% as %HH%:%Min%"
 ) else (
-    echo [INFORMACAO] Alteracoes ja salvas localmente, enviando ao GitHub...
+    echo [INFORMACAO] Alteracoes ja salvas localmente, enviando...
 )
 
 echo.
-echo 4. Baixando possiveis alteracoes novas do seu amigo (git pull)...
+echo 4. Baixando novidades da nuvem (git pull)...
 git pull origin main --no-edit
 
 if %ERRORLEVEL% NEQ 0 (
     echo.
     echo =========================================
-    echo [ERRO DE CONFLITO] Ocorreu um conflito! 
-    echo Seu amigo alterou as mesmas partes do codigo que voce.
-    echo O Git nao conseguiu juntar automaticamente.
-    echo Voce precisa abrir os arquivos no VS Code, resolver os conflitos, e tentar enviar de novo.
+    echo [ERRO DE CONFLITO] O Git nao conseguiu juntar o codigo.
+    echo Voce tem alteracoes conflitantes.
     echo =========================================
     echo.
     pause
@@ -66,15 +68,15 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 echo.
-echo 5. Enviando para o GitHub (git push)...
+echo 5. Enviando tudo para o GitHub e Vercel (git push)...
 git push origin main
 
 echo.
 echo =========================================
 if %ERRORLEVEL% EQU 0 (
-    echo [SUCESSO] Suas alteracoes foram enviadas para o GitHub!
+    echo [SUCESSO] O site oficial esta sendo atualizado na Vercel!
 ) else (
-    echo [ERRO] Ocorreu uma falha ao enviar. Verifique a mensagem de erro.
+    echo [ERRO] Ocorreu uma falha ao enviar.
 )
 echo =========================================
 echo.
