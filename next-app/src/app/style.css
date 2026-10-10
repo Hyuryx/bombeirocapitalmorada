@@ -2688,3 +2688,7 @@ html {
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
+
+
+/* Correcao para os cards nao esticarem */
+.cards-grid { align-items: start; }
