@@ -1,3 +1,22 @@
+// Proteção Anti-Clone Front-end
+(function() {
+    const host = window.location.hostname;
+    const isLocalhost = host === 'localhost' || host === '127.0.0.1' || host === '' || host.endsWith('.local') || host.startsWith('192.168.') || host.startsWith('10.');
+    const isAllowedDomain = host.includes('bombeirocapitalmorada.vercel.app');
+
+    if (!isLocalhost && !isAllowedDomain) {
+        document.body.innerHTML = `
+            <div style="display:flex;justify-content:center;align-items:center;height:100vh;background-color:#111;color:#ff3333;font-family:sans-serif;text-align:center;padding:20px;">
+                <div>
+                    <h1 style="font-size:3em;margin-bottom:10px;">⚠️ ACESSO NEGADO</h1>
+                    <p style="font-size:1.5em;color:#fff;">Cópia Pirata ou Domínio Não Autorizado.</p>
+                </div>
+            </div>
+        `;
+        throw new Error("Execução bloqueada por proteção anti-clone.");
+    }
+})();
+
 const formulario = document.getElementById("formularioAviso");
 const listaAvisos = document.getElementById("listaAvisos");
 const statusServidor = document.getElementById("statusServidor");
