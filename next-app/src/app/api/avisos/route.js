@@ -30,7 +30,7 @@ export async function GET() {
     return NextResponse.json(avisos);
   } catch (error) {
     console.error('Erro no GET de avisos:', error);
-    return NextResponse.json({ error: 'Erro ao ler os avisos' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Erro ao ler os avisos', stack: error.stack }, { status: 500 });
   }
 }
 
@@ -52,6 +52,11 @@ export async function POST(request) {
       return NextResponse.json({ sucesso: true, mensagem: "Avisos salvos na nuvem (Upstash Redis)!" }, { status: 201 });
     }
 
+    // Se nao achou as variaveis, vamos retornar o erro explicitamente pra debugar
+    if (!redisUrl) {
+      return NextResponse.json({ erro: "Nenhuma URL de Redis encontrada no process.env", env: Object.keys(process.env) }, { status: 500 });
+    }
+
     // 2. Fallback para arquivo local
     const filePath = getAvisosFilePath();
     const dir = path.dirname(filePath);
@@ -63,6 +68,6 @@ export async function POST(request) {
     return NextResponse.json({ sucesso: true, mensagem: "Avisos salvos no arquivo local!" }, { status: 201 });
   } catch (error) {
     console.error('Erro no POST de avisos:', error);
-    return NextResponse.json({ error: 'Erro ao salvar o aviso' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Erro ao salvar o aviso', stack: error.stack }, { status: 500 });
   }
 }
