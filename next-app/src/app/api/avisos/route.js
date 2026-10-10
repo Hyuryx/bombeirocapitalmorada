@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
 
 // Helper para obter o caminho do arquivo JSON (usado apenas no localhost)
 const getAvisosFilePath = () => {
@@ -10,13 +10,17 @@ const getAvisosFilePath = () => {
 
 export async function GET() {
   try {
-    // 1. Tentar ler do Vercel KV (Nuvem) se estiver configurado
-    if (process.env.KV_REST_API_URL) {
-      const avisosNuvem = await kv.get('avisos');
+    const redisUrl = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+
+    // 1. Tentar ler da Nuvem (Upstash Redis) se configurado
+    if (redisUrl && redisToken) {
+      const redis = new Redis({ url: redisUrl, token: redisToken });
+      const avisosNuvem = await redis.get('avisos');
       return NextResponse.json(avisosNuvem || []);
     }
 
-    // 2. Fallback para arquivo local (para quando rodar npm run dev no computador)
+    // 2. Fallback para arquivo local
     const filePath = getAvisosFilePath();
     if (!fs.existsSync(filePath)) {
       return NextResponse.json([]);
@@ -38,13 +42,17 @@ export async function POST(request) {
       throw new Error("A lista de avisos é inválida.");
     }
 
-    // 1. Tentar salvar no Vercel KV (Nuvem) se estiver configurado
-    if (process.env.KV_REST_API_URL) {
-      await kv.set('avisos', newAvisos);
-      return NextResponse.json({ sucesso: true, mensagem: "Avisos salvos na nuvem (Vercel KV)!" }, { status: 201 });
+    const redisUrl = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+
+    // 1. Tentar salvar na Nuvem (Upstash Redis) se configurado
+    if (redisUrl && redisToken) {
+      const redis = new Redis({ url: redisUrl, token: redisToken });
+      await redis.set('avisos', newAvisos);
+      return NextResponse.json({ sucesso: true, mensagem: "Avisos salvos na nuvem (Upstash Redis)!" }, { status: 201 });
     }
 
-    // 2. Fallback para arquivo local (para quando rodar npm run dev no computador)
+    // 2. Fallback para arquivo local
     const filePath = getAvisosFilePath();
     const dir = path.dirname(filePath);
     if (!fs.existsSync(dir)) {
