@@ -1,23 +1,29 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import { Redis } from '@upstash/redis';
+import Redis from 'ioredis';
 
 // Helper para obter o caminho do arquivo JSON (usado apenas no localhost)
 const getAvisosFilePath = () => {
   return path.join(process.cwd(), 'public', 'api', 'avisos.json');
 };
 
+let redisClient = null;
+if (process.env.REDIS_URL || process.env.UPSTASH_REDIS_REST_URL) {
+  // O Redis URL fornecido pelo Upstash/Vercel
+  const url = process.env.REDIS_URL || process.env.UPSTASH_REDIS_REST_URL;
+  redisClient = new Redis(url);
+}
+
 export async function GET() {
   try {
-    const redisUrl = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-
-    // 1. Tentar ler da Nuvem (Upstash Redis) se configurado
-    if (redisUrl && redisToken) {
-      const redis = new Redis({ url: redisUrl, token: redisToken });
-      const avisosNuvem = await redis.get('avisos');
-      return NextResponse.json(avisosNuvem || []);
+    // 1. Tentar ler da Nuvem se configurado
+    if (redisClient) {
+      const avisosNuvem = await redisClient.get('avisos');
+      if (avisosNuvem) {
+         return NextResponse.json(JSON.parse(avisosNuvem));
+      }
+      return NextResponse.json([]);
     }
 
     // 2. Fallback para arquivo local
@@ -42,19 +48,10 @@ export async function POST(request) {
       throw new Error("A lista de avisos é inválida.");
     }
 
-    const redisUrl = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-
-    // 1. Tentar salvar na Nuvem (Upstash Redis) se configurado
-    if (redisUrl && redisToken) {
-      const redis = new Redis({ url: redisUrl, token: redisToken });
-      await redis.set('avisos', newAvisos);
-      return NextResponse.json({ sucesso: true, mensagem: "Avisos salvos na nuvem (Upstash Redis)!" }, { status: 201 });
-    }
-
-    // Se nao achou as variaveis, vamos retornar o erro explicitamente pra debugar
-    if (!redisUrl) {
-      return NextResponse.json({ erro: "Nenhuma URL de Redis encontrada no process.env", env: Object.keys(process.env) }, { status: 500 });
+    // 1. Tentar salvar na Nuvem se configurado
+    if (redisClient) {
+      await redisClient.set('avisos', JSON.stringify(newAvisos));
+      return NextResponse.json({ sucesso: true, mensagem: "Avisos salvos na nuvem (Redis)!" }, { status: 201 });
     }
 
     // 2. Fallback para arquivo local
