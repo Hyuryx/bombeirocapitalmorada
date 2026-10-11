@@ -91,35 +91,32 @@ const FallingText = ({
     const ceiling = Bodies.rectangle(width / 2, -25, width, 50, boundaryOptions);
 
     const wordSpans = textRef.current.querySelectorAll('.word');
-    const containerRect2 = containerRef.current.getBoundingClientRect();
-
     const wordBodies = [...wordSpans].map(elem => {
       const rect = elem.getBoundingClientRect();
 
-      const x = rect.left - containerRect2.left + rect.width / 2;
-      const y = rect.top - containerRect2.top + rect.height / 2;
+      const x = rect.left - containerRect.left + rect.width / 2;
+      const y = rect.top - containerRect.top + rect.height / 2;
 
       const body = Bodies.rectangle(x, y, rect.width, rect.height, {
         render: { fillStyle: 'transparent' },
-        restitution: 0.3,
-        frictionAir: 0.05,
-        friction: 0.4
+        restitution: 0.8,
+        frictionAir: 0.01,
+        friction: 0.2
       });
 
-      // Cai reto para baixo no centro, com rotação suave natural
       Matter.Body.setVelocity(body, {
-        x: (Math.random() - 0.5) * 0.3,
-        y: 0.5
+        x: (Math.random() - 0.5) * 5,
+        y: 0
       });
-      Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.03);
+      Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.05);
       return { elem, body };
     });
 
     wordBodies.forEach(({ elem, body }) => {
       elem.style.position = 'absolute';
-      elem.style.left = `${body.position.x}px`;
-      elem.style.top = `${body.position.y}px`;
-      elem.style.transform = 'translate(-50%, -50%)';
+      elem.style.left = `${body.position.x - body.bounds.max.x + body.bounds.min.x / 2}px`;
+      elem.style.top = `${body.position.y - body.bounds.max.y + body.bounds.min.y / 2}px`;
+      elem.style.transform = 'none';
     });
 
     const mouse = Mouse.create(containerRef.current);
@@ -138,43 +135,6 @@ const FallingText = ({
     Runner.run(runner, engine);
     Render.run(render);
 
-    const chars = '!@#$%&*()_+-=[]{}|;:,.<>?/~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    const activeTimers = [];
-
-    // Efeito de embaralhar as letras (scramble)
-    const scrambleWord = (elem, originalWord) => {
-      let iteration = 0;
-      const totalIterations = originalWord.length * 2.5;
-      const interval = setInterval(() => {
-        elem.innerText = originalWord
-          .split('')
-          .map((char, index) => {
-            if (char === ' ') return ' ';
-            if (index < iteration / 2.5) {
-              return originalWord[index];
-            }
-            return chars[Math.floor(Math.random() * chars.length)];
-          })
-          .join('');
-
-        iteration += 1;
-        if (iteration > totalIterations) {
-          elem.innerText = originalWord;
-          clearInterval(interval);
-        }
-      }, 40);
-      activeTimers.push(interval);
-    };
-
-    // Embaralha cada palavra com um pequeno atraso orgânico
-    wordBodies.forEach(({ elem }, idx) => {
-      const origText = elem.innerText;
-      const timeout = setTimeout(() => {
-        scrambleWord(elem, origText);
-      }, idx * 30);
-      activeTimers.push(timeout);
-    });
-
     let animationFrameId;
     const updateLoop = () => {
       wordBodies.forEach(({ body, elem }) => {
@@ -189,10 +149,6 @@ const FallingText = ({
     updateLoop();
 
     return () => {
-      activeTimers.forEach(id => {
-        clearInterval(id);
-        clearTimeout(id);
-      });
       cancelAnimationFrame(animationFrameId);
       Render.stop(render);
       Runner.stop(runner);
@@ -218,7 +174,8 @@ const FallingText = ({
       onClick={trigger === 'click' ? handleTrigger : undefined}
       onMouseEnter={trigger === 'hover' ? handleTrigger : undefined}
       style={{
-        position: 'relative'
+        position: 'relative',
+        overflow: 'hidden'
       }}
     >
       <div

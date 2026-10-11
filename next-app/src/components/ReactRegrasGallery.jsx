@@ -31,7 +31,7 @@ export default function ReactRegrasGallery() {
           "As viaturas e equipamentos devem ser utilizados apenas em serviço ativo.",
           "Em caso de ausência prolongada, o membro deve notificar seus superiores."
         ],
-        borderColor: '#40c4ff'
+        borderColor: '#ff1a1a'
       },
       {
         title: "Regras de Punição",
@@ -41,7 +41,7 @@ export default function ReactRegrasGallery() {
           "Uso indevido de equipamentos do Corpo de Bombeiros gerará punição imediata.",
           "A subordinação é vital. Recusar ordens diretas é passível de expulsão."
         ],
-        borderColor: '#40c4ff'
+        borderColor: '#ff1a1a'
       },
       {
         title: "Conduta em Operação",
@@ -51,7 +51,7 @@ export default function ReactRegrasGallery() {
           "Siga os Códigos Q estritamente para manter a padronização e objetividade.",
           "Nunca abandone um colega em situação de risco durante resgates."
         ],
-        borderColor: '#40c4ff'
+        borderColor: '#ff1a1a'
       },
       {
         title: "Manutenção e Equipamentos",
@@ -61,7 +61,7 @@ export default function ReactRegrasGallery() {
           "Danos ao patrimônio por negligência serão cobrados e punidos.",
           "Relate qualquer defeito ou falta de material imediatamente ao oficial de dia."
         ],
-        borderColor: '#40c4ff'
+        borderColor: '#ff1a1a'
       },
       {
         title: "Apresentação Pessoal",
@@ -71,7 +71,7 @@ export default function ReactRegrasGallery() {
           "É proibido o uso de acessórios chamativos durante o serviço.",
           "O porte e a postura do bombeiro devem sempre refletir profissionalismo."
         ],
-        borderColor: '#40c4ff'
+        borderColor: '#ff1a1a'
       },
       {
         title: "Uso do Rádio",
@@ -81,7 +81,7 @@ export default function ReactRegrasGallery() {
           "Evite conversas paralelas ou brincadeiras no canal principal.",
           "Em situações de emergência grave, use o código de prioridade máxima."
         ],
-        borderColor: '#40c4ff'
+        borderColor: '#ff1a1a'
       }
     ];
 
@@ -138,11 +138,11 @@ export default function ReactRegrasGallery() {
         @keyframes neonBreathe {
           0%, 100% {
             box-shadow: 0 0 5px var(--neon-color), inset 0 0 5px var(--neon-color);
-            border-color: rgba(64, 196, 255, 0.3);
+            border-color: rgba(255, 26, 26, 0.35);
           }
           50% {
             box-shadow: 0 0 25px var(--neon-color), inset 0 0 15px var(--neon-color);
-            border-color: rgba(64, 196, 255, 1);
+            border-color: rgba(255, 26, 26, 1);
           }
         }
       `}</style>

@@ -40,7 +40,7 @@ export default function ReactHierarquiaMagicBento() {
       )
     })),
     {
-      className: 'info-card purple-card',
+      className: 'info-card red-card',
       style: { background: 'transparent' },
       content: (
         <div style={{ width: '100%', height: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box', padding: '15px' }}>
@@ -122,7 +122,7 @@ export default function ReactHierarquiaMagicBento() {
       {/* Intro Header */}
       <header className="section-header" style={{ position: 'relative', zIndex: 10, textAlign: 'center', paddingTop: '50px', width: '100%' }}>
           <h1 className="glitch-title"><GlitchText speed={1} enableShadows enableOnHover={false}>Hierarquia e Patentes</GlitchText></h1>
-          <div style={{ width: '100%', maxWidth: '700px', height: '200px', position: 'relative', margin: '10px auto 0 auto' }}>
+          <div style={{ width: '100%', maxWidth: '700px', height: '120px', position: 'relative', margin: '10px auto 0 auto' }}>
             <FallingText
               text="Estrutura organizacional e patentes do Corpo de Bombeiros."
               highlightWords={["Estrutura", "patentes", "Bombeiros."]}
@@ -137,32 +137,41 @@ export default function ReactHierarquiaMagicBento() {
 
       {/* Neon style for Hierarquia text card */}
       <style>{`
-        @keyframes neon-breathe-babyblue {
+        @keyframes neon-breathe-red {
             0% {
-                box-shadow: 0 0 2px rgba(64, 196, 255, 0.4), 0 0 10px rgba(64, 196, 255, 0.1);
-                border: 1px solid rgba(64, 196, 255, 0.3);
+                box-shadow: 0 0 4px rgba(255, 26, 26, 0.4), 0 0 12px rgba(255, 26, 26, 0.15);
+                border: 1px solid rgba(255, 26, 26, 0.4);
             }
             100% {
-                box-shadow: 0 0 5px rgba(64, 196, 255, 0.8), 0 0 20px rgba(64, 196, 255, 0.6), 0 0 40px rgba(64, 196, 255, 0.3);
-                border: 1px solid rgba(64, 196, 255, 1);
+                box-shadow: 0 0 8px rgba(255, 26, 26, 0.85), 0 0 25px rgba(255, 26, 26, 0.6), 0 0 45px rgba(255, 26, 26, 0.35);
+                border: 1px solid rgba(255, 26, 26, 1);
             }
         }
         .neon-card-hierarquia {
-            background: transparent !important;
-            animation: neon-breathe-babyblue 4s infinite alternate ease-in-out;
+            background: rgba(14, 14, 18, 0.95) !important;
+            animation: neon-breathe-red 4s infinite alternate ease-in-out;
             border-radius: 12px;
+        }
+        .bento-hierarquia-wrap .magic-bento-card {
+            --glow-color: 255, 26, 26 !important;
+            border-color: rgba(255, 26, 26, 0.3) !important;
+            background: rgba(14, 14, 18, 0.95) !important;
+        }
+        .bento-hierarquia-wrap .magic-bento-card:hover {
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5), 0 0 35px rgba(255, 26, 26, 0.45) !important;
+            border-color: rgba(255, 26, 26, 0.8) !important;
         }
       `}</style>
 
       {/* Intro text */}
       <div className="card info-card neon-card-hierarquia" style={{ maxWidth: '800px', margin: '40px auto 20px auto', position: 'relative', zIndex: 10 }}>
-          <h3 style={{ marginBottom: '15px', color: '#40c4ff' }}>Hierarquia do Bombeiro</h3>
+          <h3 style={{ marginBottom: '15px', color: '#ff1a1a', textShadow: '0 0 10px rgba(255, 26, 26, 0.5)' }}>Hierarquia do Bombeiro</h3>
           <p style={{ color: '#fff' }}>A hierarquia é um sistema de organização que distribui pessoas em diferentes níveis de autoridade e responsabilidade. Ela estabelece uma cadeia de comando em que os níveis superiores coordenam e supervisionam os inferiores, garantindo disciplina, organização, respeito e eficiência nas operações do Corpo de Bombeiro.<br/><br/>
           O respeito à hierarquia é um dos princípios fundamentais da corporação. Cada bombeiro possui funções e responsabilidades específicas, contribuindo para o trabalho em equipe e para o bom funcionamento das operações de emergência.</p>
       </div>
 
       {/* Magic Bento Grid */}
-      <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}>
+      <div className="bento-hierarquia-wrap" style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}>
         <MagicBento 
           items={items}
           textAutoHide={false}
@@ -174,7 +183,7 @@ export default function ReactHierarquiaMagicBento() {
           clickEffect={true}
           spotlightRadius={400}
           particleCount={12}
-          glowColor="132, 0, 255"
+          glowColor="255, 26, 26"
           disableAnimations={false}
         />
       </div>

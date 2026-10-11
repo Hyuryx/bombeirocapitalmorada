@@ -44,7 +44,7 @@ export default function ReactUniformesCarousel() {
 
   return (
     <>
-      <div style={{ width: '100%', height: '800px', position: 'relative', marginTop: '20px' }}>
+      <div style={{ width: '100%', height: '620px', position: 'relative', marginTop: '0px' }}>
         <CircularCarousel
           items={uniformItems}
           preset="cylinder"
@@ -55,7 +55,7 @@ export default function ReactUniformesCarousel() {
           captions={true}
           gap={25}
           tilt={-5}
-          curve={1}
+          curve={0}
           perspective={2500}
           autoplay="drift"
           interval={3}

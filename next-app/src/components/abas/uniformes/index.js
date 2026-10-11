@@ -1,5 +1,15 @@
 export default `<div id="view-uniformes" class="global-view" style="display: none;">
 
+    <style>
+      #view-uniformes .section-header {
+        margin-bottom: 10px;
+        padding-top: 20px;
+      }
+      #view-uniformes .section-header h1 {
+        margin-bottom: 8px;
+      }
+    </style>
+
     <div class="background-overlay bg-uniformes"></div>
         <main class="main-content" style="height: 100%; overflow-y: auto;">
             <section class="content-section active">

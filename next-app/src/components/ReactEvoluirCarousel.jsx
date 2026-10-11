@@ -34,7 +34,7 @@ export default function ReactEvoluirCarousel({ items }) {
         clickEffect={true}
         spotlightRadius={400}
         particleCount={15}
-        glowColor="132, 0, 255" // Glow roxo neon para dar um destaque futurista
+        glowColor="255, 26, 26" // Glow vermelho neon elétrico
         disableAnimations={false}
       />
     </div>

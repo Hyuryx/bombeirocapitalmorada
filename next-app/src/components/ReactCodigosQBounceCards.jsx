@@ -28,7 +28,7 @@ export default function ReactCodigosQBounceCards() {
           "Está na escuta? Verifica se alguém está ouvindo.",
           "Ex: \"Bombeiro 01, QAP?\""
         ],
-        color: '#3b82f6' // blue
+        color: '#ff1a1a'
       },
       {
         title: "QSL",
@@ -36,7 +36,7 @@ export default function ReactCodigosQBounceCards() {
           "Entendido / Mensagem recebida.",
           "Ex: \"QSL, em deslocamento.\""
         ],
-        color: '#10b981' // green
+        color: '#ff1a1a'
       },
       {
         title: "QTH",
@@ -44,7 +44,7 @@ export default function ReactCodigosQBounceCards() {
           "Localização / Endereço.",
           "Ex: \"Informe seu QTH.\""
         ],
-        color: '#eab308' // yellow
+        color: '#ff1a1a'
       },
       {
         title: "QTI",
@@ -52,7 +52,7 @@ export default function ReactCodigosQBounceCards() {
           "Rota / Deslocamento.",
           "Ex: \"Equipe em QTI sentido hospital.\""
         ],
-        color: '#f59e0b' // orange
+        color: '#ff1a1a'
       },
       {
         title: "QRR",
@@ -60,7 +60,7 @@ export default function ReactCodigosQBounceCards() {
           "Pedido de apoio / Reforço.",
           "Ex: \"Solicito QRR no QTH.\""
         ],
-        color: '#8b5cf6' // purple
+        color: '#ff1a1a'
       },
       {
         title: "QSM",
@@ -68,7 +68,7 @@ export default function ReactCodigosQBounceCards() {
           "Repita a mensagem. Usado quando falha.",
           "Ex: \"QSM, transmissão cortada.\""
         ],
-        color: '#ef4444' // red
+        color: '#ff1a1a'
       },
       {
         title: "QRX",
@@ -76,7 +76,7 @@ export default function ReactCodigosQBounceCards() {
           "Aguarde. Momento antes de responder.",
           "Ex: \"QRX, verificando a vítima.\""
         ],
-        color: '#3b82f6' // blue
+        color: '#ff1a1a'
       },
       {
         title: "QTO / QTX / QRT",
@@ -85,7 +85,7 @@ export default function ReactCodigosQBounceCards() {
           "QTX: Manter acompanhamento.",
           "QRT: Encerrar transmissão."
         ],
-        color: '#eab308' // yellow
+        color: '#ff1a1a'
       }
     ];
 
@@ -102,8 +102,8 @@ export default function ReactCodigosQBounceCards() {
             display: 'flex',
             flexDirection: 'column',
             boxSizing: 'border-box',
-            border: `2px solid ${card.color || '#40c4ff'}`,
-            '--neon-color': card.color || '#40c4ff',
+            border: `2px solid ${card.color || '#ff1a1a'}`,
+            '--neon-color': card.color || '#ff1a1a',
             animation: 'neonBreathe 2s ease-in-out infinite'
           }}
         >
@@ -124,7 +124,7 @@ export default function ReactCodigosQBounceCards() {
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly' }}>
             {card.lines.map((line, lIdx) => (
               <li key={lIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.95rem', color: '#e2e8f0', lineHeight: 1.4 }}>
-                <span style={{ color: card.color || '#40c4ff', fontSize: '1.2rem', lineHeight: 1 }}>•</span>
+                <span style={{ color: card.color || '#ff1a1a', fontSize: '1.2rem', lineHeight: 1 }}>•</span>
                 <span>{line}</span>
               </li>
             ))}
@@ -150,8 +150,8 @@ export default function ReactCodigosQBounceCards() {
             overflow: 'hidden',
             cursor: 'pointer',
             boxSizing: 'border-box',
-            border: `2px solid #40c4ff`,
-            '--neon-color': '#40c4ff',
+            border: `2px solid #ff1a1a`,
+            '--neon-color': '#ff1a1a',
             animation: 'neonBreathe 2s ease-in-out infinite'
           }}
         >
@@ -169,11 +169,11 @@ export default function ReactCodigosQBounceCards() {
         @keyframes neonBreathe {
           0%, 100% {
             box-shadow: 0 0 5px var(--neon-color), inset 0 0 5px var(--neon-color);
-            border-color: rgba(64, 196, 255, 0.3);
+            border-color: rgba(255, 26, 26, 0.35);
           }
           50% {
             box-shadow: 0 0 25px var(--neon-color), inset 0 0 15px var(--neon-color);
-            border-color: rgba(64, 196, 255, 1);
+            border-color: rgba(255, 26, 26, 1);
           }
         }
       `}</style>

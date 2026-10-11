@@ -30,7 +30,7 @@ export default function ReactModulacaoBounceCards() {
           "Como reconhecer as principais viaturas.",
           "Guia prático atualizável."
         ],
-        color: '#ef4444' // red
+        color: '#ff1a1a'
       },
       {
         title: "O que é modulação?",
@@ -38,7 +38,7 @@ export default function ReactModulacaoBounceCards() {
           "Forma correta de se comunicar pelo rádio.",
           "Significa transmitir informações de maneira clara, objetiva, organizada e compreensível para todos na ocorrência."
         ],
-        color: '#10b981' // green
+        color: '#ff1a1a'
       },
       {
         title: "Princípios Básicos",
@@ -48,7 +48,7 @@ export default function ReactModulacaoBounceCards() {
           "Organização: Identifique quem chama e quem recebe.",
           "Respeito: Postura profissional na frequência."
         ],
-        color: '#3b82f6' // blue
+        color: '#ff1a1a'
       },
       {
         title: "Na prática, modular é informar:",
@@ -59,7 +59,7 @@ export default function ReactModulacaoBounceCards() {
           "4. Onde está acontecendo",
           "5. Qual apoio é necessário"
         ],
-        color: '#f59e0b' // orange
+        color: '#ff1a1a'
       }
     ];
 
@@ -76,8 +76,8 @@ export default function ReactModulacaoBounceCards() {
             display: 'flex',
             flexDirection: 'column',
             boxSizing: 'border-box',
-            border: `2px solid ${card.color || '#40c4ff'}`,
-            '--neon-color': card.color || '#40c4ff',
+            border: `2px solid ${card.color || '#ff1a1a'}`,
+            '--neon-color': card.color || '#ff1a1a',
             animation: 'neonBreathe 2s ease-in-out infinite'
           }}
         >
@@ -98,7 +98,7 @@ export default function ReactModulacaoBounceCards() {
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly' }}>
             {card.lines.map((line, lIdx) => (
               <li key={lIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.95rem', color: '#e2e8f0', lineHeight: 1.4 }}>
-                <span style={{ color: card.color || '#40c4ff', fontSize: '1.2rem', lineHeight: 1 }}>•</span>
+                <span style={{ color: card.color || '#ff1a1a', fontSize: '1.2rem', lineHeight: 1 }}>•</span>
                 <span>{line}</span>
               </li>
             ))}
@@ -111,16 +111,16 @@ export default function ReactModulacaoBounceCards() {
   }, []);
 
   return (
-    <div ref={containerRef} style={{ height: '700px', width: '100%', position: 'relative', margin: '40px 0' }}>
+    <div ref={containerRef} style={{ height: '700px', width: '100%', position: 'relative', margin: '15px 0 40px 0' }}>
       <style>{`
         @keyframes neonBreathe {
           0%, 100% {
             box-shadow: 0 0 5px var(--neon-color), inset 0 0 5px var(--neon-color);
-            border-color: rgba(64, 196, 255, 0.3);
+            border-color: rgba(255, 26, 26, 0.35);
           }
           50% {
             box-shadow: 0 0 25px var(--neon-color), inset 0 0 15px var(--neon-color);
-            border-color: rgba(64, 196, 255, 1);
+            border-color: rgba(255, 26, 26, 1);
           }
         }
       `}</style>

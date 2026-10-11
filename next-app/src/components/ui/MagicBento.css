@@ -1,12 +1,16 @@
 :root {
-  --hue: 27;
-  --sat: 69%;
+  --hue: 0;
+  --sat: 100%;
   --white: hsl(0, 0%, 100%);
-  --purple-primary: rgba(132, 0, 255, 1);
-  --purple-glow: rgba(132, 0, 255, 0.2);
-  --purple-border: rgba(132, 0, 255, 0.8);
-  --border-color: #2F293A;
-  --background-dark: #120F17;
+  --glow-color: 255, 26, 26;
+  --red-primary: rgba(255, 26, 26, 1);
+  --red-glow: rgba(255, 26, 26, 0.25);
+  --red-border: rgba(255, 26, 26, 0.8);
+  --purple-primary: rgba(255, 26, 26, 1);
+  --purple-glow: rgba(255, 26, 26, 0.25);
+  --purple-border: rgba(255, 26, 26, 0.8);
+  --border-color: rgba(255, 26, 26, 0.25);
+  --background-dark: rgba(14, 14, 18, 0.95);
   color-scheme: light dark;
 }
 
@@ -143,8 +147,8 @@
   padding: 6px;
   background: radial-gradient(
     var(--glow-radius) circle at var(--glow-x) var(--glow-y),
-    rgba(132, 0, 255, calc(var(--glow-intensity) * 0.8)) 0%,
-    rgba(132, 0, 255, calc(var(--glow-intensity) * 0.4)) 30%,
+    rgba(var(--glow-color, 255, 26, 26), calc(var(--glow-intensity) * 0.8)) 0%,
+    rgba(var(--glow-color, 255, 26, 26), calc(var(--glow-intensity) * 0.4)) 30%,
     transparent 60%
   );
   border-radius: inherit;
@@ -168,8 +172,8 @@
 
 .magic-bento-card--border-glow:hover {
   box-shadow:
-    0 4px 20px rgba(46, 24, 78, 0.4),
-    0 0 30px var(--purple-glow);
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(var(--glow-color, 255, 26, 26), 0.35);
 }
 
 .particle-container {
@@ -184,15 +188,15 @@
   left: -2px;
   right: -2px;
   bottom: -2px;
-  background: rgba(132, 0, 255, 0.2);
+  background: rgba(var(--glow-color, 255, 26, 26), 0.2);
   border-radius: 50%;
   z-index: -1;
 }
 
 .particle-container:hover {
   box-shadow:
-    0 4px 20px rgba(46, 24, 78, 0.2),
-    0 0 30px var(--purple-glow);
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(var(--glow-color, 255, 26, 26), 0.35);
 }
 
 /* Global spotlight styles */

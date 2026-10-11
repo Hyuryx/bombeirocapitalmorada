@@ -110,29 +110,56 @@ export const Card = ({
   children: React.ReactNode;
 }) => {
   return (
-    <motion.div
-      className="max-w-5xl mx-auto w-full border-4 border-[#6C6C6C] bg-[#222222] rounded-[30px] shadow-2xl"
-      style={{
-        rotateX: rotate,
-        scale,
-        boxShadow:
-          "0 0 #0000004d, 0 9px 20px #0000004a, 0 37px 37px #00000042, 0 84px 50px #00000026, 0 149px 60px #0000000a, 0 233px 65px #00000003",
-        height: '600px',
-        maxWidth: '1000px',
-        width: '100%',
-        margin: '0 auto',
-        marginTop: '20px',
-        backgroundColor: '#222222',
-        border: '10px solid #444',
-        borderRadius: '30px',
-        padding: '20px',
-        position: 'relative',
-        zIndex: 10
-      }}
-    >
-      <div className="overflow-hidden rounded-2xl bg-gray-100" style={{ width: '100%', height: '100%', backgroundColor: 'white' }}>
-        {children}
-      </div>
-    </motion.div>
+    <>
+      <style>{`
+        @keyframes tabletNeonBreathe {
+          0%, 100% {
+            border-color: rgba(255, 26, 26, 0.35);
+            box-shadow:
+              0 0 6px rgba(255, 26, 26, 0.25),
+              0 0 15px rgba(255, 26, 26, 0.12);
+          }
+          50% {
+            border-color: rgba(255, 26, 26, 0.85);
+            box-shadow:
+              0 0 10px rgba(255, 26, 26, 0.5),
+              0 0 22px rgba(255, 26, 26, 0.25);
+          }
+        }
+        .tablet-neon-frame {
+          border: 2px solid rgba(255, 26, 26, 0.45);
+          animation: tabletNeonBreathe 3s ease-in-out infinite;
+          box-sizing: border-box;
+          transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .tablet-neon-frame:hover {
+          box-shadow:
+            0 0 12px rgba(255, 26, 26, 0.65),
+            0 0 25px rgba(255, 26, 26, 0.35) !important;
+          border-color: #ff1a1a !important;
+        }
+      `}</style>
+      <motion.div
+        className="tablet-neon-frame max-w-5xl mx-auto w-full rounded-[30px]"
+        style={{
+          rotateX: rotate,
+          scale,
+          height: '600px',
+          maxWidth: '1000px',
+          width: '100%',
+          margin: '0 auto',
+          marginTop: '20px',
+          backgroundColor: '#1b1b1f',
+          borderRadius: '30px',
+          padding: '20px',
+          position: 'relative',
+          zIndex: 10
+        }}
+      >
+        <div className="overflow-hidden rounded-2xl bg-gray-100" style={{ width: '100%', height: '100%', backgroundColor: 'white' }}>
+          {children}
+        </div>
+      </motion.div>
+    </>
   );
 };

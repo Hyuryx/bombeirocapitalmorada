@@ -4,9 +4,10 @@
       #view-regras .main-content {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
         padding-top: 10px;
-        padding-bottom: 10px;
+        padding-bottom: 20px;
+        height: 100%;
+        overflow-y: auto !important;
       }
       #view-regras .section-header {
         margin-bottom: 5px;
@@ -34,13 +35,14 @@
         margin-bottom: 5px;
       }
       #view-regras .site-footer {
-        margin-top: auto;
-        padding: 10px 0;
+        margin-top: 30px;
+        padding: 20px 0 30px;
+        flex-shrink: 0;
       }
     </style>
     
         <div class="background-overlay bg-regras"></div>
-        <main class="main-content no-scrollbar" style="height: 100%; overflow-y: hidden;">
+        <main class="main-content" style="height: 100%; overflow-y: auto;">
             <section id="regras-condutas" class="content-section active">
                 <header class="section-header">
                     <h1 class="glitch-title">Regras e Condutas</h1>

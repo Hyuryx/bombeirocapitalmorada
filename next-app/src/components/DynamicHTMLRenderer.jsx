@@ -22,6 +22,7 @@ import ReactNumeracaoFoneticaPixelCard from './ReactNumeracaoFoneticaPixelCard';
 import ReactPadraoRadioPixelCard from './ReactPadraoRadioPixelCard';
 import GlitchText from './GlitchText';
 import FallingText from './FallingText';
+import TextType from './TextType';
 
 const Livro3D = dynamic(() => import('./Livro3D'), { ssr: false });
 
@@ -63,13 +64,48 @@ export default function DynamicHTMLRenderer({ htmlString }) {
 
   const options = {
     replace: (domNode) => {
+      if (domNode.type === 'tag' && (domNode.name === 'footer' || (domNode.attribs && domNode.attribs.class && domNode.attribs.class.includes('site-footer')))) {
+        const style = domNode.attribs?.style ? attributesToProps(domNode.attribs).style : {};
+        const className = domNode.attribs?.class || 'site-footer';
+        let text = '© 2026 ERREJOTA. Todos os direitos reservados.';
+        
+        const findText = (node) => {
+          if (!node) return '';
+          if (node.type === 'text') return node.data || '';
+          if (node.children) return node.children.map(findText).join('');
+          return '';
+        };
+        const extracted = findText(domNode).trim();
+        if (extracted && extracted.length > 5) {
+          text = extracted;
+        }
+
+        return (
+          <footer className={className} style={{ ...style, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px 0' }}>
+            <TextType
+              text={[text, 'Bombeiros Capital Morada 🔥', text]}
+              typingSpeed={55}
+              deletingSpeed={35}
+              pauseDuration={3500}
+              initialDelay={600}
+              loop={true}
+              showCursor={true}
+              cursorCharacter="_"
+              cursorBlinkDuration={0.5}
+              className="footer-text-type"
+              style={{ fontSize: '13px', color: '#9ba3b2', fontFamily: 'inherit', letterSpacing: '1px', fontWeight: 500 }}
+            />
+          </footer>
+        );
+      }
+
       if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.class && domNode.attribs.class.includes('falling-subtitle')) {
         const text = domNode.children?.map(c => c.data || '').join('').trim();
         const highlightWords = domNode.attribs['data-highlight']
           ? domNode.attribs['data-highlight'].split(',')
           : [];
         return (
-          <div style={{ width: '100%', maxWidth: '700px', height: '200px', position: 'relative', margin: '0 auto' }}>
+          <div style={{ width: '100%', maxWidth: '700px', height: '120px', position: 'relative', margin: '0 auto' }}>
             <FallingText
               text={text}
               highlightWords={highlightWords}

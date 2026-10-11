@@ -22,9 +22,9 @@ export default function ReactPlanilhaTablet() {
                     else if (iframe.msRequestFullscreen) iframe.msRequestFullscreen();
                   }
                 }} 
-                style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(0,0,0,0.7)', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '5px', cursor: 'pointer', zIndex: 10, fontWeight: 'bold', transition: 'all 0.3s' }} 
-                onMouseOver={(e) => e.currentTarget.style.background='rgba(0,0,0,0.9)'} 
-                onMouseOut={(e) => e.currentTarget.style.background='rgba(0,0,0,0.7)'}>
+                style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(0,0,0,0.75)', color: 'white', border: '1px solid rgba(255,26,26,0.5)', padding: '8px 15px', borderRadius: '6px', cursor: 'pointer', zIndex: 10, fontWeight: 'bold', transition: 'all 0.3s' }} 
+                onMouseOver={(e) => { e.currentTarget.style.background='#ff1a1a'; e.currentTarget.style.boxShadow='0 0 15px rgba(255,26,26,0.8)'; }} 
+                onMouseOut={(e) => { e.currentTarget.style.background='rgba(0,0,0,0.75)'; e.currentTarget.style.boxShadow='none'; }}>
                 ⛶ Expandir Tela Cheia
             </button>
             <iframe 

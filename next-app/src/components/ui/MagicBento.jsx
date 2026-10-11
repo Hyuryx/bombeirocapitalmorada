@@ -6,7 +6,7 @@ import './MagicBento.css';
 
 const DEFAULT_PARTICLE_COUNT = 12;
 const DEFAULT_SPOTLIGHT_RADIUS = 300;
-const DEFAULT_GLOW_COLOR = '132, 0, 255';
+const DEFAULT_GLOW_COLOR = '255, 26, 26';
 const MOBILE_BREAKPOINT = 768;
 
 const createParticleElement = (x, y, color = DEFAULT_GLOW_COLOR) => {
@@ -295,6 +295,11 @@ const GlobalSpotlight = ({
   useEffect(() => {
     if (disableAnimations || !gridRef?.current || !enabled) return;
 
+    if (typeof document !== 'undefined') {
+      document.querySelectorAll('.global-spotlight').forEach(el => el.remove());
+    }
+
+    const activeColor = glowColor || DEFAULT_GLOW_COLOR;
     const spotlight = document.createElement('div');
     spotlight.className = 'global-spotlight';
     spotlight.style.cssText = `
@@ -304,11 +309,11 @@ const GlobalSpotlight = ({
       border-radius: 50%;
       pointer-events: none;
       background: radial-gradient(circle,
-        rgba(${glowColor}, 0.15) 0%,
-        rgba(${glowColor}, 0.08) 15%,
-        rgba(${glowColor}, 0.04) 25%,
-        rgba(${glowColor}, 0.02) 40%,
-        rgba(${glowColor}, 0.01) 65%,
+        rgba(${activeColor}, 0.15) 0%,
+        rgba(${activeColor}, 0.08) 15%,
+        rgba(${activeColor}, 0.04) 25%,
+        rgba(${activeColor}, 0.02) 40%,
+        rgba(${activeColor}, 0.01) 65%,
         transparent 70%
       );
       z-index: 200;
@@ -407,7 +412,10 @@ const GlobalSpotlight = ({
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
-      spotlightRef.current?.parentNode?.removeChild(spotlightRef.current);
+      spotlightRef.current?.remove();
+      if (typeof document !== 'undefined') {
+        document.querySelectorAll('.global-spotlight').forEach(el => el.remove());
+      }
     };
   }, [gridRef, disableAnimations, enabled, spotlightRadius, glowColor]);
 

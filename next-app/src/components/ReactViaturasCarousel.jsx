@@ -59,7 +59,7 @@ export default function ReactViaturasCarousel() {
 
   return (
     <>
-      <div style={{ width: '100%', height: '550px', position: 'relative', marginTop: '10px' }}>
+      <div style={{ width: '100%', height: '620px', position: 'relative', marginTop: '10px' }}>
         <CircularCarousel
           items={viaturaItems}
           preset="cylinder"
@@ -70,7 +70,7 @@ export default function ReactViaturasCarousel() {
           captions={true}
           gap={25}
           tilt={-5}
-          curve={1}
+          curve={0}
           perspective={2500}
           autoplay="drift"
           interval={3}

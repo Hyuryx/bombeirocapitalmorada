@@ -129,7 +129,7 @@ export default function ReactAvisosGerais() {
 
   if (avisos.length === 0) {
     return (
-      <div style={{ width: '100%', maxWidth: '600px', height: '200px', position: 'relative', margin: '0 auto' }}>
+      <div style={{ width: '100%', maxWidth: '600px', height: '120px', position: 'relative', margin: '0 auto' }}>
         <FallingText
           text="Nenhum aviso disponível no momento."
           highlightWords={["Nenhum", "aviso"]}

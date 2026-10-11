@@ -9,7 +9,7 @@ export default function ReactPosicoesViaturas() {
       id: 1,
       title: 'P1 - Condutor',
       description: 'Responsável pela condução segura, rota, posicionamento da viatura e atenção ao trânsito.',
-      neonColor: '#40c4ff',
+      neonColor: '#ff1a1a',
       icon: (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="10"/>
@@ -25,7 +25,7 @@ export default function ReactPosicoesViaturas() {
       id: 2,
       title: 'P2 - Comunicação',
       description: 'Pode modular com a Central, repassar informações importantes e auxiliar na organização da ocorrência.',
-      neonColor: '#fb923c',
+      neonColor: '#ff1a1a',
       icon: (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/>
@@ -40,7 +40,7 @@ export default function ReactPosicoesViaturas() {
       id: 3,
       title: 'P3 - Apoio Operacional',
       description: 'Auxilia na sinalização, atendimento, equipamentos, segurança do local e demais funções.',
-      neonColor: '#4ade80',
+      neonColor: '#ff1a1a',
       icon: (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
