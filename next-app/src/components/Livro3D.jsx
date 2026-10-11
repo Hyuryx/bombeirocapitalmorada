@@ -31,6 +31,24 @@ export default function Livro3D({ curso }) {
   const [paginaAtual, setPaginaAtual] = useState(0);
   const [isReady, setIsReady] = useState(false);
   const [imagemExpandida, setImagemExpandida] = useState(null);
+  const [dimensoes, setDimensoes] = useState({ largura: 450, altura: 630 });
+
+  useEffect(() => {
+    const atualizar = () => {
+      if (typeof window !== 'undefined') {
+        if (window.innerWidth < 500) {
+          setDimensoes({ largura: 320, altura: 450 });
+        } else if (window.innerWidth < 800) {
+          setDimensoes({ largura: 360, altura: 505 });
+        } else {
+          setDimensoes({ largura: 450, altura: 630 });
+        }
+      }
+    };
+    atualizar();
+    window.addEventListener('resize', atualizar);
+    return () => window.removeEventListener('resize', atualizar);
+  }, []);
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -272,19 +290,20 @@ export default function Livro3D({ curso }) {
         </p>
       </header>
 
-      <div className={styles.areaLivro}>
+      <div className={styles.areaLivro} style={{ '--capa-offset': `${dimensoes.largura / 2}px` }}>
         <div className={styles.sombraBase} />
 
         {isReady && (
           <HTMLFlipBook
+            key={`${dimensoes.largura}-${dimensoes.altura}`}
             ref={livroRef}
-            width={380}
-            height={530}
+            width={dimensoes.largura}
+            height={dimensoes.altura}
             size="fixed"
-            minWidth={250}
-            maxWidth={400}
-            minHeight={350}
-            maxHeight={560}
+            minWidth={280}
+            maxWidth={500}
+            minHeight={390}
+            maxHeight={700}
             drawShadow={true}
             maxShadowOpacity={0.75}
             flippingTime={1100}
@@ -297,7 +316,7 @@ export default function Livro3D({ curso }) {
             showPageCorners={false}
             autoSize={false}
             swipeDistance={30}
-            startPage={0}
+            startPage={paginaAtual}
             className={`${styles.flipbook} ${paginaAtual === 0 ? styles.isCover : ''}`}
             onFlip={(e) => setPaginaAtual(e.data)}
           >
