@@ -1,19 +1,16 @@
 'use client';
 import React from 'react';
 import { ContainerScroll } from '@/components/ui/container-scroll-animation';
+import GlitchText from './GlitchText';
 
 export default function ReactPlanilhaTablet() {
   return (
     <div className="flex flex-col" style={{ zIndex: 10, width: '90%', maxWidth: '1200px', alignSelf: 'center' }}>
       <ContainerScroll
         titleComponent={
-          <>
-            <h1 style={{ color: 'white', marginBottom: '1rem', textAlign: 'center' }}>
-              <span style={{ fontSize: '6rem', fontWeight: 'bold', marginTop: '0.25rem', lineHeight: 1, textShadow: '0 10px 15px rgba(0,0,0,0.5)', display: 'block' }}>
-                PLANILHA
-              </span>
-            </h1>
-          </>
+          <h1 className="glitch-title" style={{ marginBottom: '1rem', textAlign: 'center' }}>
+            <GlitchText speed={1} enableShadows enableOnHover={false}>PLANILHAS</GlitchText>
+          </h1>
         }>
         <div style={{ position: 'relative', width: '100%', height: '100%', borderRadius: '10px', overflow: 'hidden' }}>
             <button 

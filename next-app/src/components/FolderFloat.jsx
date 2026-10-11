@@ -334,6 +334,7 @@ export default function FolderFloat({
       data-live={live ? '' : undefined}
       data-physics={physics ? '' : undefined}
       data-trigger={trigger}
+      data-has-image={frontImage ? '' : undefined}
       onPointerEnter={hover ? () => set(true) : undefined}
       onPointerLeave={
         hover
@@ -352,6 +353,7 @@ export default function FolderFloat({
         '--ff-w': `${width}px`,
         '--ff-h': `${height}px`,
         '--ff-r': `${radius}px`,
+        '--ff-tab': `${Math.round(radius * 1.5)}px`,
         '--ff-back': folderColor,
         '--ff-front': frontColor,
         '--ff-paper': paperColor,
@@ -406,15 +408,15 @@ export default function FolderFloat({
         <span className="folder-float__back" aria-hidden="true" />
         <span className="folder-float__paper" aria-hidden="true" />
         <span 
-          className="folder-float__front" 
+          className={`folder-float__front${frontImage ? ' has-image' : ''}`} 
           aria-hidden="true"
           style={frontImage ? {
             backgroundImage: `url(${frontImage})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-            border: '2px solid rgba(255, 68, 68, 0.3)',
-            boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)'
+            border: '2px solid rgba(255, 68, 68, 0.4)',
+            boxShadow: '0 8px 30px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.3)'
           } : undefined}
         >
           {!frontImage && (

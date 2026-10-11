@@ -17,6 +17,11 @@ import ReactPlanilhaTablet from './ReactPlanilhaTablet';
 import ReactHierarquiaMagicBento from './ReactHierarquiaMagicBento';
 import ReactGaleriaFolders from './ReactGaleriaFolders';
 import ReactPosicoesViaturas from './ReactPosicoesViaturas';
+import ReactAlfabetoFoneticoPixelCard from './ReactAlfabetoFoneticoPixelCard';
+import ReactNumeracaoFoneticaPixelCard from './ReactNumeracaoFoneticaPixelCard';
+import ReactPadraoRadioPixelCard from './ReactPadraoRadioPixelCard';
+import GlitchText from './GlitchText';
+import FallingText from './FallingText';
 
 const Livro3D = dynamic(() => import('./Livro3D'), { ssr: false });
 
@@ -58,6 +63,39 @@ export default function DynamicHTMLRenderer({ htmlString }) {
 
   const options = {
     replace: (domNode) => {
+      if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.class && domNode.attribs.class.includes('falling-subtitle')) {
+        const text = domNode.children?.map(c => c.data || '').join('').trim();
+        const highlightWords = domNode.attribs['data-highlight']
+          ? domNode.attribs['data-highlight'].split(',')
+          : [];
+        return (
+          <div style={{ width: '100%', maxWidth: '700px', height: '200px', position: 'relative', margin: '0 auto' }}>
+            <FallingText
+              text={text}
+              highlightWords={highlightWords}
+              highlightClass="highlighted"
+              trigger="hover"
+              backgroundColor="transparent"
+              gravity={0.56}
+              fontSize="1.1rem"
+              mouseConstraintStiffness={0.9}
+            />
+          </div>
+        );
+      }
+
+      if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.class && domNode.attribs.class.includes('glitch-title')) {
+        const text = domNode.children?.map(c => c.data || '').join('').trim();
+        const customStyle = domNode.attribs.style ? attributesToProps(domNode.attribs).style : {};
+        return (
+          <h1 className="glitch-title" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', ...customStyle }}>
+            <GlitchText speed={1} enableShadows enableOnHover={false}>
+              {text}
+            </GlitchText>
+          </h1>
+        );
+      }
+
       if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id === 'lista-avisos-gerais') {
         return <ReactAvisosGerais />;
       }
@@ -101,6 +139,18 @@ export default function DynamicHTMLRenderer({ htmlString }) {
 
       if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id === 'viaturas-posicoes-grid') {
         return <ReactPosicoesViaturas />;
+      }
+
+      if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id === 'react-alfabeto-fonetico-container') {
+        return <ReactAlfabetoFoneticoPixelCard />;
+      }
+
+      if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id === 'react-numeracao-fonetica-container') {
+        return <ReactNumeracaoFoneticaPixelCard />;
+      }
+
+      if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id === 'react-padrao-radio-container') {
+        return <ReactPadraoRadioPixelCard />;
       }
 
       if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id === 'viaturas-carousel-grid') {

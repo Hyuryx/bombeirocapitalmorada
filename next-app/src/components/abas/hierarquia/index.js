@@ -25,7 +25,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
         <main class="main-content" style="height: 100%; overflow-y: auto;">
             <section id="hierarquia-lista" class="content-section active">
                 <header class="section-header">
-                    <h1>Hierarquia e Patentes</h1>
+                    <h1 class="glitch-title">Hierarquia e Patentes</h1>
                     <p>Estrutura organizacional e patentes do Corpo de Bombeiros.</p>
                 </header>
                 <div class="cards-grid" style="align-items: flex-start;">

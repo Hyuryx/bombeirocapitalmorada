@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'motion/react';
 import TearTicket from './TearTicket';
+import FallingText from './FallingText';
 
 function DraggableTicket({ aviso, index, total, onClickModal }) {
   const zIndex = total - index;
@@ -127,7 +128,19 @@ export default function ReactAvisosGerais() {
   }, []);
 
   if (avisos.length === 0) {
-    return <p style={{ color: 'white', textAlign: 'center' }}>Nenhum aviso disponível no momento.</p>;
+    return (
+      <div style={{ width: '100%', maxWidth: '600px', height: '200px', position: 'relative', margin: '0 auto' }}>
+        <FallingText
+          text="Nenhum aviso disponível no momento."
+          highlightWords={["Nenhum", "aviso"]}
+          trigger="hover"
+          backgroundColor="transparent"
+          gravity={0.56}
+          fontSize="1.2rem"
+          mouseConstraintStiffness={0.9}
+        />
+      </div>
+    );
   }
 
   return (

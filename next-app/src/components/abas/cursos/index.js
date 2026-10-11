@@ -118,8 +118,8 @@ export default `<div id="view-cursos" class="global-view" style="display: none;"
             <main class="main-content">
                 <section id="curso-evoluir" class="content-section active">
                     <header class="section-header">
-                        <h1>🚀 COMO EVOLUIR</h1>
-                        <p>Confira abaixo o tempo e os requisitos de cada promoção na corporação.</p>
+                        <h1 class="glitch-title">Como Evoluir</h1>
+                        <p class="falling-subtitle" data-highlight="requisitos,promoção,corporação.">Confira abaixo o tempo e os requisitos de cada promoção na corporação.</p>
                     </header>
 
                     <!-- Banner de Introdução com Efeito RGB -->

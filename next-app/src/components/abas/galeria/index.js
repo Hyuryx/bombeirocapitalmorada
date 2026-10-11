@@ -1,10 +1,10 @@
 export default `<div id="view-galeria" class="global-view" style="display: none;">
         <div class="background-overlay bg-galeria"></div>
-        <main class="main-content" style="height: 100%; overflow-y: auto;">
-            <section id="galeria" class="content-section active">
+        <main class="main-content" style="height: 100%; overflow-y: auto; display: flex; flex-direction: column; box-sizing: border-box;">
+            <section id="galeria" class="content-section active" style="flex: 1 0 auto;">
                 <header class="section-header">
-                    <h1>Galeria da Corporação</h1>
-                    <p>Registros fotográficos e vídeos</p>
+                    <h1 class="glitch-title">Galeria da Corporação</h1>
+                    <p class="falling-subtitle" data-highlight="Registros,fotográficos,vídeos">Registros fotográficos e vídeos</p>
                 </header>
                 <!-- Menu de Pastas da Galeria -->
                 <div id="galeria-menu" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; margin: 40px auto; padding: 0 20px; width: 100%; max-width: 1200px;">
@@ -74,7 +74,7 @@ export default `<div id="view-galeria" class="global-view" style="display: none;
                 </div>
             </section>
             <!-- Rodapé Centralizado -->
-            <footer class="site-footer">
+            <footer class="site-footer" style="margin-top: auto; padding: 30px 0 20px; flex-shrink: 0;">
                 <p>© 2026 ERREJOTA. Todos os direitos reservados.</p>
             </footer>
         </main>

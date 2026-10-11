@@ -1,6 +1,8 @@
 'use client';
 import React from 'react';
 import MagicBento from '@/components/ui/MagicBento';
+import GlitchText from './GlitchText';
+import FallingText from './FallingText';
 
 const patentes = [
   { rank: "Recruta (RC)", color: "cyan-card", img: "recruta.png", desc: "Integrante em período inicial de formação, responsável por aprender os procedimentos e preparar-se para Soldado." },
@@ -119,8 +121,18 @@ export default function ReactHierarquiaMagicBento() {
       
       {/* Intro Header */}
       <header className="section-header" style={{ position: 'relative', zIndex: 10, textAlign: 'center', paddingTop: '50px', width: '100%' }}>
-          <h1 style={{ color: '#fff', fontSize: '3rem', letterSpacing: '5px', textShadow: '0 0 10px rgba(255,255,255,0.2)' }}>Hierarquia e Patentes</h1>
-          <p style={{ color: '#aaa', fontSize: '1.1rem', marginTop: '10px' }}>Estrutura organizacional e patentes do Corpo de Bombeiros.</p>
+          <h1 className="glitch-title"><GlitchText speed={1} enableShadows enableOnHover={false}>Hierarquia e Patentes</GlitchText></h1>
+          <div style={{ width: '100%', maxWidth: '700px', height: '200px', position: 'relative', margin: '10px auto 0 auto' }}>
+            <FallingText
+              text="Estrutura organizacional e patentes do Corpo de Bombeiros."
+              highlightWords={["Estrutura", "patentes", "Bombeiros."]}
+              trigger="hover"
+              backgroundColor="transparent"
+              gravity={0.56}
+              fontSize="1.1rem"
+              mouseConstraintStiffness={0.9}
+            />
+          </div>
       </header>
 
       {/* Neon style for Hierarquia text card */}

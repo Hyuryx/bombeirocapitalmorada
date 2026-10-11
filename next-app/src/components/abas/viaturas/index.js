@@ -20,8 +20,8 @@ export default `<div id="view-viaturas" class="global-view" style="display: none
             </style>
             <section id="viaturas-qsv" class="content-section active">
                 <header class="section-header">
-                    <h1>Posições e Viaturas (QSV)</h1>
-                    <p>Funções na viatura e catálogo oficial.</p>
+                    <h1 class="glitch-title">Posições e Viaturas (QSV)</h1>
+                    <p class="falling-subtitle" data-highlight="Funções,viatura,catálogo">Funções na viatura e catálogo oficial.</p>
                 </header>
                 <div id="viaturas-posicoes-grid" class="cards-grid" style="margin-bottom: 10px; gap: 10px;">
                     <div class="card info-card neon-card-viatura" style="padding: 10px 15px; min-height: unset;">

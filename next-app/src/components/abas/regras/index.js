@@ -43,8 +43,8 @@ export default `<div id="view-regras" class="global-view" style="display: none;"
         <main class="main-content no-scrollbar" style="height: 100%; overflow-y: hidden;">
             <section id="regras-condutas" class="content-section active">
                 <header class="section-header">
-                    <h1>Regras e Condutas</h1>
-                    <p>Postura operacional, restrições e diretrizes do departamento.</p>
+                    <h1 class="glitch-title">Regras e Condutas</h1>
+                    <p class="falling-subtitle" data-highlight="Postura,operacional,diretrizes">Postura operacional, restrições e diretrizes do departamento.</p>
                 </header>
                 <div id="regras-cards-grid" class="cards-grid">
                     <div class="card info-card blue-card">

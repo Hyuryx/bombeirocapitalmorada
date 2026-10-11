@@ -67,7 +67,7 @@
 
                 <section id="home" class="content-section active">
                     <header class="section-header">
-                        <h1>Apresentação</h1>
+                        <h1 class="glitch-title">Apresentação</h1>
                         <p>Apostila Geral de Modulação - Capital Morada</p>
                     </header>
                     <div id="modulacao-bounce-cards-grid" class="cards-grid">
@@ -163,45 +163,7 @@
                         <h1>Alfabeto Fonético</h1>
                         <p>Utilizado para soletrar nomes, placas, e endereços com precisão.</p>
                     </header>
-                    <div class="split-view" style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; justify-content: center; margin-top: 20px;">
-                        <!-- Image Side -->
-                        <div style="flex: 1 1 300px; max-width: 500px;">
-                            <img src="assets/codigos de comunicaçao/fonetico.png" alt="Guia Alfabeto Fonético" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
-                        </div>
-                        
-                        <!-- Card Side -->
-                        <div class="card info-card purple-card" style="flex: 2 1 400px;">
-                            <h2 style="margin: 0 0 15px; font-size: 1.2rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Tabela Fonética</h2>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; text-align: center;">
-                                <div><strong style="color: var(--primary-green);">A</strong><br>Alfa</div>
-                                <div><strong style="color: var(--primary-green);">B</strong><br>Bravo</div>
-                                <div><strong style="color: var(--primary-green);">C</strong><br>Charlie</div>
-                                <div><strong style="color: var(--primary-green);">D</strong><br>Delta</div>
-                                <div><strong style="color: var(--primary-green);">E</strong><br>Echo</div>
-                                <div><strong style="color: var(--primary-green);">F</strong><br>Fox</div>
-                                <div><strong style="color: var(--primary-green);">G</strong><br>Golf</div>
-                                <div><strong style="color: var(--primary-green);">H</strong><br>Hotel</div>
-                                <div><strong style="color: var(--primary-green);">I</strong><br>Índia</div>
-                                <div><strong style="color: var(--primary-green);">J</strong><br>Juliet</div>
-                                <div><strong style="color: var(--primary-green);">K</strong><br>Kilo</div>
-                                <div><strong style="color: var(--primary-green);">L</strong><br>Lima</div>
-                                <div><strong style="color: var(--primary-green);">M</strong><br>Mike</div>
-                                <div><strong style="color: var(--primary-green);">N</strong><br>November</div>
-                                <div><strong style="color: var(--primary-green);">O</strong><br>Oscar</div>
-                                <div><strong style="color: var(--primary-green);">P</strong><br>Papa</div>
-                                <div><strong style="color: var(--primary-green);">Q</strong><br>Quebec</div>
-                                <div><strong style="color: var(--primary-green);">R</strong><br>Romeu</div>
-                                <div><strong style="color: var(--primary-green);">S</strong><br>Sierra</div>
-                                <div><strong style="color: var(--primary-green);">T</strong><br>Tango</div>
-                                <div><strong style="color: var(--primary-green);">U</strong><br>Uniform</div>
-                                <div><strong style="color: var(--primary-green);">V</strong><br>Victor</div>
-                                <div><strong style="color: var(--primary-green);">W</strong><br>Whiskey</div>
-                                <div><strong style="color: var(--primary-green);">X</strong><br>X-Ray</div>
-                                <div><strong style="color: var(--primary-green);">Y</strong><br>Yankee</div>
-                                <div><strong style="color: var(--primary-green);">Z</strong><br>Zulu</div>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="react-alfabeto-fonetico-container"></div>
                 </section>
 
                 <section id="numeracao-fonetica" class="content-section">
@@ -210,29 +172,7 @@
                         <p>Padroniza a transmissão dos números pelo rádio.</p>
                     </header>
                     
-                    <div class="split-view" style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; justify-content: center; margin-top: 20px;">
-                        <!-- Card Side -->
-                        <div class="card info-card blue-card" style="flex: 2 1 400px;">
-                            <h2 style="margin: 0 0 15px; font-size: 1.2rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Tabela Numérica</h2>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; text-align: center;">
-                                <div><strong style="color: var(--primary-green); font-size: 1.2rem;">1</strong><br>Primeiro</div>
-                                <div><strong style="color: var(--primary-green); font-size: 1.2rem;">2</strong><br>Segundo</div>
-                                <div><strong style="color: var(--primary-green); font-size: 1.2rem;">3</strong><br>Terceiro</div>
-                                <div><strong style="color: var(--primary-green); font-size: 1.2rem;">4</strong><br>Quarto</div>
-                                <div><strong style="color: var(--primary-green); font-size: 1.2rem;">5</strong><br>Quinto</div>
-                                <div><strong style="color: var(--primary-green); font-size: 1.2rem;">6</strong><br>Sexto</div>
-                                <div><strong style="color: var(--primary-green); font-size: 1.2rem;">7</strong><br>Sétimo</div>
-                                <div><strong style="color: var(--primary-green); font-size: 1.2rem;">8</strong><br>Oitavo</div>
-                                <div><strong style="color: var(--primary-green); font-size: 1.2rem;">9</strong><br>Nono</div>
-                                <div><strong style="color: var(--primary-green); font-size: 1.2rem;">0</strong><br>Nulo / Negativo</div>
-                            </div>
-                        </div>
-
-                        <!-- Image Side -->
-                        <div style="flex: 1 1 300px; max-width: 500px;">
-                            <img src="assets/codigos de comunicaçao/numeros.png" alt="Guia Numeração Fonética" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
-                        </div>
-                    </div>
+                    <div id="react-numeracao-fonetica-container"></div>
                 </section>
 
                 <section id="padrao-radio" class="content-section">
@@ -241,23 +181,7 @@
                         <p>Modelos visuais e exemplos de comunicação em serviço.</p>
                     </header>
                     
-                    <div class="cards-grid" style="padding: 10px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                        <img src="assets/comunicaçao de entrada e saida de serviço/comunicaçao.png" alt="Comunicação CBM" style="width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                        <img src="assets/comunicaçao de entrada e saida de serviço/radio_entrada_e_saida.png" alt="Entrada e Saída" style="width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                        <img src="assets/comunicaçao de entrada e saida de serviço/pausa.png" alt="Pausa" style="width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                        <img src="assets/comunicaçao de entrada e saida de serviço/deslocamento.png" alt="Deslocamento" style="width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                    </div>
-                    
-                    <div class="cards-grid" style="margin-top: 20px;">
-                        <div class="card info-card purple-card">
-                            <h3>Comunicação Voltada ao Bombeiro</h3>
-                            <p>Foco em assistência, orientação, cuidado e segurança da vítima. Diferente da policial, o contato inicial deve buscar acalmar e prestar apoio. Informe apenas dados necessários: local, tipo, vítimas, riscos, apoio.</p>
-                        </div>
-                        <div class="card info-card yellow-card">
-                            <h3>Boas Práticas</h3>
-                            <p>Mantenha tom calmo; evite expor dados desnecessários; não grite; não discuta; confirme com QSL; peça QSM quando necessário.</p>
-                        </div>
-                    </div>
+                    <div id="react-padrao-radio-container"></div>
 
                     <h2 style="margin: 30px 0 15px; font-size: 1.3rem; color: #fff; text-align: center; text-transform: uppercase; letter-spacing: 1px;">Transcrição de Frequência</h2>
                     

@@ -1,7 +1,5 @@
 export default `<div id="view-planilhas" class="global-view temp-view" style="display: none; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 50px; overflow-y: auto; overflow-x: hidden;">
         <div class="background-overlay bg-planilhas"></div>
-        <h1 style="color: #fff; font-size: 3rem; letter-spacing: 5px; text-shadow: 0 0 10px rgba(255,255,255,0.2); margin-top: 50px; position: relative; z-index: 2;">
-            </h1>
 
         <div id="planilha-target" style="position: relative; z-index: 2; width: 90%; max-width: 1200px; height: 60vh; margin-top: 20px; border-radius: 10px; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.5); background: #fff;">
             <!-- Botão de Expandir -->

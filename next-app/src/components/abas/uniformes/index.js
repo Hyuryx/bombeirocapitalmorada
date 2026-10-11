@@ -4,8 +4,8 @@ export default `<div id="view-uniformes" class="global-view" style="display: non
         <main class="main-content" style="height: 100%; overflow-y: auto;">
             <section class="content-section active">
                 <header class="section-header">
-                    <h1>Uniformes e Fardamentos</h1>
-                    <p>Catálogo oficial de uniformes do Corpo de Bombeiros Capital Morada.</p>
+                    <h1 class="glitch-title">Uniformes e Fardamentos</h1>
+                    <p class="falling-subtitle" data-highlight="Catálogo,Bombeiros,Capital">Catálogo oficial de uniformes do Corpo de Bombeiros Capital Morada.</p>
                 </header>
                 <div id="uniformes-cards-grid" class="cards-grid">
                     <div class="card info-card green-card">

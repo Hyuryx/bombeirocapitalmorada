@@ -20,7 +20,7 @@ export default function ReactGaleriaFolders() {
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '40px', margin: '40px auto', padding: '0 20px', width: '100%', maxWidth: '1200px', placeItems: 'center' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '40px', margin: '30px auto', padding: '0 20px', width: '100%', maxWidth: '1050px', placeItems: 'center' }}>
       <FolderFloat
         items={videoItems}
         label=""
@@ -32,22 +32,22 @@ export default function ReactGaleriaFolders() {
         onClickFolder={handleOpenVideos}
         onSelect={handleOpenVideos}
         frontImage="assets/galeria/videos.png"
-        folderColor="#3f3f46"
-        frontColor="#52525b"
+        folderColor="#27272a"
+        frontColor="#3f3f46"
         paperColor="#f5f5f5"
         itemColor="#ff4444"
         itemTextColor="#ffffff"
-        width={350}
-        height={350}
-        radius={15}
-        spread={250}
-        lift={50}
-        tilt={15}
-        flapAngle={45}
-        restAngle={20}
+        width={420}
+        height={460}
+        radius={16}
+        spread={280}
+        lift={60}
+        tilt={12}
+        flapAngle={35}
+        restAngle={10}
         openDuration={600}
         stagger={60}
-        bounce={0.4}
+        bounce={0.35}
       />
 
       <FolderFloat
@@ -61,22 +61,22 @@ export default function ReactGaleriaFolders() {
         onClickFolder={handleOpenFotos}
         onSelect={handleOpenFotos}
         frontImage="assets/galeria/foto.png"
-        folderColor="#3f3f46"
-        frontColor="#52525b"
+        folderColor="#27272a"
+        frontColor="#3f3f46"
         paperColor="#f5f5f5"
         itemColor="#ff4444"
         itemTextColor="#ffffff"
-        width={350}
-        height={350}
-        radius={15}
-        spread={250}
-        lift={50}
-        tilt={15}
-        flapAngle={45}
-        restAngle={20}
+        width={420}
+        height={460}
+        radius={16}
+        spread={280}
+        lift={60}
+        tilt={12}
+        flapAngle={35}
+        restAngle={10}
         openDuration={600}
         stagger={60}
-        bounce={0.4}
+        bounce={0.35}
       />
     </div>
   );

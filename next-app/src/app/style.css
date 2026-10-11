@@ -2627,3 +2627,21 @@ html {
 
 #view-hierarquia .cards-grid { align-items: start !important; }
 #view-hierarquia .card { height: max-content !important; align-self: start !important; }
+
+/* Rodapé na aba Galeria fixado na parte inferior */
+#view-galeria .main-content {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 100% !important;
+    box-sizing: border-box !important;
+}
+
+#view-galeria .content-section {
+    flex: 1 0 auto !important;
+}
+
+#view-galeria .site-footer {
+    margin-top: auto !important;
+    padding: 30px 0 20px !important;
+    flex-shrink: 0 !important;
+}
