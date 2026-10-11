@@ -1,24 +1,41 @@
 export default `<div id="view-viaturas" class="global-view" style="display: none;">
         <div class="background-overlay bg-viaturas"></div>
         <main class="main-content" style="height: 100%; overflow-y: auto;">
+            <style>
+                @keyframes neon-breathe-babyblue {
+                    0% {
+                        box-shadow: 0 0 2px rgba(64, 196, 255, 0.4), 0 0 10px rgba(64, 196, 255, 0.1);
+                        border: 1px solid rgba(64, 196, 255, 0.3);
+                    }
+                    100% {
+                        box-shadow: 0 0 5px rgba(64, 196, 255, 0.8), 0 0 20px rgba(64, 196, 255, 0.6), 0 0 40px rgba(64, 196, 255, 0.3);
+                        border: 1px solid rgba(64, 196, 255, 1);
+                    }
+                }
+                .neon-card-viatura {
+                    background: transparent !important;
+                    animation: neon-breathe-babyblue 4s infinite alternate ease-in-out;
+                    border-radius: 12px;
+                }
+            </style>
             <section id="viaturas-qsv" class="content-section active">
                 <header class="section-header">
                     <h1>Posições e Viaturas (QSV)</h1>
                     <p>Funções na viatura e catálogo oficial.</p>
                 </header>
-                <div class="cards-grid" style="margin-bottom: 10px; gap: 10px;">
-                    <div class="card info-card blue-card" style="padding: 10px 15px; min-height: unset;">
-                        <h3 style="margin-bottom: 5px; font-size: 1.1rem;">P1 - Condutor</h3>
-                        <p style="font-size: 0.9rem; margin: 0;">Responsável pela condução segura, rota, posicionamento da viatura e atenção ao trânsito.</p>
+                <div id="viaturas-posicoes-grid" class="cards-grid" style="margin-bottom: 10px; gap: 10px;">
+                    <div class="card info-card neon-card-viatura" style="padding: 10px 15px; min-height: unset;">
+                        <h3 style="margin-bottom: 5px; font-size: 1.1rem; color: #40c4ff;">P1 - Condutor</h3>
+                        <p style="font-size: 0.9rem; margin: 0; color: #fff;">Responsável pela condução segura, rota, posicionamento da viatura e atenção ao trânsito.</p>
                     </div>
-                    <div class="card info-card orange-card" style="padding: 10px 15px; min-height: unset;">
-                        <h3 style="margin-bottom: 5px; font-size: 1.1rem;">P2 - Comunicação</h3>
-                        <p style="font-size: 0.9rem; margin: 0;">Pode modular com a Central, repassar informações importantes e auxiliar na organização da
+                    <div class="card info-card neon-card-viatura" style="padding: 10px 15px; min-height: unset;">
+                        <h3 style="margin-bottom: 5px; font-size: 1.1rem; color: #40c4ff;">P2 - Comunicação</h3>
+                        <p style="font-size: 0.9rem; margin: 0; color: #fff;">Pode modular com a Central, repassar informações importantes e auxiliar na organização da
                             ocorrência.</p>
                     </div>
-                    <div class="card info-card green-card" style="padding: 10px 15px; min-height: unset;">
-                        <h3 style="margin-bottom: 5px; font-size: 1.1rem;">P3 - Apoio Operacional</h3>
-                        <p style="font-size: 0.9rem; margin: 0;">Auxilia na sinalização, atendimento, equipamentos, segurança do local e demais funções.</p>
+                    <div class="card info-card neon-card-viatura" style="padding: 10px 15px; min-height: unset;">
+                        <h3 style="margin-bottom: 5px; font-size: 1.1rem; color: #40c4ff;">P3 - Apoio Operacional</h3>
+                        <p style="font-size: 0.9rem; margin: 0; color: #fff;">Auxilia na sinalização, atendimento, equipamentos, segurança do local e demais funções.</p>
                     </div>
                 </div>
                 <div id="viaturas-carousel-grid" class="cards-grid">

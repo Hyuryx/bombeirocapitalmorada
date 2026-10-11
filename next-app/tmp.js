@@ -1,33 +1,16 @@
 const fs = require('fs');
-const lines = fs.readFileSync('C:/Users/ErreJota/.gemini/antigravity-ide/brain/6d869bb0-a7a0-4a9d-98c3-4cf78a51b42e/.system_generated/steps/474/content.md', 'utf8').split('\n');
-let j = lines.findIndex(l => l.startsWith('{'));
-const json = JSON.parse(lines.slice(j).join('\n'));
-let code = json.files[0].content;
+const file = 'src/app/style.css';
+let content = fs.readFileSync(file, 'utf8');
 
-code = code.replace(
-  'src?: string;',
-  'src?: string | React.ReactNode;'
-);
+const classes = ['.red-card', '.green-card', '.yellow-card', '.blue-card', '.orange-card', '.purple-card', '.cyan-card'];
 
-code = code.replace(
-  'src?: string;',
-  'src?: string | React.ReactNode;'
-);
+classes.forEach(cls => {
+    const regex = new RegExp(cls + '\\s*\\{[^}]*\\}', 'g');
+    content = content.replace(regex, cls + ' { }');
+});
 
-code = code.replace(
-  '<img\n          src={src as string}\n          alt="aceternity logo"\n          className="absolute inset-0 h-full w-full rounded-lg object-cover object-left-top"\n        />',
-  `{typeof src === 'string' ? (
-          <img
-            src={src}
-            alt="aceternity logo"
-            className="absolute inset-0 h-full w-full rounded-lg object-cover object-left-top"
-          />
-        ) : (
-          <div className="absolute inset-0 h-full w-full rounded-lg overflow-hidden bg-[#272729]">
-            {src}
-          </div>
-        )}`
-);
+const defaultRegex = /\.card:not\(\.red-card\)[^\{]*\{[^}]*\}/g;
+content = content.replace(defaultRegex, '.card:not(.red-card):not(.green-card):not(.blue-card):not(.yellow-card):not(.orange-card):not(.purple-card):not(.cyan-card) { }');
 
-fs.mkdirSync('src/components/ui', { recursive: true });
-fs.writeFileSync('src/components/ui/macbook-scroll.tsx', code);
+fs.writeFileSync(file, content);
+console.log("Done");

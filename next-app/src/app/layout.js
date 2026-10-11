@@ -22,7 +22,6 @@ export default function RootLayout({ children }) {
         <meta name="color-scheme" content="dark" />
         <link rel="icon" type="image/png" href="/assets/iconesite/icone.png" />
         <link rel="stylesheet" href="/css/style.css?v=20" />
-        <link rel="stylesheet" href="/css/electric-border.css?v=20" />
         <link rel="stylesheet" href="/css/notificacoes.css?v=20" />
         <link rel="stylesheet" href="/css/border-glow.css" />
       </head>

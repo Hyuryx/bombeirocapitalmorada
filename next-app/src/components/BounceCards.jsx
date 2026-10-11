@@ -131,20 +131,26 @@ export default function BounceCards({
         margin: '0 auto'
       }}
     >
-      {items.map((item, idx) => (
-        <div
-          key={idx}
-          className={`bounce-card bounce-card-${idx}`}
-          style={{
-            transform: transformStyles[idx] ?? 'none',
-            zIndex: 1
-          }}
-          onMouseEnter={() => pushSiblings(idx)}
-          onMouseLeave={resetSiblings}
-        >
-          {item}
-        </div>
-      ))}
+      {items.map((item, idx) => {
+        const itemClass = item?.props?.className || '';
+        return (
+          <div
+            key={idx}
+            className={`bounce-card bounce-card-${idx}`}
+            style={{
+              position: 'absolute',
+              transform: transformStyles[idx] ?? 'none',
+              zIndex: 1,
+              width: '100%',
+              height: '100%'
+            }}
+            onMouseEnter={() => pushSiblings(idx)}
+            onMouseLeave={resetSiblings}
+          >
+            {item}
+          </div>
+        );
+      })}
     </div>
   );
 }

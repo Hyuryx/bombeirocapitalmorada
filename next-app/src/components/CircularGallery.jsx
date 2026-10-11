@@ -1,6 +1,6 @@
 'use client';
 
-import { Camera, Mesh, Plane, Program, Renderer, Texture, Transform } from 'ogl';
+import { Camera, Mesh, Plane, Program, Renderer, Texture, Transform, Raycast, Vec2 } from 'ogl';
 import { useEffect, useRef } from 'react';
 
 import './CircularGallery.css';
@@ -102,6 +102,7 @@ async function resolveFont(font, fontUrl) {
     }
     return resolved;
   } catch (error) {
+    console.error('CircularGallery: unable to load font from', fontUrl, error);
     return font;
   }
 }
@@ -195,7 +196,8 @@ class Media {
     bend,
     textColor,
     borderRadius = 0,
-    font
+    font,
+    data
   }) {
     this.extra = 0;
     this.geometry = geometry;
@@ -212,13 +214,26 @@ class Media {
     this.textColor = textColor;
     this.borderRadius = borderRadius;
     this.font = font;
+    this.neonColor = data && data.neonColor ? data.neonColor : null;
+    this.hasNeon = !!this.neonColor;
+    this.neonColorArr = [0, 0, 0];
+    if (this.hasNeon) {
+       const hex = this.neonColor.replace('#', '');
+       this.neonColorArr[0] = parseInt(hex.substring(0, 2), 16) / 255;
+       this.neonColorArr[1] = parseInt(hex.substring(2, 4), 16) / 255;
+       this.neonColorArr[2] = parseInt(hex.substring(4, 6), 16) / 255;
+    }
+    this.neonMarginX = data && data.neonMarginX ? data.neonMarginX : 0.0;
+    this.neonMarginY = data && data.neonMarginY ? data.neonMarginY : 0.0;
     this.createShader();
     this.createMesh();
     this.createTitle();
     this.onResize();
   }
   createShader() {
-    const texture = new Texture(this.gl, { generateMipmaps: true });
+    const texture = new Texture(this.gl, {
+      generateMipmaps: true
+    });
     this.program = new Program(this.gl, {
       depthTest: false,
       depthWrite: false,
@@ -244,6 +259,11 @@ class Media {
         uniform vec2 uPlaneSizes;
         uniform sampler2D tMap;
         uniform float uBorderRadius;
+        uniform vec3 uNeonColor;
+        uniform float uHasNeon;
+        uniform float uTime;
+        uniform float uMarginX;
+        uniform float uMarginY;
         varying vec2 vUv;
         
         float roundedBoxSDF(vec2 p, vec2 b, float r) {
@@ -262,13 +282,32 @@ class Media {
           );
           vec4 color = texture2D(tMap, uv);
           
-          float d = roundedBoxSDF(vUv - 0.5, vec2(0.5 - uBorderRadius), uBorderRadius);
+          float d = roundedBoxSDF(vUv - 0.5, vec2(0.5 - uMarginX - uBorderRadius, 0.5 - uMarginY - uBorderRadius), uBorderRadius);
           
-          // Smooth antialiasing for edges
           float edgeSmooth = 0.002;
           float alpha = 1.0 - smoothstep(-edgeSmooth, edgeSmooth, d);
           
-          gl_FragColor = vec4(color.rgb, alpha);
+          vec4 finalColor = vec4(color.rgb, alpha * color.a);
+          
+          if (uHasNeon > 0.5) {
+             float outerD = d;
+             float breath = (sin(uTime * 0.5) + 1.0) * 0.5;
+             breath = 0.4 + breath * 0.6;
+             
+             // Outer glow (Thinner)
+             float borderAlpha = (1.0 - smoothstep(0.0, 0.008, outerD)) * smoothstep(-0.01, 0.01, outerD);
+             float glowAlpha = (1.0 - smoothstep(0.0, 0.05, outerD)) * breath;
+             
+             float neonAlpha = max(borderAlpha, glowAlpha);
+             
+             if (outerD > 0.0) {
+                 vec3 coreColor = mix(uNeonColor, vec3(1.0), borderAlpha * 0.5);
+                 finalColor.rgb = coreColor;
+                 finalColor.a = max(finalColor.a, neonAlpha);
+             }
+          }
+          
+          gl_FragColor = finalColor;
         }
       `,
       uniforms: {
@@ -277,12 +316,18 @@ class Media {
         uImageSizes: { value: [0, 0] },
         uSpeed: { value: 0 },
         uTime: { value: 100 * Math.random() },
-        uBorderRadius: { value: this.borderRadius }
+        uBorderRadius: { value: this.borderRadius },
+        uNeonColor: { value: this.neonColorArr },
+        uHasNeon: { value: this.hasNeon ? 1.0 : 0.0 },
+        uMarginX: { value: this.neonMarginX },
+        uMarginY: { value: this.neonMarginY }
       },
       transparent: true
     });
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    if (this.image && !this.image.startsWith('data:')) {
+      img.crossOrigin = 'anonymous';
+    }
     img.src = this.image;
     img.onload = () => {
       texture.image = img;
@@ -307,6 +352,8 @@ class Media {
     });
   }
   update(scroll, direction) {
+    if (!this.viewport) return;
+    
     this.plane.position.x = this.x - scroll.current - this.extra;
 
     const x = this.plane.position.x;
@@ -355,6 +402,7 @@ class Media {
         this.plane.program.uniforms.uViewportSizes.value = [this.viewport.width, this.viewport.height];
       }
     }
+    if (!this.screen || this.screen.width === 0 || this.screen.height === 0) return;
     this.scale = this.screen.height / 1500;
     this.plane.scale.y = (this.viewport.height * (900 * this.scale)) / this.screen.height;
     this.plane.scale.x = (this.viewport.width * (700 * this.scale)) / this.screen.width;
@@ -376,13 +424,17 @@ class App {
       borderRadius = 0,
       font = 'bold 30px Figtree',
       scrollSpeed = 2,
-      scrollEase = 0.05
+      scrollEase = 0.05,
+      onItemClick
     } = {}
   ) {
     document.documentElement.classList.remove('no-js');
     this.container = container;
     this.scrollSpeed = scrollSpeed;
     this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0 };
+    this.onItemClick = onItemClick;
+    this.raycast = new Raycast();
+    this.mouse = new Vec2();
     this.onCheckDebounce = debounce(this.onCheck, 200);
     this.createRenderer();
     this.createCamera();
@@ -419,18 +471,12 @@ class App {
   }
   createMedias(items, bend = 1, textColor, borderRadius, font) {
     const defaultItems = [
-      { image: `https://picsum.photos/seed/1/800/600?grayscale`, text: 'Bridge' },
-      { image: `https://picsum.photos/seed/2/800/600?grayscale`, text: 'Desk Setup' },
-      { image: `https://picsum.photos/seed/3/800/600?grayscale`, text: 'Waterfall' },
-      { image: `https://picsum.photos/seed/4/800/600?grayscale`, text: 'Strawberries' },
-      { image: `https://picsum.photos/seed/5/800/600?grayscale`, text: 'Deep Diving' },
-      { image: `https://picsum.photos/seed/16/800/600?grayscale`, text: 'Train Track' },
-      { image: `https://picsum.photos/seed/17/800/600?grayscale`, text: 'Santorini' },
-      { image: `https://picsum.photos/seed/8/800/600?grayscale`, text: 'Blurry Lights' },
-      { image: `https://picsum.photos/seed/9/800/600?grayscale`, text: 'New York' },
-      { image: `https://picsum.photos/seed/10/800/600?grayscale`, text: 'Good Boy' },
-      { image: `https://picsum.photos/seed/21/800/600?grayscale`, text: 'Coastline' },
-      { image: `https://picsum.photos/seed/12/800/600?grayscale`, text: 'Palm Trees' }
+      { image: `https://picsum.photos/seed/1/800/600?grayscale`, text: 'Regras Gerais' },
+      { image: `https://picsum.photos/seed/2/800/600?grayscale`, text: 'Punições' },
+      { image: `https://picsum.photos/seed/3/800/600?grayscale`, text: 'Conduta' },
+      { image: `https://picsum.photos/seed/4/800/600?grayscale`, text: 'Equipamentos' },
+      { image: `https://picsum.photos/seed/5/800/600?grayscale`, text: 'Apresentação' },
+      { image: `https://picsum.photos/seed/16/800/600?grayscale`, text: 'Uso do Rádio' }
     ];
     const galleryItems = items && items.length ? items : defaultItems;
     this.mediasImages = galleryItems.concat(galleryItems);
@@ -449,7 +495,8 @@ class App {
         bend,
         textColor,
         borderRadius,
-        font
+        font,
+        data: data
       });
     });
   }
@@ -457,6 +504,7 @@ class App {
     this.isDown = true;
     this.scroll.position = this.scroll.current;
     this.start = e.touches ? e.touches[0].clientX : e.clientX;
+    this.clickStart = { x: this.start, y: e.touches ? e.touches[0].clientY : e.clientY, time: Date.now() };
   }
   onTouchMove(e) {
     if (!this.isDown) return;
@@ -464,9 +512,30 @@ class App {
     const distance = (this.start - x) * (this.scrollSpeed * 0.025);
     this.scroll.target = this.scroll.position + distance;
   }
-  onTouchUp() {
+  onTouchUp(e) {
     this.isDown = false;
     this.onCheck();
+    if (this.clickStart && this.onItemClick) {
+      const x = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+      const y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+      const dist = Math.hypot(x - this.clickStart.x, y - this.clickStart.y);
+      if (dist < 10 && Date.now() - this.clickStart.time < 500) {
+        const rect = this.container.getBoundingClientRect();
+        this.mouse.x = 2.0 * (x - rect.left) / rect.width - 1.0;
+        this.mouse.y = 2.0 * (rect.top - y) / rect.height + 1.0;
+        this.raycast.castMouse(this.camera, this.mouse);
+        const meshes = this.medias.map(m => m.plane);
+        const hits = this.raycast.intersectBounds(meshes);
+        if (hits.length > 0) {
+          const hitMesh = hits[0];
+          const hitMedia = this.medias.find(m => m.plane === hitMesh);
+          if (hitMedia) {
+             const originalIndex = hitMedia.index % (this.mediasImages.length / 2);
+             this.onItemClick(originalIndex);
+          }
+        }
+      }
+    }
   }
   onWheel(e) {
     const delta = e.deltaY || e.wheelDelta || e.detail;
@@ -507,6 +576,7 @@ class App {
       width: this.container.clientWidth,
       height: this.container.clientHeight
     };
+    if (this.screen.width === 0 || this.screen.height === 0) return;
     this.renderer.setSize(this.screen.width, this.screen.height);
     this.camera.perspective({
       aspect: this.screen.width / this.screen.height
@@ -520,6 +590,9 @@ class App {
     }
   }
   update() {
+    this.raf = window.requestAnimationFrame(this.update.bind(this));
+    if (!this.viewport) return;
+    
     this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.ease);
     const direction = this.scroll.current > this.scroll.last ? 'right' : 'left';
     if (this.medias) {
@@ -527,7 +600,6 @@ class App {
     }
     this.renderer.render({ scene: this.scene, camera: this.camera });
     this.scroll.last = this.scroll.current;
-    this.raf = window.requestAnimationFrame(this.update.bind(this));
   }
   addEventListeners() {
     this.boundOnResize = this.onResize.bind(this);
@@ -551,9 +623,7 @@ class App {
 
     if (window.ResizeObserver && this.container) {
       this.resizeObserver = new ResizeObserver(() => {
-        if (this.container.clientWidth > 0 && this.container.clientHeight > 0) {
-          this.onResize();
-        }
+        this.onResize();
       });
       this.resizeObserver.observe(this.container);
     }
@@ -569,16 +639,14 @@ class App {
     window.removeEventListener('touchstart', this.boundOnTouchDown);
     window.removeEventListener('touchmove', this.boundOnTouchMove);
     window.removeEventListener('touchend', this.boundOnTouchUp);
-    
-    if (this.resizeObserver) {
-      this.resizeObserver.disconnect();
-    }
-
     if (this.renderer && this.renderer.gl && this.renderer.gl.canvas.parentNode) {
       this.renderer.gl.canvas.parentNode.removeChild(this.renderer.gl.canvas);
     }
     if (this.container) {
       this.container.removeEventListener('keydown', this.boundOnKeyDown);
+    }
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
     }
   }
 }
@@ -591,55 +659,31 @@ export default function CircularGallery({
   font = 'bold 30px Figtree',
   fontUrl,
   scrollSpeed = 2,
-  scrollEase = 0.05
+  scrollEase = 0.05,
+  onItemClick
 }) {
   const containerRef = useRef(null);
   useEffect(() => {
     if (!containerRef.current) return;
     let app;
     let isMounted = true;
-    let initObserver;
-
     resolveFont(font, fontUrl).then(resolvedFont => {
       if (!isMounted || !containerRef.current) return;
-      
-      const initApp = () => {
-        if (app) return;
-        if (containerRef.current.clientWidth === 0 || containerRef.current.clientHeight === 0) return;
-        
-        app = new App(containerRef.current, {
-          items,
-          bend,
-          textColor,
-          borderRadius,
-          font: resolvedFont,
-          scrollSpeed,
-          scrollEase
-        });
-      };
-
-      // Tenta inicializar logo de cara
-      initApp();
-
-      // Se não inicializou (porque estava invisível/0x0), observa até aparecer
-      if (!app && window.ResizeObserver) {
-        initObserver = new ResizeObserver(() => {
-          if (containerRef.current && containerRef.current.clientWidth > 0 && containerRef.current.clientHeight > 0) {
-            initApp();
-            if (initObserver) {
-              initObserver.disconnect();
-              initObserver = null;
-            }
-          }
-        });
-        initObserver.observe(containerRef.current);
-      }
+      app = new App(containerRef.current, {
+        items,
+        bend,
+        textColor,
+        borderRadius,
+        font: resolvedFont,
+        scrollSpeed,
+        scrollEase,
+        onItemClick
+      });
     });
 
     return () => {
       isMounted = false;
       if (app) app.destroy();
-      if (initObserver) initObserver.disconnect();
     };
   }, [items, bend, textColor, borderRadius, font, fontUrl, scrollSpeed, scrollEase]);
   return (
@@ -648,7 +692,7 @@ export default function CircularGallery({
       ref={containerRef}
       tabIndex={0}
       role="region"
-      aria-label="Circular image gallery. Use left and right arrow keys to navigate."
+      aria-label="Circular image gallery"
     />
   );
 }

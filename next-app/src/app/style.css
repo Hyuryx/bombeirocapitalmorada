@@ -901,11 +901,7 @@ html {
         box-shadow: 0 0 25px rgba(239, 68, 68, 0.65), 0 0 45px rgba(239, 68, 68, 0.3), inset 0 0 16px rgba(239, 68, 68, 0.2);
     }
 }
-.red-card {
-    border-top: 4px solid var(--primary-red) !important;
-    background-color: rgba(239, 68, 68, 0.06) !important;
-    animation: redNeonPulse 3s ease-in-out infinite !important;
-}
+.red-card { }
 
 /* Green Cards (Verde) */
 @keyframes greenNeonPulse {
@@ -918,11 +914,7 @@ html {
         box-shadow: 0 0 25px rgba(16, 185, 129, 0.65), 0 0 45px rgba(16, 185, 129, 0.3), inset 0 0 16px rgba(16, 185, 129, 0.2);
     }
 }
-.green-card {
-    border-top: 4px solid var(--primary-green) !important;
-    background-color: rgba(16, 185, 129, 0.06) !important;
-    animation: greenNeonPulse 3.1s ease-in-out infinite !important;
-}
+.green-card { }
 
 /* Yellow Cards (Amarelo / Dourado) */
 @keyframes yellowNeonPulse {
@@ -935,11 +927,7 @@ html {
         box-shadow: 0 0 25px rgba(245, 158, 11, 0.65), 0 0 45px rgba(245, 158, 11, 0.3), inset 0 0 16px rgba(245, 158, 11, 0.2);
     }
 }
-.yellow-card {
-    border-top: 4px solid #f59e0b !important;
-    background-color: rgba(245, 158, 11, 0.06) !important;
-    animation: yellowNeonPulse 3.2s ease-in-out infinite !important;
-}
+.yellow-card { }
 
 /* Blue Cards (Azul) */
 @keyframes blueNeonPulse {
@@ -952,11 +940,7 @@ html {
         box-shadow: 0 0 25px rgba(59, 130, 246, 0.65), 0 0 45px rgba(59, 130, 246, 0.3), inset 0 0 16px rgba(59, 130, 246, 0.2);
     }
 }
-.blue-card {
-    border-top: 4px solid #3b82f6 !important;
-    background-color: rgba(59, 130, 246, 0.06) !important;
-    animation: blueNeonPulse 2.9s ease-in-out infinite !important;
-}
+.blue-card { }
 
 /* Orange Cards (Laranja) */
 @keyframes orangeNeonPulse {
@@ -969,11 +953,7 @@ html {
         box-shadow: 0 0 25px rgba(249, 115, 22, 0.65), 0 0 45px rgba(249, 115, 22, 0.3), inset 0 0 16px rgba(249, 115, 22, 0.2);
     }
 }
-.orange-card {
-    border-top: 4px solid #f97316 !important;
-    background-color: rgba(249, 115, 22, 0.06) !important;
-    animation: orangeNeonPulse 2.8s ease-in-out infinite !important;
-}
+.orange-card { }
 
 /* Purple Cards (Roxo / Púrpura) */
 @keyframes purpleNeonPulse {
@@ -986,11 +966,7 @@ html {
         box-shadow: 0 0 25px rgba(139, 92, 246, 0.65), 0 0 45px rgba(139, 92, 246, 0.3), inset 0 0 16px rgba(139, 92, 246, 0.2);
     }
 }
-.purple-card {
-    border-top: 4px solid #8b5cf6 !important;
-    background-color: rgba(139, 92, 246, 0.06) !important;
-    animation: purpleNeonPulse 3.3s ease-in-out infinite !important;
-}
+.purple-card { }
 
 /* Cyan Cards (Ciano / Turquesa) */
 @keyframes cyanNeonPulse {
@@ -1003,14 +979,8 @@ html {
         box-shadow: 0 0 25px rgba(14, 165, 233, 0.65), 0 0 45px rgba(14, 165, 233, 0.3), inset 0 0 16px rgba(14, 165, 233, 0.2);
     }
 }
-.cyan-card {
-    border-top: 4px solid #0ea5e9 !important;
-    background-color: rgba(14, 165, 233, 0.06) !important;
-    animation: cyanNeonPulse 3s ease-in-out infinite !important;
-}
-.card:not(.red-card):not(.green-card):not(.blue-card):not(.yellow-card):not(.orange-card):not(.purple-card):not(.cyan-card) {
-    animation: cyanNeonPulse 3.2s ease-in-out infinite;
-}
+.cyan-card { }
+.card:not(.red-card):not(.green-card):not(.blue-card):not(.yellow-card):not(.orange-card):not(.purple-card):not(.cyan-card) { }
 
 /* Melhoria de legibilidade para as abas de Cursos, Uniformes, Modulação, Viaturas, Regras e Hierarquia */
 #view-cursos .card,
@@ -2602,39 +2572,8 @@ html {
     z-index: 1;
 }
 
-.electric-border::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(
-        transparent, 
-        rgba(255, 255, 255, 0.05), 
-        transparent 30%,
-        #3b82f6 45%, 
-        #a855f7 55%, 
-        transparent 70%
-    );
-    animation: electric-spin 4s linear infinite;
-    z-index: -2;
-}
-
-.electric-border::after {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    background: rgba(15, 17, 21, 0.95); /* Fundo escuro interno */
-    border-radius: 10px;
-    z-index: -1;
-}
-
-.electric-border > * {
-    position: relative;
-    z-index: 2;
-}
-
+.electric-border::before { display: none; }
+.electric-border::after { display: none; }
 @keyframes electric-spin {
     from {
         transform: rotate(0deg);
@@ -2648,15 +2587,8 @@ html {
 
 
 /* OVERRIDE ALL TO RED AND FIX PADDING */
-.green-card, .yellow-card, .blue-card, .orange-card, .purple-card, .cyan-card, .rgb-card, .card-evoluir, .card-evoluir.merito {
-    border-top-color: #ef4444 !important;
-    background-color: rgba(239, 68, 68, 0.06) !important;
-    animation: redNeonPulse 3s ease-in-out infinite !important;
-}
-.card-evoluir:hover, .card-evoluir.merito:hover {
-    border-color: rgba(239, 68, 68, 0.8) !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 20px rgba(239, 68, 68, 0.4) !important;
-}
+/* OVERRIDE REMOVED */
+/* HOVER OVERRIDE REMOVED */
 .card, .info-card {
     padding: 10px !important;
     height: fit-content !important;
@@ -2692,3 +2624,6 @@ html {
 
 /* Correcao para os cards nao esticarem */
 .cards-grid { align-items: start; }
+
+#view-hierarquia .cards-grid { align-items: start !important; }
+#view-hierarquia .card { height: max-content !important; align-self: start !important; }

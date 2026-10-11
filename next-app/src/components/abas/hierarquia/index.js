@@ -1,4 +1,26 @@
 export default `<div id="view-hierarquia" class="global-view" style="display: none;">
+        <style>
+            #hierarquia-lista .info-card { padding: 12px !important; }
+            #hierarquia-lista .info-card h3 { font-size: 1.1rem !important; margin-bottom: 6px !important; }
+            #hierarquia-lista .info-card p { font-size: 0.85rem !important; line-height: 1.3 !important; }
+            #hierarquia-lista .card-insignia { height: 35px !important; object-fit: contain; }
+            #view-hierarquia .magic-bento-card { background: transparent !important; }
+            @keyframes neon-breathe-babyblue {
+                0% {
+                    box-shadow: 0 0 2px rgba(64, 196, 255, 0.4), 0 0 10px rgba(64, 196, 255, 0.1);
+                    border: 1px solid rgba(64, 196, 255, 0.3);
+                }
+                100% {
+                    box-shadow: 0 0 5px rgba(64, 196, 255, 0.8), 0 0 20px rgba(64, 196, 255, 0.6), 0 0 40px rgba(64, 196, 255, 0.3);
+                    border: 1px solid rgba(64, 196, 255, 1);
+                }
+            }
+            .neon-card-hierarquia {
+                background: transparent !important;
+                animation: neon-breathe-babyblue 4s infinite alternate ease-in-out;
+                border-radius: 12px;
+            }
+        </style>
         <div class="background-overlay bg-hierarquia"></div>
         <main class="main-content" style="height: 100%; overflow-y: auto;">
             <section id="hierarquia-lista" class="content-section active">
@@ -6,10 +28,10 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                     <h1>Hierarquia e Patentes</h1>
                     <p>Estrutura organizacional e patentes do Corpo de Bombeiros.</p>
                 </header>
-                <div class="cards-grid">
-                    <div class="card info-card red-card" style="grid-column: 1 / -1;">
-                        <h3>Hierarquia do Bombeiro</h3>
-                        <p>A hierarquia é um sistema de organização que distribui pessoas em diferentes níveis de
+                <div class="cards-grid" style="align-items: flex-start;">
+                    <div style="height: max-content; align-self: flex-start; grid-column: 1 / -1;" class="card info-card neon-card-hierarquia">
+                        <h3 style="color: #40c4ff;">Hierarquia do Bombeiro</h3>
+                        <p style="color: #fff;">A hierarquia é um sistema de organização que distribui pessoas em diferentes níveis de
                             autoridade e responsabilidade. Ela estabelece uma cadeia de comando em que os níveis
                             superiores coordenam e supervisionam os inferiores, garantindo disciplina, organização,
                             respeito e eficiência nas operações do Corpo de Bombeiro.<br><br>
@@ -18,7 +40,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             funcionamento das operações de emergência.</p>
                     </div>
 
-                    <div class="card info-card cyan-card">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card cyan-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                             <h3 style="margin: 0; font-size: 1.35rem;">Recruta <span style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(RC)</span>
                             </h3>
@@ -28,7 +50,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             e fundamentos da corporação, preparando-se para exercer as atribuições de Soldado.</p>
                     </div>
 
-                    <div class="card info-card blue-card">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card blue-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                             <h3 style="margin: 0; font-size: 1.35rem;">Soldado <span style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(SD)</span>
                             </h3>
@@ -38,7 +60,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             missões, sempre sob orientação e comando dos militares de maior graduação.</p>
                     </div>
 
-                    <div class="card info-card green-card">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card green-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                             <h3 style="margin: 0; font-size: 1.35rem;">Cabo <span style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(CB)</span>
                             </h3>
@@ -48,7 +70,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             contribui para a organização e execução das atividades operacionais.</p>
                     </div>
 
-                    <div class="card info-card yellow-card">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card yellow-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                             <h3 style="margin: 0; font-size: 1.35rem;">3º Sargento <span style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(3º
                                     SGT)</span></h3>
@@ -58,7 +80,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             apoio aos superiores na organização e execução das operações.</p>
                     </div>
 
-                    <div class="card info-card yellow-card">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card yellow-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                             <h3 style="margin: 0; font-size: 1.35rem;">2º Sargento <span style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(2º
                                     SGT)</span></h3>
@@ -68,7 +90,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             contribui para o cumprimento das ordens, procedimentos e missões da unidade.</p>
                     </div>
 
-                    <div class="card info-card orange-card">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card orange-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                             <h3 style="margin: 0; font-size: 1.35rem;">1º Sargento <span style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(1º
                                     SGT)</span></h3>
@@ -78,7 +100,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             o comando na disciplina, organização e coordenação das equipes.</p>
                     </div>
 
-                    <div class="card info-card orange-card">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card orange-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                             <h3 style="margin: 0; font-size: 1.35rem;">Subtenente <span style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(SUB
                                     TEN)</span></h3>
@@ -88,7 +110,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             novos e transmitindo sua experiência técnica e operacional à tropa.</p>
                     </div>
 
-                    <div class="card info-card purple-card">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card purple-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                             <h3 style="margin: 0; font-size: 1.35rem;">Aspirante a Oficial <span style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(ASP)</span>
                             </h3>
@@ -98,7 +120,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             comando enquanto se prepara para assumir plenamente as funções de Oficial.</p>
                     </div>
 
-                    <div class="card info-card purple-card">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card purple-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                             <h3 style="margin: 0; font-size: 1.35rem;">2º Tenente <span style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(2º
                                     TEN)</span></h3>
@@ -108,7 +130,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             no planejamento e condução das atividades operacionais da unidade.</p>
                     </div>
 
-                    <div class="card info-card blue-card">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card blue-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                             <h3 style="margin: 0; font-size: 1.35rem;">1º Tenente <span style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(1º
                                     TEN)</span></h3>
@@ -118,7 +140,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             operações e apoiar seus superiores no planejamento das missões da unidade.</p>
                     </div>
 
-                    <div class="card info-card green-card">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card green-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                             <h3 style="margin: 0; font-size: 1.35rem;">Capitão <span style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(CAP)</span>
                             </h3>
@@ -128,7 +150,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             supervisionando missões e garantindo o cumprimento das diretrizes.</p>
                     </div>
 
-                    <div class="card info-card yellow-card">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card yellow-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                             <h3 style="margin: 0; font-size: 1.35rem;">Major <span style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(MAJ)</span>
                             </h3>
@@ -138,7 +160,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             planejamento, supervisão e gerenciamento das atividades da corporação.</p>
                     </div>
 
-                    <div class="card info-card orange-card">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card orange-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                             <h3 style="margin: 0; font-size: 1.35rem;">Tenente-Coronel <span style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(TCEL)</span>
                             </h3>
@@ -148,7 +170,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             supervisionando unidades e garantindo o cumprimento das normas e missões.</p>
                     </div>
 
-                    <div class="card info-card red-card">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card red-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                             <h3 style="margin: 0; font-size: 1.35rem;">Coronel <span style="font-size: 0.7em; opacity: 0.6; font-weight: normal; margin-left: 4px;">(CEL)</span>
                             </h3>
@@ -158,7 +180,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                             planejamento, coordenação de grandes unidades e apoio à direção da corporação.</p>
                     </div>
 
-                    <div class="card info-card red-card card-quadro-patentes" style="padding: 16px; display: flex; flex-direction: column;">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card red-card card-quadro-patentes" style="padding: 16px; display: flex; flex-direction: column;">
                         <h3 style="margin: 0 0 12px 0; font-size: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
                             Quadro Geral de Patentes
                             <span style="font-size: 0.65em; opacity: 0.7; font-weight: normal; color: #ef4444;">🔍
@@ -169,7 +191,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                         </div>
                     </div>
 
-                    <div class="card info-card purple-card card-principios-hierarquia" style="display: flex; flex-direction: column; justify-content: center;">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card purple-card card-principios-hierarquia" style="display: flex; flex-direction: column; justify-content: center;">
                         <h3 style="margin-bottom: 14px;">Princípios da Hierarquia</h3>
                         <p style="margin: 0; line-height: 1.8; font-size: 0.95rem;">
                             ➤ Respeitar os superiores e tratar os subordinados com profissionalismo.<br>
@@ -180,7 +202,7 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                         </p>
                     </div>
 
-                    <div class="card info-card blue-card" style="grid-column: 1 / -1; text-align: center;">
+                    <div style="height: max-content; align-self: flex-start;" class="card info-card blue-card" style="grid-column: 1 / -1; text-align: center;">
                         <p style="font-size: 1.15rem; font-style: italic;">"A hierarquia e a disciplina são os pilares
                             que sustentam a organização, a eficiência e a excelência do Corpo de Bombeiro."</p>
                     </div>

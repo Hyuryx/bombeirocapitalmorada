@@ -5,6 +5,7 @@ import parse, { domToReact, attributesToProps } from 'html-react-parser';
 import GooeyNav from './GooeyNav';
 import ReactAvisosGerais from './ReactAvisosGerais';
 import ReactRegrasGallery from './ReactRegrasGallery';
+import MagicBento from './ui/MagicBento';
 import ReactUniformesCarousel from './ReactUniformesCarousel';
 import ReactViaturasCarousel from './ReactViaturasCarousel';
 import ReactEvoluirCarousel from './ReactEvoluirCarousel';
@@ -14,6 +15,8 @@ import dynamic from 'next/dynamic';
 import ReactCodigosQBounceCards from './ReactCodigosQBounceCards';
 import ReactPlanilhaTablet from './ReactPlanilhaTablet';
 import ReactHierarquiaMagicBento from './ReactHierarquiaMagicBento';
+import ReactGaleriaFolders from './ReactGaleriaFolders';
+import ReactPosicoesViaturas from './ReactPosicoesViaturas';
 
 const Livro3D = dynamic(() => import('./Livro3D'), { ssr: false });
 
@@ -96,6 +99,10 @@ export default function DynamicHTMLRenderer({ htmlString }) {
         return <ReactCodigosQBounceCards items={items} />;
       }
 
+      if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id === 'viaturas-posicoes-grid') {
+        return <ReactPosicoesViaturas />;
+      }
+
       if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id === 'viaturas-carousel-grid') {
         return <ReactViaturasCarousel />;
       }
@@ -122,6 +129,10 @@ export default function DynamicHTMLRenderer({ htmlString }) {
 
       if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id === 'react-course-tripulantes-container') {
         return <Livro3D curso={cursos.tripulante} />;
+      }
+      
+      if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id === 'galeria-menu') {
+        return <ReactGaleriaFolders />;
       }
       
       // Replace nav-tabs with GooeyNav

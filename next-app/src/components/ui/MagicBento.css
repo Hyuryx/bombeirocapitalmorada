@@ -24,7 +24,7 @@
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  min-height: 450px; /* Altura suficiente para mostrar todo o conteúdo */
+  min-height: 250px; /* Altura ajustada para caber os textos */
   width: 100%;
   max-width: 100%;
   padding: 0; 
@@ -118,7 +118,7 @@
 
   .magic-bento-card {
     width: 100%;
-    min-height: 450px;
+    min-height: 250px;
   }
 }
 

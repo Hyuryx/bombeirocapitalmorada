@@ -1,4 +1,4 @@
-import Galaxy from '@/components/Galaxy';
+import GradientWaves from '@/components/GradientWaves';
 import NoSSRDynamicHTMLRenderer from '@/components/NoSSRDynamicHTMLRenderer';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
@@ -41,20 +41,28 @@ export default function Home() {
 
   return (
     <div suppressHydrationWarning>
-      <div id="galaxy-bg" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -3, overflow: 'hidden' }}>
-        <Galaxy 
-          mouseRepulsion
+      <div id="gradient-bg" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -3, overflow: 'hidden' }}>
+        <GradientWaves
+          horizonColor="#0c0617"
+          waveColor="#4e2a84"
+          crestColor="#7851a9"
+          speed={0.4}
+          amplitude={2.5}
+          waveScale={0.6}
+          waveRatio={0.9}
+          swell={35}
+          turbulence={20}
+          tilt={1.11}
+          zoom={1}
+          height={5.5}
+          fogDepth={15}
+          detail="medium"
+          brightness={1}
+          opacity={1}
           mouseInteraction
-          density={1}
-          glowIntensity={0.3}
-          saturation={0}
-          hueShift={140}
-          twinkleIntensity={0.3}
-          rotationSpeed={0.1}
-          repulsionStrength={2}
-          autoCenterRepulsion={0}
-          starSpeed={0.5}
-          speed={1}
+          parallaxStrength={0.5}
+          grain
+          grainIntensity={0.05}
         />
       </div>
       <ErrorBoundary>

@@ -1,161 +1,164 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import CircularGallery from './CircularGallery';
+import React, { useState, useEffect } from 'react';
+import ElectricBorder from './ui/ElectricBorder';
+import { TiltedGridHero } from './ui/tilted-grid-hero';
 
 export default function ReactRegrasGallery() {
   const [items, setItems] = useState([]);
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = React.useRef(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsVisible(true);
+        observer.disconnect();
+      }
+    });
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const rules = [
       {
-        title: 'Respeito e Hierarquia',
+        title: "Regras Gerais",
         lines: [
-          'Todo militar deverá respeitar superiores, subordinados e civis.',
-          'A hierarquia deverá ser seguida em qualquer situação.',
-          'Discussões, desrespeito ou insubordinação serão punidos.',
-          'Ordens diretas só podem ser contestadas após a ocorrência.'
+          "O desrespeito com qualquer membro ou superior resultará em punições severas.",
+          "É proibido o uso de palavras de baixo calão nos canais de comunicação oficiais.",
+          "As viaturas e equipamentos devem ser utilizados apenas em serviço ativo.",
+          "Em caso de ausência prolongada, o membro deve notificar seus superiores."
         ],
-        borderColor: '#3b82f6'
+        borderColor: '#40c4ff'
       },
       {
-        title: 'Conduta Operacional',
+        title: "Regras de Punição",
         lines: [
-          'É obrigatório manter postura profissional em serviço.',
-          'O uso correto do rádio é essencial.',
-          'É proibido abandonar viaturas sem autorização.',
-          'Todo chamado deverá ser atendido com prioridade.',
-          'Código 4 deverá ser informado ao finalizar ocorrência.',
-          'Proibido corrupção. Favorecimentos resultam em expulsão.'
+          "Faltas injustificadas levarão a advertências formais.",
+          "O acúmulo de advertências pode resultar em rebaixamento de patente.",
+          "Uso indevido de equipamentos do Corpo de Bombeiros gerará punição imediata.",
+          "A subordinação é vital. Recusar ordens diretas é passível de expulsão."
         ],
-        borderColor: '#f97316'
+        borderColor: '#40c4ff'
       },
       {
-        title: 'Comunicação via Rádio',
+        title: "Conduta em Operação",
         lines: [
-          'Evitar flood, gritos ou brincadeiras no rádio.',
-          'Utilizar linguagem operacional e objetiva.',
-          'Sempre identificar patente e nome ao iniciar.'
+          "A segurança da equipe e das vítimas é sempre a prioridade máxima.",
+          "Mantenha comunicação constante e clara pelo rádio durante ocorrências.",
+          "Siga os Códigos Q estritamente para manter a padronização e objetividade.",
+          "Nunca abandone um colega em situação de risco durante resgates."
         ],
-        borderColor: '#22c55e'
+        borderColor: '#40c4ff'
       },
       {
-        title: 'Viaturas e Aeronaves',
+        title: "Manutenção e Equipamentos",
         lines: [
-          'Utilizar viaturas apenas em serviço.',
-          'Proibido dirigir de forma irresponsável.',
-          'Abastecimento/organização é respons. da equipe.',
-          'Proibido usar helicópteros sem licença.'
+          "Cada bombeiro é responsável pelo estado de seu equipamento de proteção individual.",
+          "As viaturas devem ser inspecionadas antes e depois de cada turno de serviço.",
+          "Danos ao patrimônio por negligência serão cobrados e punidos.",
+          "Relate qualquer defeito ou falta de material imediatamente ao oficial de dia."
         ],
-        borderColor: '#a855f7'
+        borderColor: '#40c4ff'
       },
       {
-        title: 'Fardamento',
+        title: "Apresentação Pessoal",
         lines: [
-          'Uso do fardamento é obrigatório em serviço.',
-          'Proibido misturar peças inadequadas.',
-          'Manter aparência organizada e profissional.'
+          "O uniforme deve estar sempre limpo, passado e em perfeitas condições.",
+          "Cabelos, barba e unhas devem seguir o regulamento interno da corporação.",
+          "É proibido o uso de acessórios chamativos durante o serviço.",
+          "O porte e a postura do bombeiro devem sempre refletir profissionalismo."
         ],
-        borderColor: '#eab308'
+        borderColor: '#40c4ff'
       },
       {
-        title: 'Punições',
+        title: "Uso do Rádio",
         lines: [
-          'Advertência verbal',
-          'Advertência escrita',
-          'Suspensão',
-          'Rebaixamento',
-          'Expulsão'
+          "Apenas informações vitais para a operação devem ser transmitidas.",
+          "Identifique-se corretamente antes de iniciar qualquer transmissão.",
+          "Evite conversas paralelas ou brincadeiras no canal principal.",
+          "Em situações de emergência grave, use o código de prioridade máxima."
         ],
-        borderColor: '#ef4444'
-      },
-      {
-        title: 'Disposições Finais',
-        lines: [
-          'Prezar pela disciplina, honra e compromisso.',
-          'Desconhecimento das regras não isenta punições.',
-          'Regulamento pode ser atualizado pelo Comando.'
-        ],
-        borderColor: '#3b82f6'
+        borderColor: '#40c4ff'
       }
     ];
 
-    const generateImage = (rule) => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 800;
-      canvas.height = 1000;
-      const ctx = canvas.getContext('2d');
-      
-      // Fundo
-      ctx.fillStyle = 'rgba(17, 20, 29, 1)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Borda colorida superior
-      ctx.fillStyle = rule.borderColor;
-      ctx.fillRect(0, 0, canvas.width, 14);
-      
-      // Borda geral
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(0, 0, canvas.width, canvas.height);
-      
-      // Título
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 52px sans-serif';
-      ctx.fillText(rule.title, 60, 100);
-      
-      // Linhas
-      ctx.fillStyle = '#e2e8f0';
-      ctx.font = '36px sans-serif';
-      rule.lines.forEach((line, i) => {
-        const words = line.split(' ');
-        let currentLine = '';
-        let yOffset = 220 + (i * 120); // space between bullets
-        let firstLineOfBullet = true;
-        
-        ctx.fillStyle = rule.borderColor;
-        ctx.fillText('•', 60, yOffset);
-        
-        ctx.fillStyle = '#e2e8f0';
-        words.forEach(word => {
-            const testLine = currentLine + word + ' ';
-            const metrics = ctx.measureText(testLine);
-            if (metrics.width > 620) {
-                ctx.fillText(currentLine, 100, yOffset);
-                currentLine = word + ' ';
-                yOffset += 45; // line height within a bullet
-                firstLineOfBullet = false;
-            } else {
-                currentLine = testLine;
-            }
-        });
-        ctx.fillText(currentLine, 100, yOffset);
-      });
-      
-      return canvas.toDataURL('image/png');
-    };
+    const cardElements = rules.map((rule, idx) => (
+      <div key={idx} style={{ width: '100%', height: '100%', padding: '15px' }}>
+        <div
+          className="neon-breathing-card"
+          style={{
+            backgroundColor: 'rgba(15, 15, 20, 0.85)',
+            width: '100%',
+            height: '100%',
+            borderRadius: '20px',
+            padding: '1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            boxSizing: 'border-box',
+            border: `2px solid ${rule.borderColor}`,
+            '--neon-color': rule.borderColor,
+            animation: 'neonBreathe 2s ease-in-out infinite'
+          }}
+        >
+          <h2
+            style={{
+              color: '#fff',
+              fontSize: '1.3rem',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              marginBottom: '1rem',
+              textTransform: 'uppercase',
+              letterSpacing: '1px'
+            }}
+          >
+            {rule.title}
+          </h2>
+          <div style={{ width: '80%', height: '1px', backgroundColor: 'rgba(255,255,255,0.2)', margin: '0 auto 1rem auto' }} />
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly' }}>
+            {rule.lines.map((line, lIdx) => (
+              <li key={lIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.95rem', color: '#e2e8f0', lineHeight: 1.4 }}>
+                <span style={{ color: rule.borderColor, fontSize: '1.2rem', lineHeight: 1 }}>•</span>
+                <span>{line}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    ));
 
-    const newItems = rules.map(rule => ({
-      image: generateImage(rule),
-      text: rule.title
-    }));
-
-    setItems(newItems);
+    setItems(cardElements);
   }, []);
 
-  if (items.length === 0) return null;
-
   return (
-    <div style={{ height: '700px', width: '100%', position: 'relative', marginTop: '20px' }}>
-      <CircularGallery
-        bend={1}
-        textColor="#ffffff"
-        borderRadius={0.05}
-        scrollEase={0.05}
-        font="bold 30px sans-serif"
-        scrollSpeed={2}
-        items={items}
-      />
+    <div ref={containerRef} style={{ height: '700px', width: '100%', position: 'relative' }}>
+      <style>{`
+        @keyframes neonBreathe {
+          0%, 100% {
+            box-shadow: 0 0 5px var(--neon-color), inset 0 0 5px var(--neon-color);
+            border-color: rgba(64, 196, 255, 0.3);
+          }
+          50% {
+            box-shadow: 0 0 25px var(--neon-color), inset 0 0 15px var(--neon-color);
+            border-color: rgba(64, 196, 255, 1);
+          }
+        }
+      `}</style>
+      {isVisible && items.length > 0 && (
+        <TiltedGridHero
+          items={items}
+          speed={6}
+          tileHeight={65}
+          aspectRatio={0.7}
+          gap={10}
+          axis={50}
+          curve={45}
+          fade={15}
+          className="h-full w-full"
+        />
+      )}
     </div>
   );
 }

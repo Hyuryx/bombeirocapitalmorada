@@ -28,12 +28,12 @@ export default function ReactHierarquiaMagicBento() {
       className: `info-card ${item.color}`,
       style: { background: 'transparent' },
       content: (
-        <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
+        <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box', padding: '15px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px' }}>
-            <img src={`assets/hierarquia/patentes bombeir/${item.img}`} alt={item.rank} style={{ width: '50px', height: '50px', objectFit: 'contain' }} />
+            <img src={`assets/hierarquia/patentes bombeir/${item.img}`} alt={item.rank} style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
           </div>
-          <h3 style={{ margin: '0 0 10px 0', fontSize: '1.2rem', textAlign: 'center', color: '#fff', fontWeight: 'bold' }}>{item.rank}</h3>
-          <p style={{ fontSize: '0.85rem', lineHeight: 1.5, textAlign: 'center', margin: 0, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{item.desc}</p>
+          <h3 style={{ margin: '0 0 8px 0', fontSize: '1.3rem', textAlign: 'center', color: '#fff', fontWeight: 'bold' }}>{item.rank}</h3>
+          <p style={{ fontSize: '0.95rem', lineHeight: 1.4, textAlign: 'center', margin: 0, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{item.desc}</p>
         </div>
       )
     })),
@@ -41,14 +41,14 @@ export default function ReactHierarquiaMagicBento() {
       className: 'info-card purple-card',
       style: { background: 'transparent' },
       content: (
-        <div style={{ width: '100%', height: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', boxSizing: 'border-box', padding: '10px 5px' }}>
-          <h3 style={{ marginBottom: '15px', fontSize: '1.2rem', textAlign: 'center', fontWeight: 'bold' }}>Princípios da Hierarquia</h3>
-          <p style={{ margin: 0, lineHeight: 1.4, fontSize: '0.85rem' }}>
-              ➤ Respeitar superiores e subordinados.<br/>
-              ➤ Cumprir ordens e manter disciplina.<br/>
-              ➤ Trabalhar em equipe pela segurança.<br/>
-              ➤ Agir com ética e responsabilidade.<br/>
-              ➤ Representar bem a corporação.
+        <div style={{ width: '100%', height: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box', padding: '15px' }}>
+          <h3 style={{ marginBottom: '10px', fontSize: '1.05rem', textAlign: 'center', fontWeight: 'bold' }}>Princípios da Hierarquia</h3>
+          <p style={{ margin: 0, lineHeight: 1.3, fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <span>➤ Respeitar superiores e subordinados.</span>
+              <span>➤ Cumprir ordens e manter disciplina.</span>
+              <span>➤ Trabalhar em equipe pela segurança.</span>
+              <span>➤ Agir com ética e responsabilidade.</span>
+              <span>➤ Representar bem a corporação.</span>
           </p>
         </div>
       )
@@ -57,15 +57,15 @@ export default function ReactHierarquiaMagicBento() {
       className: 'info-card red-card',
       style: { background: 'transparent' },
       content: (
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', width: '100%', height: 'auto', boxSizing: 'border-box' }}>
-            <h3 style={{ margin: '0 0 10px 0', fontSize: '1.2rem', textAlign: 'center', fontWeight: 'bold' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', width: '100%', height: '100%', boxSizing: 'border-box', padding: '15px' }}>
+            <h3 style={{ margin: '0 0 8px 0', fontSize: '1.05rem', textAlign: 'center', fontWeight: 'bold' }}>
                 Quadro de Patentes
             </h3>
-            <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', overflow: 'hidden' }}>
+            <div style={{ width: '100%', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', overflow: 'hidden' }}>
                 <img 
                   src="assets/hierarquia/patentes.png" 
                   alt="Quadro de Patentes" 
-                  style={{ width: '100%', height: 'auto', objectFit: 'contain', cursor: 'pointer', transition: 'transform 0.2s' }} 
+                  style={{ width: '100%', maxHeight: '100px', objectFit: 'contain', cursor: 'pointer', transition: 'transform 0.2s' }} 
                   onClick={(e) => {
                     e.stopPropagation();
                     setExpandedImg(true);
@@ -75,8 +75,8 @@ export default function ReactHierarquiaMagicBento() {
                 />
             </div>
             
-            <div style={{ marginTop: '15px', textAlign: 'center', background: 'rgba(0,0,0,0.3)', padding: '10px', borderRadius: '8px' }}>
-                <p style={{ fontSize: '0.85rem', fontStyle: 'italic', margin: 0, color: '#eee' }}>"A hierarquia e a disciplina são os pilares da excelência."</p>
+            <div style={{ marginTop: '10px', textAlign: 'center', background: 'rgba(0,0,0,0.3)', padding: '8px', borderRadius: '8px' }}>
+                <p style={{ fontSize: '0.75rem', fontStyle: 'italic', margin: 0, color: '#eee' }}>"A hierarquia e a disciplina são os pilares da excelência."</p>
             </div>
         </div>
       )
@@ -123,10 +123,29 @@ export default function ReactHierarquiaMagicBento() {
           <p style={{ color: '#aaa', fontSize: '1.1rem', marginTop: '10px' }}>Estrutura organizacional e patentes do Corpo de Bombeiros.</p>
       </header>
 
+      {/* Neon style for Hierarquia text card */}
+      <style>{`
+        @keyframes neon-breathe-babyblue {
+            0% {
+                box-shadow: 0 0 2px rgba(64, 196, 255, 0.4), 0 0 10px rgba(64, 196, 255, 0.1);
+                border: 1px solid rgba(64, 196, 255, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 5px rgba(64, 196, 255, 0.8), 0 0 20px rgba(64, 196, 255, 0.6), 0 0 40px rgba(64, 196, 255, 0.3);
+                border: 1px solid rgba(64, 196, 255, 1);
+            }
+        }
+        .neon-card-hierarquia {
+            background: transparent !important;
+            animation: neon-breathe-babyblue 4s infinite alternate ease-in-out;
+            border-radius: 12px;
+        }
+      `}</style>
+
       {/* Intro text */}
-      <div className="card info-card red-card" style={{ maxWidth: '800px', margin: '40px auto 20px auto', position: 'relative', zIndex: 10 }}>
-          <h3 style={{ marginBottom: '15px' }}>Hierarquia do Bombeiro</h3>
-          <p>A hierarquia é um sistema de organização que distribui pessoas em diferentes níveis de autoridade e responsabilidade. Ela estabelece uma cadeia de comando em que os níveis superiores coordenam e supervisionam os inferiores, garantindo disciplina, organização, respeito e eficiência nas operações do Corpo de Bombeiro.<br/><br/>
+      <div className="card info-card neon-card-hierarquia" style={{ maxWidth: '800px', margin: '40px auto 20px auto', position: 'relative', zIndex: 10 }}>
+          <h3 style={{ marginBottom: '15px', color: '#40c4ff' }}>Hierarquia do Bombeiro</h3>
+          <p style={{ color: '#fff' }}>A hierarquia é um sistema de organização que distribui pessoas em diferentes níveis de autoridade e responsabilidade. Ela estabelece uma cadeia de comando em que os níveis superiores coordenam e supervisionam os inferiores, garantindo disciplina, organização, respeito e eficiência nas operações do Corpo de Bombeiro.<br/><br/>
           O respeito à hierarquia é um dos princípios fundamentais da corporação. Cada bombeiro possui funções e responsabilidades específicas, contribuindo para o trabalho em equipe e para o bom funcionamento das operações de emergência.</p>
       </div>
 

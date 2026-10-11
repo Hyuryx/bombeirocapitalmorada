@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     --bg-dark: #0f1115;
     --bg-sidebar: #16181d;
     --bg-card: rgba(30, 30, 30, 0.6);
@@ -892,9 +892,6 @@ html {
     }
 }
 .red-card {
-    border-top: 4px solid var(--primary-red) !important;
-    background-color: rgba(239, 68, 68, 0.06) !important;
-    animation: redNeonPulse 3s ease-in-out infinite !important;
 }
 
 /* Green Cards (Verde) */
@@ -909,9 +906,6 @@ html {
     }
 }
 .green-card {
-    border-top: 4px solid var(--primary-green) !important;
-    background-color: rgba(16, 185, 129, 0.06) !important;
-    animation: greenNeonPulse 3.1s ease-in-out infinite !important;
 }
 
 /* Yellow Cards (Amarelo / Dourado) */
@@ -926,9 +920,6 @@ html {
     }
 }
 .yellow-card {
-    border-top: 4px solid #f59e0b !important;
-    background-color: rgba(245, 158, 11, 0.06) !important;
-    animation: yellowNeonPulse 3.2s ease-in-out infinite !important;
 }
 
 /* Blue Cards (Azul) */
@@ -943,9 +934,6 @@ html {
     }
 }
 .blue-card {
-    border-top: 4px solid #3b82f6 !important;
-    background-color: rgba(59, 130, 246, 0.06) !important;
-    animation: blueNeonPulse 2.9s ease-in-out infinite !important;
 }
 
 /* Orange Cards (Laranja) */
@@ -960,9 +948,6 @@ html {
     }
 }
 .orange-card {
-    border-top: 4px solid #f97316 !important;
-    background-color: rgba(249, 115, 22, 0.06) !important;
-    animation: orangeNeonPulse 2.8s ease-in-out infinite !important;
 }
 
 /* Purple Cards (Roxo / Púrpura) */
@@ -977,9 +962,6 @@ html {
     }
 }
 .purple-card {
-    border-top: 4px solid #8b5cf6 !important;
-    background-color: rgba(139, 92, 246, 0.06) !important;
-    animation: purpleNeonPulse 3.3s ease-in-out infinite !important;
 }
 
 /* Cyan Cards (Ciano / Turquesa) */
@@ -994,12 +976,8 @@ html {
     }
 }
 .cyan-card {
-    border-top: 4px solid #0ea5e9 !important;
-    background-color: rgba(14, 165, 233, 0.06) !important;
-    animation: cyanNeonPulse 3s ease-in-out infinite !important;
 }
 .card:not(.red-card):not(.green-card):not(.blue-card):not(.yellow-card):not(.orange-card):not(.purple-card):not(.cyan-card) {
-    animation: cyanNeonPulse 3.2s ease-in-out infinite;
 }
 
 /* Melhoria de legibilidade para as abas de Cursos, Uniformes, Modulação, Viaturas, Regras e Hierarquia */

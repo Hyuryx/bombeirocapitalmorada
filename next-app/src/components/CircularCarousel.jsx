@@ -928,6 +928,16 @@ const CircularCarousel = ({
                     cardRefs.current[index] = element;
                   }}
                   className="circular-carousel__card"
+                  style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: '50%',
+                    width: 'var(--cc-card-w)',
+                    height: 'var(--cc-card-h)',
+                    marginLeft: 'calc(var(--cc-card-w) * -0.5)',
+                    marginTop: 'calc(var(--cc-card-h) * -0.5)',
+                    margin: 0
+                  }}
                   data-cc-index={index}
                   role="group"
                   aria-roledescription="slide"

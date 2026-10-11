@@ -112,47 +112,10 @@ export default `<div id="view-modulacao" class="global-view" style="display: non
                         <h1>Códigos Q</h1>
                         <p>Conjunto de abreviações para tornar a comunicação rápida e padronizada.</p>
                     </header>
-                    <h2 style="margin: 20px 0 10px; font-size: 1.2rem; color: #fff;">Códigos Mais Importantes</h2>
-                    <div id="codigos-q-bounce-cards-grid" class="cards-carousel" style="display: flex; overflow-x: auto; gap: 15px; padding-bottom: 15px; scroll-snap-type: x mandatory; margin-bottom: 20px;">
-                        <div class="card info-card blue-card" style="width: 250px; height: auto; min-height: 200px;">
-                            <h3>QAP</h3>
-                            <p>Está na escuta? Verifica se alguém está ouvindo.<br><em>"Bombeiro 01, QAP?"</em></p>
-                        </div>
-                        <div class="card info-card green-card" style="width: 250px; height: auto; min-height: 200px;">
-                            <h3>QSL</h3>
-                            <p>Entendido / Mensagem recebida.<br><em>"QSL, em deslocamento."</em></p>
-                        </div>
-                        <div class="card info-card yellow-card" style="width: 250px; height: auto; min-height: 200px;">
-                            <h3>QTH</h3>
-                            <p>Localização / Endereço.<br><em>"Informe seu QTH."</em></p>
-                        </div>
-                        <div class="card info-card orange-card" style="width: 250px; height: auto; min-height: 200px;">
-                            <h3>QTI</h3>
-                            <p>Rota / Deslocamento.<br><em>"Equipe em QTI sentido hospital."</em></p>
-                        </div>
-                        <div class="card info-card purple-card" style="width: 250px; height: auto; min-height: 200px;">
-                            <h3>QRR</h3>
-                            <p>Pedido de apoio / Reforço.<br><em>"Solicito QRR no QTH."</em></p>
-                        </div>
-                        <div class="card info-card red-card" style="width: 250px; height: auto; min-height: 200px;">
-                            <h3>QSM</h3>
-                            <p>Repita a mensagem. Usado quando falha.<br><em>"QSM, transmissão cortada."</em></p>
-                        </div>
-                        <div class="card info-card blue-card" style="width: 250px; height: auto; min-height: 200px;">
-                            <h3>QRX</h3>
-                            <p>Aguarde. Momento antes de responder.<br><em>"QRX, verificando a vítima."</em></p>
-                        </div>
-                        <div class="card info-card yellow-card" style="width: 250px; height: auto; min-height: 200px;">
-                            <h3>QTO / QTX / QRT</h3>
-                            <p><strong>QTO:</strong> Deslocando/Saindo.<br><strong>QTX:</strong> Manter
-                                acompanhamento.<br><strong>QRT:</strong> Encerrar transmissão.</p>
-                        </div>
-                    </div>
+                    <!-- ReactCodigosQBounceCards will be rendered here dynamically -->
+                    <div id="codigos-q-bounce-cards-grid"></div>
                     
-                    <div class="content-box" style="padding: 10px; background: transparent; border: none; box-shadow: none; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
-                        <img src="assets/codigos de comunicaçao/codigoq.png" alt="Guia Visual Código Q" style="max-width: 48%; border-radius: 8px; cursor: pointer; flex: 1 1 300px;">
-                        <img src="assets/codigos de comunicaçao/codigo_de_intensidade.png" alt="Código de Intensidade" style="max-width: 48%; border-radius: 8px; cursor: pointer; flex: 1 1 300px;">
-                    </div>
+
                 </section>
 
                 <section id="alfabeto-fonetico" class="content-section">

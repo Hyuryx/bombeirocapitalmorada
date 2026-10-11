@@ -20,6 +20,8 @@ export default `<div id="view-regras" class="global-view" style="display: none;"
       }
       #view-regras .card {
         padding: 10px !important;
+        background: transparent !important;
+        background-color: transparent !important;
       }
       #view-regras ul {
         gap: 4px !important;
