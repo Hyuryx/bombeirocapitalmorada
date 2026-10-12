@@ -11,11 +11,13 @@ export default `<div id="view-uniformes" class="global-view" style="display: non
     </style>
 
     <div class="background-overlay bg-uniformes"></div>
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar-default-uniformes"></aside>
         <main class="main-content" style="height: 100%; overflow-y: auto;">
             <section class="content-section active">
                 <header class="section-header">
                     <h1 class="glitch-title">Uniformes e Fardamentos</h1>
-                    <p class="falling-subtitle" data-highlight="Catálogo,Bombeiros,Capital">Catálogo oficial de uniformes do Corpo de Bombeiros Capital Morada.</p>
+                    <p class="falling-subtitle" data-highlight="Catálogo,uniformes,Bombeiros,Capital,Morada">Catálogo oficial de uniformes do Corpo de Bombeiros Capital Morada.</p>
                 </header>
                 <div id="uniformes-cards-grid" class="cards-grid">
                     <div class="card info-card green-card">
@@ -45,4 +47,5 @@ export default `<div id="view-uniformes" class="global-view" style="display: non
                 <p>© 2026 ERREJOTA. Todos os direitos reservados.</p>
             </footer>
         </main>
-    </div>`;
+    </div>
+</div>`;

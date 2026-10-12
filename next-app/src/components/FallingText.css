@@ -14,13 +14,16 @@
 
 .word {
   display: inline-block;
-  margin: 0 2px;
+  margin: 0 3px;
   user-select: none;
+  color: #cbd5e1;
+  transition: color 0.2s ease;
 }
 
 .highlighted {
-  color: cyan;
-  font-weight: bold;
+  color: #00f0ff !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.8), 0 0 20px rgba(0, 180, 255, 0.45);
 }
 
 .falling-text-canvas {

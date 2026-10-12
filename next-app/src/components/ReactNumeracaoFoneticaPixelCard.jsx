@@ -32,9 +32,8 @@ export default function ReactNumeracaoFoneticaPixelCard() {
         gap={8}
         style={{
           width: '100%',
-          maxWidth: '1150px',
-          minHeight: '620px',
-          padding: '30px 35px',
+          maxWidth: '1050px',
+          padding: '25px 28px',
           background: 'rgba(10, 11, 16, 0.85)',
           border: '1px solid rgba(239, 68, 68, 0.4)',
           boxShadow: '0 15px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(239, 68, 68, 0.2)'
@@ -45,14 +44,14 @@ export default function ReactNumeracaoFoneticaPixelCard() {
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '35px',
+          gap: '30px',
           width: '100%',
           flexWrap: 'wrap'
         }}>
           {/* Metade da Foto em pé */}
           <div style={{
-            flex: '1 1 360px',
-            maxWidth: '440px',
+            flex: '1 1 320px',
+            maxWidth: '400px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
@@ -62,7 +61,7 @@ export default function ReactNumeracaoFoneticaPixelCard() {
               alt="Guia Numeração Fonética"
               style={{
                 width: '100%',
-                maxHeight: '560px',
+                maxHeight: '460px',
                 objectFit: 'contain',
                 borderRadius: '16px',
                 border: '1px solid rgba(239, 68, 68, 0.35)',

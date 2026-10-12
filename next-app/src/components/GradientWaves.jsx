@@ -118,23 +118,22 @@ void main() {
   col *= uBrightness;
   col = clamp(col, 0.0, 1.0);
 
-  // Mantenha o alpha sólido para evitar a "barra preta" do body no topo da tela
   float alpha = uOpacity;
   if (uGrain > 0.5) {
     float g = hash21(gl_FragCoord.xy + mod(iTime, 64.0) * 11.0);
     alpha += (g - 0.5) * uGrainIntensity;
   }
   alpha = clamp(alpha, 0.0, 1.0);
-  fragColor = vec4(col * alpha, alpha);
+  fragColor = vec4(col, alpha);
 }
 `;
 
 const ctxMap = new WeakMap();
 
 const GradientWaves = ({
-  horizonColor = '#e2e8f0',
-  waveColor = '#94a3b8',
-  crestColor = '#ffffff',
+  horizonColor = '#5227FF',
+  waveColor = '#FF9FFC',
+  crestColor = '#FFFFFF',
   speed = 0.4,
   amplitude = 2.5,
   waveScale = 0.6,
@@ -164,7 +163,7 @@ const GradientWaves = ({
     const renderer = new Renderer({
       webgl: 2,
       alpha: true,
-      premultipliedAlpha: true,
+      premultipliedAlpha: false,
       antialias: false,
       dpr: Math.min(window.devicePixelRatio || 1, 2)
     });

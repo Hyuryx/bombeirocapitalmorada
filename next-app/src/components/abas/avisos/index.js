@@ -1,10 +1,16 @@
-export default `<div id="view-avisos" class="global-view temp-view" style="display: none; flex-direction: column; align-items: center; justify-content: center;">
+export default `<div id="view-avisos" class="global-view" style="display: none;">
         <div class="background-overlay bg-avisos"></div>
-        <h1 class="glitch-title" style="margin-bottom: 80px;">Avisos Gerais</h1>
-        <section class="avisos-gerais" style="width: 100%; position: relative; z-index: 10;">
-            <div id="lista-avisos-gerais"></div>
-        </section>
-        <footer class="site-footer" style="position: absolute; bottom: 0; width: 100%; border-top: none; margin-top: 0; padding-bottom: 20px;">
-            <p>© 2026 ERREJOTA. Todos os direitos reservados.</p>
-        </footer>
+        <div class="app-container">
+            <aside class="sidebar" id="sidebar-default-avisos"></aside>
+            <main class="main-content" style="height: 100%; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 50px;">
+                <h1 class="glitch-title" style="margin-bottom: 50px;">Avisos Gerais</h1>
+                <section class="avisos-gerais" style="width: 100%; position: relative; z-index: 10;">
+                    <div id="lista-avisos-gerais"></div>
+                </section>
+                <footer class="site-footer" style="margin-top: auto; width: 100%; border-top: none; padding-top: 40px; padding-bottom: 20px;">
+                    <p>© 2026 ERREJOTA. Todos os direitos reservados.</p>
+                </footer>
+            </main>
+        </div>
     </div>`;
+

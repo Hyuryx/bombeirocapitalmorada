@@ -234,3 +234,51 @@
     opacity: 0;
   }
 }
+
+/* =========================================================================
+   GooeyNav - Tema Claro & Modo Desempenho
+   ========================================================================= */
+body.light-theme .gooey-nav-container nav ul {
+  color: #2b2f38 !important;
+  text-shadow: none !important;
+}
+
+body.light-theme .gooey-nav-container nav ul li {
+  color: #2b2f38 !important;
+}
+
+body.light-theme .gooey-nav-container nav ul li a {
+  color: #2b2f38 !important;
+}
+
+body.light-theme .gooey-nav-container nav ul li.active {
+  color: transparent !important;
+}
+
+body.light-theme .gooey-nav-container nav ul li.active::after {
+  background: #1e293b !important;
+}
+
+body.light-theme .gooey-nav-container .effect.text {
+  color: #2b2f38 !important;
+}
+
+body.light-theme .gooey-nav-container .effect.text.active {
+  color: #ffffff !important;
+}
+
+body.light-theme .gooey-nav-container .effect.filter {
+  mix-blend-mode: normal !important;
+}
+
+body.light-theme .gooey-nav-container .effect.filter::after {
+  background: #1e293b !important;
+}
+
+/* Modo Desempenho (no-effects) */
+body.no-effects .gooey-nav-container .effect.filter,
+html.no-effects .gooey-nav-container .effect.filter {
+  filter: none !important;
+  mix-blend-mode: normal !important;
+}
+

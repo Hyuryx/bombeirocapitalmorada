@@ -45,8 +45,8 @@ export default function ReactPadraoRadioPixelCard() {
           gap={8}
           style={{
             width: '100%',
-            maxWidth: '1200px',
-            padding: '30px 30px',
+            maxWidth: '1050px',
+            padding: '25px 28px',
             background: 'rgba(10, 11, 16, 0.85)',
             border: '1px solid rgba(239, 68, 68, 0.4)',
             boxShadow: '0 15px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(239, 68, 68, 0.2)'

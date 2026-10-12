@@ -91,17 +91,19 @@ export default function ReactViaturasCarousel() {
       </div>
 
       {selectedViatura && (
-        <div style={{
-          position: 'fixed',
-          top: 0, left: 0, width: '100vw', height: '100vh',
-          zIndex: 999999,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          opacity: 0,
-          animation: 'fadeIn 0.3s forwards',
-          padding: '2rem'
-        }}>
+        <div 
+          className="carousel-modal-overlay"
+          style={{
+            position: 'fixed',
+            top: 0, left: 0, width: '100vw', height: '100vh',
+            zIndex: 9999999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            opacity: 1,
+            padding: '2rem'
+          }}
+        >
           {/* Blurred Background */}
           <div style={{
             position: 'absolute',
@@ -116,25 +118,31 @@ export default function ReactViaturasCarousel() {
           <div style={{
             position: 'absolute',
             top: 0, left: 0, width: '100%', height: '100%',
-            backgroundColor: 'rgba(18, 15, 23, 0.85)',
+            backgroundColor: 'rgba(10, 8, 14, 0.88)',
+            backdropFilter: 'blur(12px)',
             zIndex: -1
           }} onClick={closeModal} />
 
           {/* Modal Container */}
-          <div style={{
-            display: 'flex',
-            width: '90%',
-            maxWidth: '1200px',
-            height: '85vh',
-            background: 'rgba(255, 255, 255, 0.03)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: '24px',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            boxShadow: '0 0 40px rgba(139, 92, 246, 0.15)',
-            overflow: 'hidden',
-            position: 'relative',
-            animation: 'slideUp 0.4s ease-out forwards'
-          }}>
+          <div 
+            className="carousel-modal-box"
+            style={{
+              display: 'flex',
+              width: '90%',
+              maxWidth: '1200px',
+              height: '85vh',
+              backgroundColor: '#120f17',
+              background: 'rgba(18, 15, 23, 0.96)',
+              backdropFilter: 'blur(16px)',
+              borderRadius: '24px',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.8)',
+              overflow: 'hidden',
+              position: 'relative',
+              opacity: 1,
+              zIndex: 1
+            }}
+          >
             {/* Close Button */}
             <button onClick={closeModal} style={{
               position: 'absolute',

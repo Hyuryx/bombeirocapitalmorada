@@ -865,6 +865,21 @@ window.initSecondaryApp = function() {
             const newNoEffects = !currentNoEffects;
             localStorage.setItem('cbm-no-effects', newNoEffects);
             updateEffectsUI(newNoEffects);
+            window.dispatchEvent(new CustomEvent('userProfileUpdated', { detail: { noEffects: newNoEffects } }));
+        });
+
+        window.addEventListener('userProfileUpdated', (e) => {
+            if (e.detail?.noEffects !== undefined) {
+                updateEffectsUI(Boolean(e.detail.noEffects));
+            }
+        });
+    }
+
+    // Botão de Configurações no topo
+    const btnNavConfig = document.getElementById('btn-nav-config');
+    if (btnNavConfig) {
+        btnNavConfig.addEventListener('click', () => {
+            window.dispatchEvent(new CustomEvent('openConfiguracoes'));
         });
     }
 

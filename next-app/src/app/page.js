@@ -1,4 +1,4 @@
-import LightRays from '@/components/LightRays';
+import ThemeBackground from '@/components/ThemeBackground';
 import NoSSRDynamicHTMLRenderer from '@/components/NoSSRDynamicHTMLRenderer';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
@@ -41,23 +41,7 @@ export default function Home() {
 
   return (
     <div suppressHydrationWarning>
-      <div id="gradient-waves-bg" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -3, overflow: 'hidden' }}>
-        <LightRays
-          raysOrigin="top-center"
-          raysColor="#ffffff"
-          raysSpeed={1}
-          lightSpread={0.5}
-          rayLength={3}
-          followMouse={true}
-          mouseInfluence={0.1}
-          noiseAmount={0}
-          distortion={0}
-          className="custom-rays"
-          pulsating={false}
-          fadeDistance={1}
-          saturation={1}
-        />
-      </div>
+      <ThemeBackground />
       <ErrorBoundary>
         <NoSSRDynamicHTMLRenderer htmlString={htmlContent} />
       </ErrorBoundary>

@@ -22,7 +22,9 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
             }
         </style>
         <div class="background-overlay bg-hierarquia"></div>
-        <main class="main-content" style="height: 100%; overflow-y: auto;">
+        <div class="app-container">
+            <aside class="sidebar" id="sidebar-default-hierarquia"></aside>
+            <main class="main-content" style="height: 100%; overflow-y: auto;">
             <section id="hierarquia-lista" class="content-section active">
                 <header class="section-header">
                     <h1 class="glitch-title">Hierarquia e Patentes</h1>
@@ -213,4 +215,5 @@ export default `<div id="view-hierarquia" class="global-view" style="display: no
                 <p>© 2026 ERREJOTA. Todos os direitos reservados.</p>
             </footer>
         </main>
-    </div>`;
+    </div>
+</div>`;

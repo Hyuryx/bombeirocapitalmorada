@@ -23,6 +23,10 @@ import ReactPadraoRadioPixelCard from './ReactPadraoRadioPixelCard';
 import GlitchText from './GlitchText';
 import FallingText from './FallingText';
 import TextType from './TextType';
+import ReactSidebarCursos from './ReactSidebarCursos';
+import ReactSidebarModulacao from './ReactSidebarModulacao';
+import ReactSidebarDefault from './ReactSidebarDefault';
+import ConfiguracoesModal from './ConfiguracoesModal';
 
 const Livro3D = dynamic(() => import('./Livro3D'), { ssr: false });
 
@@ -53,10 +57,14 @@ export default function DynamicHTMLRenderer({ htmlString }) {
     };
     initVanilla();
 
-    // Capturar erros globais
+    // Capturar erros globais (ignorando ResizeObserver benigno do browser)
     if (typeof window !== 'undefined') {
         window.onerror = function(msg, url, line) {
-            console.error("ERRO GLOBAL: " + msg + " linha: " + line);
+            const str = String(msg || '');
+            if (str.includes('ResizeObserver') || str.includes('undelivered notifications')) {
+                return true;
+            }
+            console.error("ERRO GLOBAL: " + str + " linha: " + line);
             return false;
         };
     }
@@ -102,7 +110,7 @@ export default function DynamicHTMLRenderer({ htmlString }) {
       if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.class && domNode.attribs.class.includes('falling-subtitle')) {
         const text = domNode.children?.map(c => c.data || '').join('').trim();
         const highlightWords = domNode.attribs['data-highlight']
-          ? domNode.attribs['data-highlight'].split(',')
+          ? domNode.attribs['data-highlight'].split(',').map(s => s.trim()).filter(Boolean)
           : [];
         return (
           <div style={{ width: '100%', maxWidth: '700px', height: '120px', position: 'relative', margin: '0 auto' }}>
@@ -130,6 +138,18 @@ export default function DynamicHTMLRenderer({ htmlString }) {
             </GlitchText>
           </h1>
         );
+      }
+
+      if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id === 'sidebar-cursos') {
+        return <ReactSidebarCursos />;
+      }
+
+      if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id === 'sidebar-modulacao') {
+        return <ReactSidebarModulacao />;
+      }
+
+      if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id && domNode.attribs.id.startsWith('sidebar-default')) {
+        return <ReactSidebarDefault />;
       }
 
       if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id === 'lista-avisos-gerais') {
@@ -318,5 +338,10 @@ export default function DynamicHTMLRenderer({ htmlString }) {
     }
   };
 
-  return <>{parse(htmlString, options)}</>;
+  return (
+    <>
+      {parse(htmlString, options)}
+      <ConfiguracoesModal />
+    </>
+  );
 }

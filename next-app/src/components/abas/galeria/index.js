@@ -1,6 +1,8 @@
 export default `<div id="view-galeria" class="global-view" style="display: none;">
         <div class="background-overlay bg-galeria"></div>
-        <main class="main-content" style="height: 100%; overflow-y: auto; display: flex; flex-direction: column; box-sizing: border-box;">
+        <div class="app-container">
+            <aside class="sidebar" id="sidebar-default-galeria"></aside>
+            <main class="main-content" style="height: 100%; overflow-y: auto; display: flex; flex-direction: column; box-sizing: border-box;">
             <section id="galeria" class="content-section active" style="flex: 1 0 auto;">
                 <header class="section-header">
                     <h1 class="glitch-title">Galeria da Corporação</h1>
@@ -78,4 +80,5 @@ export default `<div id="view-galeria" class="global-view" style="display: none;
                 <p>© 2026 ERREJOTA. Todos os direitos reservados.</p>
             </footer>
         </main>
-    </div>`;
+    </div>
+</div>`;

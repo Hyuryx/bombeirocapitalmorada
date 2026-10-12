@@ -153,11 +153,6 @@ export function TiltedGridHero({
     null,
   );
 
-  // The image each tile shows, as a position in the run of images. It
-  // only changes when the tile wraps, which is out of sight, so a resize
-  // never swaps an image on screen either.
-  const [shown, setShown] = React.useState<Record<number, number>>({});
-
   React.useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -176,16 +171,25 @@ export function TiltedGridHero({
     return () => ro.disconnect();
   }, [tileHeight, aspectRatio, gap, bend]);
 
-  // Fetch every image up front. A tile picks up its next one just before
-  // it comes back into view, too late to start loading it then.
-  React.useEffect(() => {
-    if (images) {
-      for (const { src } of images) new Image().src = src;
-    }
-  }, [images]);
+  const itemsList = items || images || [];
 
-  const { columns, sweep, unit, limit } =
+  const { columns: rawColumns, unit, limit } =
     layout ?? measure(1200, 560, tileHeight, aspectRatio, gap, bend);
+
+  // If items are provided, make sure columns matches itemsList.length (or an exact multiple of it)
+  // so items NEVER duplicate side-by-side or collide out-of-order!
+  let columns = rawColumns;
+  if (itemsList.length > 0) {
+    if (itemsList.length >= rawColumns) {
+      columns = itemsList.length;
+    } else {
+      const mult = Math.max(1, Math.ceil(rawColumns / itemsList.length));
+      columns = mult * itemsList.length;
+    }
+  }
+
+  const pitch = (aspectRatio + gap / 100) * unit;
+  const sweep = +((columns * pitch) / 2).toFixed(4);
 
   // Every length is a multiple of the tile's height, which follows the
   // hero's height until MAX_WIDTH caps it on narrow screens.
@@ -201,10 +205,8 @@ export function TiltedGridHero({
   const turn = (deg: number) =>
     `translateZ(${radius}) rotateY(${+deg.toFixed(4)}deg) translateZ(-${radius})`;
 
-  // Beyond `limit` a tile is wholly off-screen, so it is hidden there. The
-  // loop's ends, where it wraps, fall inside that stretch, and so do tiles
-  // swinging round behind the camera.
-  const hide = +(((sweep - limit) / (2 * sweep || 1)) * 100).toFixed(4);
+  // Beyond `limit` a tile is wholly off-screen, so it is hidden there.
+  const hide = Math.max(0, +(((sweep - limit) / (2 * sweep || 1)) * 100).toFixed(4));
   const css =
     `@keyframes ${orbit}{` +
     `from{transform:${turn(-sweep)}}to{transform:${turn(sweep)}}` +
@@ -220,8 +222,6 @@ export function TiltedGridHero({
   const mask = `linear-gradient(90deg,transparent,#000 ${fade}%,#000 ${
     100 - fade
   }%,transparent)`;
-
-  const itemsList = items || images || [];
 
   return (
     <div
@@ -246,15 +246,17 @@ export function TiltedGridHero({
       >
         {Array.from({ length: columns }, (_, t) => {
           // Tile `columns - 1` starts nearest the exit and tile 0 furthest
-          // back, so this numbers tiles in the order they come on.
-          const first = columns - 1 - t;
-          const imgOrNode = itemsList[(shown[t] ?? first) % Math.max(itemsList.length, 1)];
+          // back, so this numbers tiles in the exact cyclical order they come on.
+          const itemIndex = itemsList.length > 0 
+            ? ((columns - 1 - t) % itemsList.length + itemsList.length) % itemsList.length
+            : 0;
+          const imgOrNode = itemsList[itemIndex];
           const isNode = React.isValidElement(imgOrNode);
           
           return (
             <div
               key={t}
-              className={cn(tile, "absolute pointer-events-auto")}
+              className={cn(tile, "tilted-grid-hero-tile absolute pointer-events-auto")}
               style={{
                 left: `calc(50% - ${u(aspectRatio / 2)})`,
                 top: `calc(${axis}% - ${u(0.5)})`,
@@ -264,20 +266,9 @@ export function TiltedGridHero({
                 // Tile t starts t tiles along the loop.
                 animation: `${orbit} ${duration}s linear ${-t * speed}s infinite`,
               }}
-              onAnimationIteration={(e) => {
-                // elapsedTime counts whole loops, missed events included.
-                const lap = Math.round(e.elapsedTime / duration);
-                setShown((prev) => {
-                  const next = lap * columns + first;
-                  return prev[t] === next ? prev : { ...prev, [t]: next };
-                });
-              }}
             >
               {isNode ? (
-                  // For React Nodes, we just render them straight on the tile.
-                  // Since the tile curves through slices, applying a Node directly
-                  // to the flat tile won't be sliced into a curve, but it will orbit 
-                  // along the cylinder perfectly!
+                  // For React Nodes, we render directly without slicing
                   <div className="absolute inset-0 w-full h-full flex items-center justify-center">
                     {imgOrNode}
                   </div>

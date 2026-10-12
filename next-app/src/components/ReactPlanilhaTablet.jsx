@@ -5,7 +5,7 @@ import GlitchText from './GlitchText';
 
 export default function ReactPlanilhaTablet() {
   return (
-    <div className="flex flex-col" style={{ zIndex: 10, width: '90%', maxWidth: '1200px', alignSelf: 'center' }}>
+    <div className="flex flex-col" style={{ zIndex: 10, width: '100%', maxWidth: '1200px', alignSelf: 'center' }}>
       <ContainerScroll
         titleComponent={
           <h1 className="glitch-title" style={{ marginBottom: '1rem', textAlign: 'center' }}>

@@ -1,0 +1,46 @@
+.shiny-text {
+  position: relative;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.shiny-text__glow {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: blur(0.14em);
+  pointer-events: none;
+  user-select: none;
+}
+
+body.light-theme .shiny-text,
+html.light-theme .shiny-text {
+  -webkit-text-fill-color: #2b2f38 !important;
+  color: #2b2f38 !important;
+  background: none !important;
+}
+
+body.light-theme .shiny-text__glow,
+html.light-theme .shiny-text__glow {
+  display: none !important;
+}
+
+body.no-effects .shiny-text,
+html.no-effects .shiny-text {
+  -webkit-text-fill-color: currentColor !important;
+  background: none !important;
+  text-shadow: none !important;
+}
+
+body.no-effects .shiny-text__glow,
+html.no-effects .shiny-text__glow {
+  display: none !important;
+}
+

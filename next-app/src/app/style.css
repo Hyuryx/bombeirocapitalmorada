@@ -192,7 +192,8 @@ html {
 }
 
 .global-view.active {
-    display: block;
+    display: block !important;
+    opacity: 1 !important;
     animation: fadeInView 0.3s ease-in-out forwards;
 }
 
@@ -201,9 +202,10 @@ html {
 }
 
 .global-view.temp-view.active {
-    display: flex;
+    display: flex !important;
     justify-content: center;
     align-items: center;
+    opacity: 1 !important;
     animation: fadeInView 0.3s ease-in-out forwards;
 }
 
@@ -212,80 +214,178 @@ html {
     height: 100%;
 }
 
-/* Sidebar Styling */
+/* Sidebar Styling - Modern Floating & Hover Auto-Expand */
 .sidebar {
-    width: 250px;
-    background-color: rgba(7, 7, 7, 0.5);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
-    box-shadow: 4px 0 24px rgba(0,0,0,0.2);
-    position: relative;
-    transition: margin-left 0.3s ease;
-    flex-shrink: 0;
-}
-
-.sidebar.collapsed {
-    margin-left: -250px;
-}
-
-.sidebar-toggle-btn {
-    position: absolute;
-    top: 20px;
-    right: -16px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: #1e1e1e;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 200;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    transition: right 0.3s ease, background 0.3s ease, border-radius 0.3s ease;
-}
-
-.sidebar-toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.sidebar.collapsed .sidebar-toggle-btn {
-    right: -32px;
-    border-radius: 0 8px 8px 0;
-    border-left: none;
-}
-
-.sidebar.collapsed .toggle-icon {
-    transform: rotate(180deg);
-}
-
-.toggle-icon {
-    transition: transform 0.3s ease;
-}
-
-.sidebar::before {
-    content: '';
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    bottom: 0;
     height: 100%;
-    /* background removed */
-    background-size: cover;
-    background-position: top center;
-    opacity: 0.35;
-    z-index: 1;
-    pointer-events: none;
+    width: 78px;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    border-right: none !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 500;
+    box-shadow: none !important;
+    transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-x: hidden;
+    overflow-y: auto;
+    user-select: none;
+    scrollbar-width: none;
+    flex-shrink: 0;
 }
 
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+.sidebar:hover {
+    width: 270px;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+}
+
+.sidebar.collapsed {
+    margin-left: 0 !important;
+    left: 0 !important;
+}
+
+.sidebar-toggle-btn {
+    display: none !important;
+}
+
+/* Header com espaçamento e PORTAL CBM */
+.sidebar-top-header {
+    padding: 26px 4px 10px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sidebar-portal-title {
+    font-size: 0.58rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
+    margin-bottom: 10px;
+    width: 100%;
+    display: block;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
+    transition: font-size 0.35s cubic-bezier(0.16, 1, 0.3, 1), letter-spacing 0.35s ease, margin 0.35s ease;
+}
+
+.sidebar:hover .sidebar-portal-title {
+    font-size: 1.15rem;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+    text-shadow: 0 0 14px rgba(255, 255, 255, 0.5);
+}
+
+.sidebar-logo-container {
+    text-align: center;
+    padding: 0;
+    border: none !important;
+    border-bottom: none !important;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.sidebar-logo {
+    width: 66px;
+    height: 66px;
+    object-fit: contain;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.35s cubic-bezier(0.16, 1, 0.3, 1), height 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.7));
+}
+
+.sidebar:hover .sidebar-logo {
+    width: 96px;
+    height: 96px;
+}
+
+.sidebar-logo:hover {
+    transform: scale(1.08) rotate(-2deg);
+}
+
+/* Seção Inferior: Botão Configurações e Logo Capital Morada */
+.sidebar-bottom-section {
+    padding: 10px 6px 20px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    border-top: none !important;
+}
+
+.sidebar-capital-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 2px 0 0 0;
+}
+
+.sidebar-capital-logo {
+    max-width: 64px;
+    max-height: 38px;
+    object-fit: contain;
+    opacity: 0.85;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sidebar:hover .sidebar-capital-logo {
+    max-width: 165px;
+    max-height: 56px;
+    opacity: 1;
+}
+
+.sidebar-capital-logo:hover {
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.35));
+    transform: scale(1.05);
+}
+
+/* Ocultar nav-brand na barra superior quando não estiver no Início */
+body:has(#view-cursos.active) .global-navbar .nav-brand,
+body:has(#view-modulacao.active) .global-navbar .nav-brand,
+body:has(#view-avisos.active) .global-navbar .nav-brand,
+body:has(#view-regras.active) .global-navbar .nav-brand,
+body:has(#view-uniformes.active) .global-navbar .nav-brand,
+body:has(#view-viaturas.active) .global-navbar .nav-brand,
+body:has(#view-hierarquia.active) .global-navbar .nav-brand,
+body:has(#view-planilhas.active) .global-navbar .nav-brand,
+body:has(#view-galeria.active) .global-navbar .nav-brand {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar::before,
 .sidebar-cursos::before {
-    /* background removed */
+    display: none !important;
 }
 
 .sidebar-header {
@@ -492,44 +592,239 @@ html {
 }
 
 .sidebar-nav {
-    padding: 20px 10px;
+    padding: 8px 10px 24px 10px;
+    margin-top: 20px;
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
     position: relative;
     z-index: 5;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .sidebar-nav ul {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    align-items: center;
 }
 
-.sidebar-nav li {
-    padding: 15px 20px;
-    margin: 8px 20px;
-    border-radius: 8px;
+.sidebar-nav li,
+.sidebar-nav-li {
+    width: 54px;
+    height: 52px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 14px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    position: relative;
+    transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s ease;
+    list-style: none;
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 1rem;
-    color: var(--text-muted);
-    font-weight: 500;
+    justify-content: center;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
-.sidebar-nav li:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-main);
-    transform: translateX(5px);
+.sidebar:hover .sidebar-nav li,
+.sidebar:hover .sidebar-nav-li {
+    width: 100%;
 }
 
-.sidebar-nav li.active {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-main);
-    border-right: 4px solid var(--active-color, var(--primary-green));
+/* Efeito de Reflexo / Espelho passando por cima dos botões (Mirror Sweep) */
+.sidebar-nav li::after,
+.sidebar-nav-li::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -130%;
+    width: 65%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.12) 20%,
+        rgba(255, 255, 255, 0.7) 50%,
+        rgba(255, 255, 255, 0.12) 80%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: skewX(-25deg);
+    pointer-events: none;
+    z-index: 25;
+    animation: sidebarButtonSheen 5.5s infinite cubic-bezier(0.25, 1, 0.5, 1);
+    border-radius: 14px;
+}
+
+@keyframes sidebarButtonSheen {
+    0% {
+        left: -130%;
+        opacity: 0;
+    }
+    3% {
+        opacity: 1;
+    }
+    24% {
+        left: 220%;
+        opacity: 1;
+    }
+    28% {
+        left: 220%;
+        opacity: 0;
+    }
+    100% {
+        left: 220%;
+        opacity: 0;
+    }
+}
+
+.sidebar-nav ul li:nth-child(1)::after { animation-delay: 0s; }
+.sidebar-nav ul li:nth-child(2)::after { animation-delay: 0.18s; }
+.sidebar-nav ul li:nth-child(3)::after { animation-delay: 0.36s; }
+.sidebar-nav ul li:nth-child(4)::after { animation-delay: 0.54s; }
+.sidebar-nav ul li:nth-child(5)::after { animation-delay: 0.72s; }
+.sidebar-nav ul li:nth-child(6)::after { animation-delay: 0.90s; }
+.sidebar-nav ul li:nth-child(7)::after { animation-delay: 1.08s; }
+.sidebar-nav ul li:nth-child(8)::after { animation-delay: 1.26s; }
+.sidebar-bottom-section .sidebar-nav-li::after { animation-delay: 0.85s; }
+
+body.no-effects .sidebar-nav li::after,
+body.no-effects .sidebar-nav-li::after {
+    display: none !important;
+}
+
+.sidebar-pixel-card {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    background: rgba(18, 17, 24, 0.55) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.5) !important;
+    overflow: hidden !important;
+    position: relative !important;
+    cursor: pointer !important;
+    transition: border-color 0.28s ease, box-shadow 0.28s ease, transform 0.2s ease, background 0.28s ease !important;
+}
+
+.sidebar-pixel-card:hover {
+    background: rgba(26, 24, 34, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.22) !important;
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.7), 0 0 16px var(--btn-glow, rgba(255, 255, 255, 0.12)) !important;
+    transform: translateY(-2px);
+}
+
+.sidebar-nav li.active .sidebar-pixel-card,
+.sidebar-nav-li.active .sidebar-pixel-card {
+    background: rgba(24, 22, 33, 0.95) !important;
+    border-color: var(--active-color, #a855f7) !important;
+    box-shadow: 0 0 20px -3px var(--active-color, rgba(168, 85, 247, 0.6)), inset 0 0 10px -2px var(--active-color, rgba(168, 85, 247, 0.3)) !important;
+}
+
+.sidebar-nav li.active .sidebar-pixel-card::before,
+.sidebar-nav-li.active .sidebar-pixel-card::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 3.5px;
+    background: var(--active-color, #a855f7);
+    border-radius: 4px 0 0 4px;
+    box-shadow: 0 0 10px var(--active-color, #a855f7);
+    z-index: 10;
+}
+
+.sidebar-btn-inner {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0 12px;
+    box-sizing: border-box;
+    pointer-events: none;
+    position: relative;
+    z-index: 2;
+}
+
+.sidebar-btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    flex-shrink: 0;
+    margin-left: -1px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    transition: transform 0.25s ease;
+}
+
+.sidebar-nav-li:hover .sidebar-btn-icon {
+    transform: scale(1.12);
+}
+
+.sidebar-btn-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 12px;
+    opacity: 0;
+    max-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    pointer-events: none;
+    transform: translateX(-12px);
+    transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sidebar:hover .sidebar-btn-info {
+    opacity: 1;
+    max-width: 185px;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.sidebar-btn-title {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    line-height: 1.25;
+    letter-spacing: 0.2px;
+}
+
+.sidebar-btn-subtitle {
+    font-size: 0.68rem;
     font-weight: 700;
+    color: rgba(241, 245, 249, 0.58);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+    line-height: 1.1;
+}
+
+#view-cursos .main-content,
+#view-modulacao .main-content,
+#view-avisos .main-content,
+#view-regras .main-content,
+#view-uniformes .main-content,
+#view-viaturas .main-content,
+#view-hierarquia .main-content,
+#view-planilhas .main-content,
+#view-galeria .main-content {
+    margin-left: 78px;
+    width: calc(100% - 78px);
+    box-sizing: border-box;
+    transition: margin-left 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sidebar-nav li .icon, .sidebar-nav li .anim-icon {
@@ -1112,46 +1407,41 @@ html {
     }
 
     .sidebar {
-        position: absolute;
-        height: 100%;
+        position: fixed;
+        top: 70px;
+        height: calc(100% - 70px);
         left: 0;
         z-index: 3000;
-        background-color: rgba(10, 10, 12, 0.98);
+        background-color: rgba(10, 10, 14, 0.95);
         box-shadow: 10px 0 30px rgba(0,0,0,0.8);
+        width: 64px;
+        transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        margin-left: 0 !important;
+    }
+
+    .sidebar:hover,
+    .sidebar:focus-within {
         width: 250px;
-        transition: left 0.3s ease;
-        margin-left: 0 !important; /* override desktop margin-left */
     }
 
     .sidebar.collapsed {
-        left: -250px;
+        left: 0 !important;
+        margin-left: 0 !important;
     }
 
     .sidebar-header {
         padding: 15px;
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: none;
         background-color: transparent;
         position: relative;
     }
 
     .sidebar-logo {
-        max-width: 140px;
+        max-width: 48px;
     }
     
     .sidebar-toggle-btn {
-        right: -40px;
-        width: 40px;
-        height: 40px;
-        border-radius: 0 12px 12px 0;
-        border-left: none;
-        background: rgba(20, 20, 25, 0.95);
-        border: 1px solid rgba(255,255,255,0.1);
-        display: flex;
-    }
-
-    .sidebar.collapsed .sidebar-toggle-btn {
-        right: -40px;
-        border-radius: 0 12px 12px 0;
+        display: none !important;
     }
 
     .sidebar-nav {
@@ -1869,52 +2159,108 @@ body.locked {
     }
 }
 
-/* Botão de Alternar Efeitos (Modo Desempenho) */
-.btn-toggle-effects {
+/* Botão de Configurações na Navbar (Substitui botão de efeitos na navbar) */
+.btn-nav-config {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    padding: 6px 14px;
-    margin-left: 8px;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    margin-left: 10px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
+    border-radius: 50%;
     color: #e5e7eb;
-    font-family: inherit;
-    font-size: 0.82rem;
-    font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     user-select: none;
-}
-
-.btn-toggle-effects:hover {
-    background: rgba(255, 255, 255, 0.16);
-    border-color: rgba(255, 255, 255, 0.4);
-    color: #ffffff;
-    transform: translateY(-1px);
-}
-
-.btn-toggle-effects:active {
-    transform: translateY(0);
-}
-
-.btn-toggle-effects svg {
     flex-shrink: 0;
 }
 
-/* Modo sem Efeitos (Low-Performance / Leve) */
-html.no-effects *,
-html.no-effects *::before,
-html.no-effects *::after,
-body.no-effects *,
-body.no-effects *::before,
-body.no-effects *::after {
+.btn-nav-config:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(239, 68, 68, 0.6);
+    color: #ff5555;
+    transform: rotate(45deg) scale(1.08);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+}
+
+.btn-nav-config:active {
+    transform: rotate(45deg) scale(0.95);
+}
+
+/* Modo sem Efeitos (Modo Desempenho / Apaga tudo para PCs/celulares fracos) 
+   EXCEÇÃO ÚNICA: Apenas as placas do carrossel (.tilted-grid-hero-tile) mantêm o movimento 
+   contínuo para que os cards não travem. Todo o resto (títulos, Rádio Atual, bordas, neons) 
+   fica totalmente SEM EFEITOS. */
+html.no-effects *:not(.tilted-grid-hero-tile),
+html.no-effects *:not(.tilted-grid-hero-tile)::before,
+html.no-effects *:not(.tilted-grid-hero-tile)::after,
+body.no-effects *:not(.tilted-grid-hero-tile),
+body.no-effects *:not(.tilted-grid-hero-tile)::before,
+body.no-effects *:not(.tilted-grid-hero-tile)::after {
     box-shadow: none !important;
     text-shadow: none !important;
+    filter: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+    animation: none !important;
+    transition-duration: 0.05s !important;
+}
+
+/* Preservação exclusiva da rotação dos cards no carrossel de Regras e Modulação */
+body.no-effects .tilted-grid-hero-tile,
+html.no-effects .tilted-grid-hero-tile {
+    animation-play-state: running !important;
+}
+
+/* Os cards dentro das placas não piscam o neon no modo sem efeitos */
+body.no-effects .neon-breathing-card,
+html.no-effects .neon-breathing-card {
+    animation: none !important;
+    box-shadow: none !important;
+}
+
+/* Garantir que NENHUMA view ou elemento ativo fique invisível no modo no-effects */
+html.no-effects .global-view.active,
+body.no-effects .global-view.active {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+html.no-effects .global-view.temp-view.active,
+body.no-effects .global-view.temp-view.active {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+html.no-effects .stagger-item,
+body.no-effects .stagger-item,
+html.no-effects .card-evoluir,
+body.no-effects .card-evoluir,
+html.no-effects .viaturas-card,
+body.no-effects .viaturas-card,
+html.no-effects .hierarquia-card,
+body.no-effects .hierarquia-card,
+html.no-effects .regras-item,
+body.no-effects .regras-item,
+html.no-effects .item-aviso,
+body.no-effects .item-aviso,
+html.no-effects #inicio-logo-container img,
+body.no-effects #inicio-logo-container img {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+body.no-effects #gradient-waves-bg,
+html.no-effects #gradient-waves-bg {
+    display: none !important;
+    visibility: hidden !important;
 }
 
 body.no-effects #particles-js {
@@ -1922,21 +2268,65 @@ body.no-effects #particles-js {
 }
 
 body.no-effects .background-overlay {
-    opacity: 0.12 !important;
+    opacity: 0.08 !important;
+    animation: none !important;
 }
 
+body.no-effects .neon-red-border,
+body.no-effects .border-glow,
+body.no-effects .tablet-neon-frame,
 body.no-effects .card,
-body.no-effects .radio-atual-container,
 body.no-effects .global-navbar,
 body.no-effects .sidebar {
-    border-style: solid !important;
-    border-width: 1px !important;
+    box-shadow: none !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    animation: none !important;
 }
 
-body.no-effects .btn-toggle-effects {
-    background: rgba(239, 68, 68, 0.2) !important;
-    border-color: rgba(239, 68, 68, 0.6) !important;
-    color: #fca5a5 !important;
+/* Rádio Atual 1228: Totalmente sem piscar, sem brilho neon azul */
+body.no-effects .radio-atual-container,
+html.no-effects .radio-atual-container {
+    animation: none !important;
+    box-shadow: none !important;
+    border: 1px solid rgba(0, 240, 255, 0.35) !important;
+}
+
+body.no-effects .radio-atual-icon,
+html.no-effects .radio-atual-icon {
+    filter: none !important;
+    animation: none !important;
+}
+
+body.no-effects .radio-atual-title,
+html.no-effects .radio-atual-title {
+    text-shadow: none !important;
+    animation: none !important;
+}
+
+/* Títulos Glitch (Apresentação, etc.): Estático e sem sombras tremidas */
+body.no-effects .glitch-title,
+body.no-effects .glitch-text,
+body.no-effects .glitch,
+body.no-effects .shiny-text {
+    text-shadow: none !important;
+    animation: none !important;
+    filter: none !important;
+    -webkit-text-fill-color: currentColor !important;
+}
+
+body.no-effects .glitch::before,
+body.no-effects .glitch::after,
+html.no-effects .glitch::before,
+html.no-effects .glitch::after {
+    display: none !important;
+    animation: none !important;
+    opacity: 0 !important;
+}
+
+body.no-effects .sidebar-nav li::after,
+body.no-effects .sidebar-nav-li::after {
+    display: none !important;
+    animation: none !important;
 }
 
 /* Compatibilidade com Dark Reader / Extensões Escuras */
@@ -2719,4 +3109,447 @@ html {
     0 0 25px rgba(255, 26, 26, 0.35) !important;
   border-color: #ff1a1a !important;
 }
+
+/* =========================================================================
+   SAUDAÇÃO DO USUÁRIO NA SIDEBAR (SEJA BEM-VINDO)
+   ========================================================================= */
+.sidebar-user-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 5px;
+  padding: 3px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  background: transparent;
+  user-select: none;
+  max-width: 100%;
+}
+
+.sidebar-user-welcome:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.welcome-tag {
+  font-size: 0.52rem;
+  font-weight: 800;
+  color: #ff3333;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  line-height: 1.1;
+  text-shadow: 0 0 8px rgba(255, 51, 51, 0.4);
+}
+
+.welcome-name {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 68px;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  line-height: 1.2;
+}
+
+.sidebar:hover .sidebar-user-welcome {
+  margin-top: 8px;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar:hover .welcome-tag {
+  font-size: 0.65rem;
+  letter-spacing: 1.2px;
+}
+
+.sidebar:hover .welcome-name {
+  font-size: 0.95rem;
+  max-width: 220px;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* =========================================================================
+   TEMA CLARO (LIGHT THEME)
+   ========================================================================= */
+:root.light-theme,
+html.light-theme,
+body.light-theme {
+  --bg-dark: #f8fafc;
+  --bg-sidebar: transparent;
+  --bg-card: #ffffff;
+  --text-main: #2b2f38;
+  --text-muted: #64748b;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.96);
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #2b2f38 !important;
+  color-scheme: light !important;
+}
+
+body.light-theme .global-view-container,
+body.light-theme .global-view,
+body.light-theme .app-container,
+body.light-theme .main-content {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #2b2f38 !important;
+  position: relative;
+  z-index: 1 !important;
+}
+
+/* Início: O vídeo de fundo DEVE continuar visível e ativo no Tema Claro */
+body.light-theme #video-sequence-container,
+html.light-theme #video-sequence-container {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+body.light-theme #inicio-logo-container img {
+  filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.35)) !important;
+}
+
+body.light-theme .background-overlay {
+  opacity: 0.03 !important;
+  filter: brightness(1.2) contrast(0.9) !important;
+}
+
+body.light-theme #gradient-waves-bg,
+html.light-theme #gradient-waves-bg {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 0 !important;
+}
+
+/* 1. Nome PORTAL CBM: Totalmente Preto (#000000) no Tema Claro */
+body.light-theme .nav-title,
+html.light-theme .nav-title,
+body.light-theme .sidebar-portal-title,
+html.light-theme .sidebar-portal-title,
+body.light-theme .sidebar:hover .sidebar-portal-title,
+html.light-theme .sidebar:hover .sidebar-portal-title,
+.light-theme .sidebar-portal-title,
+.light-theme .sidebar:hover .sidebar-portal-title {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  text-shadow: none !important;
+  filter: none !important;
+  font-weight: 800 !important;
+}
+
+/* Navbar no Tema Claro: totalmente transparente para exibir o fundo em ondas */
+body.light-theme .global-navbar,
+html.light-theme .global-navbar {
+  background: transparent !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.light-theme .btn-nav-config {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: #000000 !important;
+}
+
+body.light-theme .btn-nav-config:hover {
+  background: rgba(220, 38, 38, 0.12) !important;
+  border-color: rgba(220, 38, 38, 0.4) !important;
+  color: #dc2626 !important;
+}
+
+/* GooeyNav no Tema Claro */
+body.light-theme .gooey-nav-container nav ul {
+  color: #2b2f38 !important;
+  text-shadow: none !important;
+}
+
+body.light-theme .gooey-nav-container nav ul li {
+  color: #2b2f38 !important;
+}
+
+body.light-theme .gooey-nav-container nav ul li a {
+  color: #2b2f38 !important;
+}
+
+body.light-theme .gooey-nav-container .effect.text {
+  color: #2b2f38 !important;
+}
+
+body.light-theme .gooey-nav-container .effect.text.active {
+  color: #ffffff !important;
+}
+
+body.light-theme .gooey-nav-container .effect.filter::after,
+body.light-theme .gooey-nav-container nav ul li.active::after {
+  background: #1e293b !important;
+}
+
+/* Letras gerais da página fora dos cards escuros */
+body.light-theme .section-header h1,
+body.light-theme .content-section > h1,
+body.light-theme .content-section > h2 {
+  color: #1e293b !important;
+}
+
+body.light-theme .falling-subtitle,
+body.light-theme .text-muted,
+body.light-theme .site-footer p,
+body.light-theme .footer-text-type {
+  color: #64748b !important;
+}
+
+/* =========================================================================
+   CARDS COM FUNDO PRETO & TEXTO BRANCO ACESO (REGRAS, VIATURAS P1/P2/P3, EVOLUIR)
+   ========================================================================= */
+
+/* Regras: Card Preto com Letras Brancas Acessas */
+body.light-theme .neon-breathing-card {
+  background: #111319 !important;
+  background-color: #111319 !important;
+  border: 2px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  animation: none !important;
+}
+
+body.light-theme .neon-breathing-card h2 {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6) !important;
+}
+
+body.light-theme .neon-breathing-card p,
+body.light-theme .neon-breathing-card li,
+body.light-theme .neon-breathing-card li span,
+body.light-theme .neon-breathing-card strong {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Viaturas P1, P2, P3 & Carousel: Fundo Preto com Cores Acessas e Letra Branca */
+body.light-theme .carousel-stage,
+body.light-theme .carousel-tile,
+body.light-theme .carousel-card {
+  background: #111319 !important;
+  background-color: #111319 !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35) !important;
+}
+
+body.light-theme .carousel-tile *,
+body.light-theme .carousel-stage *,
+body.light-theme .carousel-title,
+body.light-theme .carousel-desc,
+body.light-theme #view-viaturas .carousel-card * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+body.light-theme .carousel-desc,
+body.light-theme #view-viaturas .carousel-card p {
+  color: #cbd5e1 !important;
+  -webkit-text-fill-color: #cbd5e1 !important;
+}
+
+/* Cursos (Como Evoluir): Fundo Preto com Letras Brancas e Badges Acessos */
+body.light-theme .card-evoluir,
+body.light-theme #view-cursos .card-evoluir {
+  background: #111319 !important;
+  background-color: #111319 !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-top: 3px solid #3b82f6 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.light-theme .card-evoluir *,
+body.light-theme #view-cursos .card-evoluir * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+body.light-theme .card-evoluir .evoluir-frase-preview,
+body.light-theme #view-cursos .card-evoluir .evoluir-frase-preview {
+  color: #cbd5e1 !important;
+  -webkit-text-fill-color: #cbd5e1 !important;
+}
+
+body.light-theme .card-evoluir.merito,
+body.light-theme #view-cursos .card-evoluir.merito {
+  border-top-color: #f59e0b !important;
+}
+
+body.light-theme .card-evoluir:hover,
+body.light-theme #view-cursos .card-evoluir:hover {
+  transform: translateY(-4px) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Restauração das Luzes Vermelhas (Neon) em Uniformes e Viaturas no Tema Claro */
+body.light-theme #view-uniformes .card,
+body.light-theme #view-uniformes .info-card,
+body.light-theme #view-uniformes .circular-carousel__frame,
+body.light-theme #view-uniformes .circular-carousel__tile .circular-carousel__frame,
+body.light-theme #view-uniformes .circular-carousel__card .circular-carousel__frame,
+body.light-theme #view-viaturas .card,
+body.light-theme #view-viaturas .info-card,
+body.light-theme #view-viaturas .carousel-card,
+body.light-theme #view-viaturas .circular-carousel__frame,
+body.light-theme #view-viaturas .circular-carousel__tile .circular-carousel__frame,
+body.light-theme #view-viaturas .circular-carousel__card .circular-carousel__frame {
+  animation: neonRedBreathe 2s ease-in-out infinite !important;
+  border: 2px solid rgba(255, 26, 26, 0.6) !important;
+}
+
+body.light-theme #view-uniformes .circular-carousel__tile:hover .circular-carousel__frame,
+body.light-theme #view-uniformes .circular-carousel__card:hover .circular-carousel__frame,
+body.light-theme #view-viaturas .circular-carousel__tile:hover .circular-carousel__frame,
+body.light-theme #view-viaturas .circular-carousel__card:hover .circular-carousel__frame,
+body.light-theme #view-uniformes .card:hover,
+body.light-theme #view-uniformes .info-card:hover,
+body.light-theme #view-viaturas .card:hover,
+body.light-theme #view-viaturas .info-card:hover,
+body.light-theme #view-viaturas .carousel-card:hover {
+  box-shadow:
+    0 0 15px #ff1a1a,
+    0 0 35px #ff1a1a,
+    0 0 70px rgba(255, 26, 26, 0.85) !important;
+  border-color: #ff1a1a !important;
+}
+
+body.light-theme #view-cursos .card,
+body.light-theme #view-cursos .info-card {
+  animation: none !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+body.light-theme #view-cursos .card:hover,
+body.light-theme #view-cursos .info-card:hover {
+  animation: none !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Modais de Informações de Uniformes e Viaturas */
+.carousel-modal-overlay,
+body.light-theme .carousel-modal-overlay,
+html.light-theme .carousel-modal-overlay {
+  opacity: 1 !important;
+  display: flex !important;
+  visibility: visible !important;
+  z-index: 9999999 !important;
+}
+
+.carousel-modal-box,
+body.light-theme .carousel-modal-box,
+html.light-theme .carousel-modal-box {
+  opacity: 1 !important;
+  display: flex !important;
+  visibility: visible !important;
+}
+
+body.light-theme .eb-canvas-container,
+body.light-theme .eb-layers {
+  display: none !important;
+}
+
+/* =========================================================================
+   SIDEBAR NO TEMA CLARO - BOTÃO SELECIONADO / ATIVO COM TEXTO BRANCO NÍTIDO
+   ========================================================================= */
+body.light-theme .sidebar,
+html.light-theme .sidebar,
+body.light-theme .sidebar:hover,
+html.light-theme .sidebar:hover {
+  background: transparent !important;
+  border-right: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.light-theme .welcome-tag {
+  color: #dc2626 !important;
+}
+
+body.light-theme .welcome-name {
+  color: #2b2f38 !important;
+}
+
+/* Botões inativos da sidebar */
+body.light-theme .sidebar-nav li,
+body.light-theme .sidebar-nav-li {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+body.light-theme .sidebar-nav-li .sidebar-btn-title {
+  color: #2b2f38 !important;
+  -webkit-text-fill-color: #2b2f38 !important;
+}
+
+body.light-theme .sidebar-nav-li .sidebar-btn-subtitle {
+  color: #64748b !important;
+}
+
+/* Botão SELECIONADO / ATIVO na sidebar (fundo escuro -> texto BRANCO puro e legível) */
+body.light-theme .sidebar-nav-li.active,
+body.light-theme .sidebar-nav li.active,
+body.light-theme .sidebar-nav-li.active .sidebar-pixel-card,
+body.light-theme .sidebar-nav li.active .sidebar-pixel-card {
+  background: rgba(24, 22, 33, 0.96) !important;
+  box-shadow: 0 0 18px -2px var(--active-color, rgba(6, 182, 212, 0.6)) !important;
+}
+
+body.light-theme .sidebar-nav-li.active .sidebar-btn-title,
+body.light-theme .sidebar-nav li.active .sidebar-btn-title,
+body.light-theme .sidebar-nav-li.active .sidebar-btn-subtitle,
+body.light-theme .sidebar-nav li.active .sidebar-btn-subtitle,
+body.light-theme .sidebar-nav-li.active .shiny-text,
+body.light-theme .sidebar-nav-li.active span,
+body.light-theme .sidebar-nav li.active span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Hover nos botões da sidebar */
+body.light-theme .sidebar-nav-li:hover,
+body.light-theme .sidebar-nav li:hover {
+  background: rgba(24, 22, 33, 0.9) !important;
+}
+
+body.light-theme .sidebar-nav-li:hover .sidebar-btn-title,
+body.light-theme .sidebar-nav li:hover .sidebar-btn-title,
+body.light-theme .sidebar-nav-li:hover .shiny-text,
+body.light-theme .sidebar-nav-li:hover span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Botão Configurações na parte inferior da sidebar */
+body.light-theme .sidebar-bottom-section .sidebar-pixel-card {
+  background: rgba(24, 22, 33, 0.92) !important;
+}
+
+body.light-theme .sidebar-bottom-section .sidebar-btn-title,
+body.light-theme .sidebar-bottom-section .sidebar-config-text,
+body.light-theme .sidebar-bottom-section span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7) !important;
+}
+
+
 

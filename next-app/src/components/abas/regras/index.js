@@ -42,11 +42,13 @@ export default `<div id="view-regras" class="global-view" style="display: none;"
     </style>
     
         <div class="background-overlay bg-regras"></div>
-        <main class="main-content" style="height: 100%; overflow-y: auto;">
+        <div class="app-container">
+            <aside class="sidebar" id="sidebar-default-regras"></aside>
+            <main class="main-content" style="height: 100%; overflow-y: auto;">
             <section id="regras-condutas" class="content-section active">
                 <header class="section-header">
                     <h1 class="glitch-title">Regras e Condutas</h1>
-                    <p class="falling-subtitle" data-highlight="Postura,operacional,diretrizes">Postura operacional, restrições e diretrizes do departamento.</p>
+                    <p class="falling-subtitle" data-highlight="Postura,operacional,restrições,diretrizes">Postura operacional, restrições e diretrizes do departamento.</p>
                 </header>
                 <div id="regras-cards-grid" class="cards-grid">
                     <div class="card info-card blue-card">
@@ -133,4 +135,5 @@ export default `<div id="view-regras" class="global-view" style="display: none;"
                 <p>© 2026 ERREJOTA. Todos os direitos reservados.</p>
             </footer>
         </main>
-    </div>`;
+    </div>
+</div>`;

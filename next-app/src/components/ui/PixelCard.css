@@ -1,0 +1,70 @@
+.pixel-card-modern {
+  --pixel-card-surface: linear-gradient(180deg, rgba(23, 21, 28, 0.75) 0%, rgba(15, 14, 19, 0.85) 100%);
+  --pixel-card-edge: rgba(255, 255, 255, 0.08);
+  --pixel-card-edge-active: rgba(255, 255, 255, 0.16);
+  --pixel-card-highlight: rgba(255, 255, 255, 0.06);
+  --pixel-card-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.65), 0 4px 10px -5px rgba(0, 0, 0, 0.4);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--pixel-card-radius, 14px);
+  background: var(--pixel-card-surface);
+  box-shadow: var(--pixel-card-shadow);
+  isolation: isolate;
+  outline: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pixel-card-modern[data-theme='light'] {
+  --pixel-card-surface: linear-gradient(180deg, #ffffff 0%, #f6f6f8 100%);
+  --pixel-card-edge: rgba(24, 24, 27, 0.08);
+  --pixel-card-edge-active: rgba(24, 24, 27, 0.16);
+  --pixel-card-highlight: rgba(255, 255, 255, 1);
+  --pixel-card-shadow: 0 24px 48px -26px rgba(24, 24, 27, 0.32), 0 8px 18px -12px rgba(24, 24, 27, 0.18);
+}
+
+.pixel-card-modern::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px var(--pixel-card-edge),
+    inset 0 1px 0 var(--pixel-card-highlight);
+  pointer-events: none;
+  transition: box-shadow 260ms ease, border-color 260ms ease;
+}
+
+.pixel-card-modern[data-active]::after {
+  box-shadow:
+    inset 0 0 0 1.5px var(--pixel-card-edge-active, rgba(255, 26, 26, 0.8)),
+    inset 0 1px 0 var(--pixel-card-highlight);
+}
+
+.pixel-card-modern:focus-visible {
+  box-shadow:
+    var(--pixel-card-shadow),
+    0 0 0 3px rgba(127, 127, 140, 0.45);
+}
+
+.pixel-card-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.pixel-card-modern > :not(.pixel-card-canvas) {
+  position: relative;
+  z-index: 1;
+}

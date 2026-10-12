@@ -16,7 +16,7 @@ import Script from "next/script";
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} dark antialiased`}>
+    <html lang="pt-BR" className={`${inter.variable} dark antialiased`} suppressHydrationWarning>
       <head>
         <meta name="darkreader-lock" />
         <meta name="color-scheme" content="dark" />
@@ -24,8 +24,22 @@ export default function RootLayout({ children }) {
         <link rel="stylesheet" href="/css/style.css?v=20" />
         <link rel="stylesheet" href="/css/notificacoes.css?v=20" />
         <link rel="stylesheet" href="/css/border-glow.css" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (localStorage.getItem('cbm_theme') === 'light') {
+                  document.documentElement.classList.add('light-theme');
+                }
+                if (localStorage.getItem('cbm-no-effects') === 'true') {
+                  document.documentElement.classList.add('no-effects');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {children}
         <Script src="/js/script.js?v=2" strategy="afterInteractive" />
         <Script src="/js/notificacoes.js" strategy="afterInteractive" />

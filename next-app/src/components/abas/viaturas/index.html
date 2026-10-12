@@ -1,10 +1,12 @@
 <div id="view-viaturas" class="global-view" style="display: none;">
         <div class="background-overlay bg-viaturas"></div>
-        <main class="main-content" style="height: 100%; overflow-y: auto;">
+        <div class="app-container">
+            <aside class="sidebar" id="sidebar-default-viaturas"></aside>
+            <main class="main-content" style="height: 100%; overflow-y: auto;">
             <section id="viaturas-qsv" class="content-section active">
                 <header class="section-header">
                     <h1 class="glitch-title">Posições e Viaturas (QSV)</h1>
-                    <p>Funções na viatura e catálogo oficial.</p>
+                    <p class="falling-subtitle" data-highlight="Funções,viatura,catálogo">Funções na viatura e catálogo oficial.</p>
                 </header>
                 <div id="viaturas-posicoes-grid" class="cards-grid" style="margin-bottom: 10px; gap: 10px;">
                     <div class="card info-card blue-card" style="padding: 10px 15px; min-height: unset;">
@@ -62,3 +64,4 @@
             </footer>
         </main>
     </div>
+</div>

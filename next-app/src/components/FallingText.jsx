@@ -22,12 +22,28 @@ const FallingText = ({
 
   const [effectStarted, setEffectStarted] = useState(false);
 
+  const normalize = (str) => {
+    return (str || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/gi, '')
+      .trim();
+  };
+
   useEffect(() => {
     if (!textRef.current) return;
     const words = text.split(' ');
+    const normalizedHW = highlightWords
+      .map(hw => normalize(hw))
+      .filter(Boolean);
+
     const newHTML = words
       .map(word => {
-        const isHighlighted = highlightWords.some(hw => word.startsWith(hw));
+        const normWord = normalize(word);
+        const isHighlighted = normWord.length > 0 && normalizedHW.some(nhw => {
+          return normWord === nhw || normWord.startsWith(nhw) || nhw.startsWith(normWord);
+        });
         return `<span class="word ${isHighlighted ? highlightClass : ''}">${word}</span>`;
       })
       .join(' ');
@@ -64,7 +80,15 @@ const FallingText = ({
     const height = containerRect.height;
 
     if (width <= 0 || height <= 0) {
-      return;
+      const observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting && entry.boundingClientRect.width > 0) {
+          observer.disconnect();
+          setEffectStarted(false);
+          requestAnimationFrame(() => setEffectStarted(true));
+        }
+      });
+      if (containerRef.current) observer.observe(containerRef.current);
+      return () => observer.disconnect();
     }
 
     const engine = Engine.create();

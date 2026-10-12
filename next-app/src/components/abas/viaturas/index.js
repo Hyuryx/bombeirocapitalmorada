@@ -1,6 +1,8 @@
 export default `<div id="view-viaturas" class="global-view" style="display: none;">
         <div class="background-overlay bg-viaturas"></div>
-        <main class="main-content" style="height: 100%; overflow-y: auto;">
+        <div class="app-container">
+            <aside class="sidebar" id="sidebar-default-viaturas"></aside>
+            <main class="main-content" style="height: 100%; overflow-y: auto;">
             <style>
                 @keyframes neon-breathe-babyblue {
                     0% {
@@ -78,4 +80,5 @@ export default `<div id="view-viaturas" class="global-view" style="display: none
                 <p>© 2026 ERREJOTA. Todos os direitos reservados.</p>
             </footer>
         </main>
-    </div>`;
+    </div>
+</div>`;

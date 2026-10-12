@@ -62,7 +62,7 @@ export default `<div id="view-modulacao" class="global-view" style="display: non
                 <section id="home" class="content-section active">
                     <header class="section-header">
                         <h1 class="glitch-title">Apresentação</h1>
-                        <p class="falling-subtitle" data-highlight="Apostila,Modulação,Capital">Apostila Geral de Modulação - Capital Morada</p>
+                        <p class="falling-subtitle" data-highlight="Apostila,Modulação,Capital,Morada">Apostila Geral de Modulação - Capital Morada</p>
                     </header>
                     <div class="radio-atual-wrapper">
                         <div class="radio-atual-container">
@@ -109,8 +109,8 @@ export default `<div id="view-modulacao" class="global-view" style="display: non
 
                 <section id="codigos-q" class="content-section">
                     <header class="section-header">
-                        <h1>Códigos Q</h1>
-                        <p>Conjunto de abreviações para tornar a comunicação rápida e padronizada.</p>
+                        <h1 class="glitch-title">Códigos Q</h1>
+                        <p class="falling-subtitle" data-highlight="abreviações,comunicação,rápida,padronizada">Conjunto de abreviações para tornar a comunicação rápida e padronizada.</p>
                     </header>
                     <!-- ReactCodigosQBounceCards will be rendered here dynamically -->
                     <div id="codigos-q-bounce-cards-grid"></div>
@@ -120,16 +120,16 @@ export default `<div id="view-modulacao" class="global-view" style="display: non
 
                 <section id="alfabeto-fonetico" class="content-section">
                     <header class="section-header">
-                        <h1>Alfabeto Fonético</h1>
-                        <p>Utilizado para soletrar nomes, placas, e endereços com precisão.</p>
+                        <h1 class="glitch-title">Alfabeto Fonético</h1>
+                        <p class="falling-subtitle" data-highlight="soletrar,nomes,placas,endereços,precisão">Utilizado para soletrar nomes, placas, e endereços com precisão.</p>
                     </header>
                     <div id="react-alfabeto-fonetico-container"></div>
                 </section>
 
                 <section id="numeracao-fonetica" class="content-section">
                     <header class="section-header">
-                        <h1>Numeração Fonética</h1>
-                        <p>Padroniza a transmissão dos números pelo rádio.</p>
+                        <h1 class="glitch-title">Numeração Fonética</h1>
+                        <p class="falling-subtitle" data-highlight="Padroniza,transmissão,números,rádio">Padroniza a transmissão dos números pelo rádio.</p>
                     </header>
                     
                     <div id="react-numeracao-fonetica-container"></div>
@@ -137,8 +137,8 @@ export default `<div id="view-modulacao" class="global-view" style="display: non
 
                 <section id="padrao-radio" class="content-section">
                     <header class="section-header">
-                        <h1>Padrão de Comunicações CBM</h1>
-                        <p>Modelos visuais e exemplos de comunicação em serviço.</p>
+                        <h1 class="glitch-title">Padrão de Comunicações CBM</h1>
+                        <p class="falling-subtitle" data-highlight="Modelos,visuais,exemplos,comunicação,serviço">Modelos visuais e exemplos de comunicação em serviço.</p>
                     </header>
                     
                     <div id="react-padrao-radio-container"></div>

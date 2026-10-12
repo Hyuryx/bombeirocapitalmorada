@@ -119,7 +119,7 @@ const PRESETS = {
 const INTRO_LENGTH = { assemble: 1500, rise: 1400, spin: 1800, none: 0 };
 const TILES = 8;
 const OVERLAP = 2.5;
-const DRAG_THRESHOLD = 5;
+const DRAG_THRESHOLD = 16;
 const SPRING = 118;
 const SETTLE_SPEED = 9;
 const CAPTION_SPACE = 76;
@@ -768,8 +768,14 @@ const CircularCarousel = ({
     const state = stateRef.current;
     const press = state.press;
     if (!press || press.id !== event.pointerId) return;
+    const dist = Math.hypot(event.clientX - press.x, event.clientY - press.y);
     state.press = null;
-    if (!press.moved) return;
+    if (!press.moved || dist < 12) {
+      state.drag = false;
+      setDragging(false);
+      state.suppressClick = false;
+      return;
+    }
     state.drag = false;
     setDragging(false);
     state.suppressClick = true;
@@ -812,8 +818,10 @@ const CircularCarousel = ({
     const card = event.target.closest?.('[data-cc-index]');
     if (!card) return;
     const index = Number(card.getAttribute('data-cc-index'));
-    if (focusOnClick) focusIndex(index);
-    onItemClick?.(list[index], index);
+    if (!isNaN(index) && list[index]) {
+      if (focusOnClick) focusIndex(index);
+      onItemClick?.(list[index], index);
+    }
   };
 
   const handleKeyDown = event => {
@@ -856,12 +864,21 @@ const CircularCarousel = ({
       <div
         key={`${back ? 'b' : 'f'}${tile.index}`}
         className="circular-carousel__tile"
-        style={{ ...box, transform: tile.move + (back ? flip : '') }}
+        style={{ ...box, transform: tile.move + (back ? flip : ''), cursor: 'pointer' }}
         aria-hidden="true"
+        onClick={(e) => {
+          e.stopPropagation();
+          if (stateRef.current.suppressClick) {
+            stateRef.current.suppressClick = false;
+            return;
+          }
+          if (focusOnClick) focusIndex(index);
+          onItemClick?.(item, index);
+        }}
       >
         <div
           className="circular-carousel__frame"
-          style={{ height: axis === 'x' ? size : cardH, borderRadius: frameRadius }}
+          style={{ height: axis === 'x' ? size : cardH, borderRadius: frameRadius, cursor: 'pointer' }}
         >
           <img
             className="circular-carousel__photo"
@@ -936,12 +953,22 @@ const CircularCarousel = ({
                     height: 'var(--cc-card-h)',
                     marginLeft: 'calc(var(--cc-card-w) * -0.5)',
                     marginTop: 'calc(var(--cc-card-h) * -0.5)',
-                    margin: 0
+                    margin: 0,
+                    cursor: 'pointer'
                   }}
                   data-cc-index={index}
                   role="group"
                   aria-roledescription="slide"
                   aria-label={`${item.title || item.alt || `Image ${index + 1}`}, ${index + 1} of ${count}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (stateRef.current.suppressClick) {
+                      stateRef.current.suppressClick = false;
+                      return;
+                    }
+                    if (focusOnClick) focusIndex(index);
+                    onItemClick?.(item, index);
+                  }}
                 >
                   {tiles.map(tile => renderTile(item, tile, false, index))}
                   {layout.backfaces && tiles.map(tile => renderTile(item, tile, true, index))}
