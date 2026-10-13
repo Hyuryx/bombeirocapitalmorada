@@ -24,3 +24,7 @@ export const DISCORD_ROLE_BOMBEIRO =
 export const DISCORD_INVITE_URL = 
   process.env.DISCORD_INVITE_URL || 
   'https://discord.gg/JdAB2NVss';
+
+export const DISCORD_DATABASE_CHANNEL_ID = 
+  process.env.DISCORD_DATABASE_CHANNEL_ID || 
+  '1548421745667743765';

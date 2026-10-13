@@ -78,6 +78,30 @@ export async function POST(request) {
 
     const cleanId = input.replace(/^[#\s]+/, '').trim();
 
+    // REGISTRO IMEDIATO DE HWID / DISPOSITIVO:
+    // Independentemente de o militar estar no Discord, ter cargo ou já ter autorizado o bot,
+    // o HWID da máquina/celular que efetuou a tentativa DEVE ser gravado na ficha do militar.
+    let militarRecord = await getMilitarRecord(cleanId);
+    const deviceHwidField = isMobile ? 'mobileHwid' : 'desktopHwid';
+    const deviceNameField = isMobile ? 'mobileDeviceName' : 'desktopDeviceName';
+    const deviceLoginField = isMobile ? 'lastMobileLogin' : 'lastDesktopLogin';
+
+    if (clientHwid) {
+      const initialSave = {
+        militarId: cleanId,
+        lastLogin: new Date().toISOString(),
+        [deviceLoginField]: new Date().toISOString()
+      };
+
+      // Se este slot ainda estiver livre, vincula o HWID imediatamente
+      if (!militarRecord || !militarRecord[deviceHwidField]) {
+        initialSave[deviceHwidField] = clientHwid;
+        initialSave[deviceNameField] = isMobile ? 'Dispositivo Móvel' : 'Computador Desktop';
+      }
+
+      militarRecord = await saveMilitarRecord(cleanId, initialSave);
+    }
+
     // ETAPA 1: Conexão segura com o sistema de autenticação
     let members;
     try {
@@ -103,7 +127,6 @@ export async function POST(request) {
     }
 
     // ETAPA 2: Consulta de presença no Discord oficial do CBM
-    const militarRecord = await getMilitarRecord(cleanId);
     const idNumber = parseInt(cleanId, 10);
 
     const matchMember = (list) => {
@@ -187,6 +210,14 @@ export async function POST(request) {
     }
     extractedName = extractedName.trim() || 'Militar';
 
+    // Salvar imediatamente o nome e identificação do Discord na ficha do militar
+    militarRecord = await saveMilitarRecord(cleanId, {
+      nick: extractedName,
+      discordTag: `${targetMember.user?.username}#${targetMember.user?.discriminator || '0'}`,
+      discordId: targetMember.user?.id,
+      globalName: targetMember.user?.global_name || targetMember.user?.username
+    });
+
     // ETAPA 3: Validar cargo militar e autorização do Bot CBM
     const hasRole = Array.isArray(targetMember.roles) && targetMember.roles.includes(DISCORD_ROLE_BOMBEIRO);
     if (!hasRole) {
@@ -263,39 +294,21 @@ export async function POST(request) {
     // Regra: Cada militar tem direito a 1 PC (desktopHwid) e 1 Mobile (mobileHwid).
     let isDeviceAuthorized = false;
     let hwidDetailMsg = '';
+    const registeredHwid = isMobile ? militarRecord.mobileHwid : militarRecord.desktopHwid;
 
-    if (isMobile) {
-      if (!militarRecord.mobileHwid) {
-        // Primeiro acesso em dispositivo móvel: registra e vincula
-        await saveMilitarRecord(cleanId, {
-          mobileHwid: clientHwid,
-          mobileDeviceName: 'Dispositivo Móvel Autorizado',
-          lastMobileLogin: new Date().toISOString()
-        });
-        isDeviceAuthorized = true;
-        hwidDetailMsg = 'Dispositivo móvel registrado e vinculado';
-      } else if (militarRecord.mobileHwid === clientHwid) {
-        isDeviceAuthorized = true;
-        hwidDetailMsg = 'Dispositivo móvel reconhecido e autorizado';
-      } else {
-        isDeviceAuthorized = false;
-      }
+    if (!registeredHwid) {
+      militarRecord = await saveMilitarRecord(cleanId, {
+        [deviceHwidField]: clientHwid,
+        [deviceNameField]: isMobile ? 'Dispositivo Móvel Autorizado' : 'Computador Desktop Autorizado',
+        [deviceLoginField]: new Date().toISOString()
+      });
+      isDeviceAuthorized = true;
+      hwidDetailMsg = `${isMobile ? 'Dispositivo móvel' : 'Computador'} registrado e vinculado`;
+    } else if (registeredHwid === clientHwid) {
+      isDeviceAuthorized = true;
+      hwidDetailMsg = `${isMobile ? 'Dispositivo móvel' : 'Computador'} reconhecido e autorizado`;
     } else {
-      if (!militarRecord.desktopHwid) {
-        // Primeiro acesso em computador: registra e vincula
-        await saveMilitarRecord(cleanId, {
-          desktopHwid: clientHwid,
-          desktopDeviceName: 'Computador Desktop Autorizado',
-          lastDesktopLogin: new Date().toISOString()
-        });
-        isDeviceAuthorized = true;
-        hwidDetailMsg = 'Computador registrado e vinculado';
-      } else if (militarRecord.desktopHwid === clientHwid) {
-        isDeviceAuthorized = true;
-        hwidDetailMsg = 'Computador reconhecido e autorizado';
-      } else {
-        isDeviceAuthorized = false;
-      }
+      isDeviceAuthorized = false;
     }
 
     if (!isDeviceAuthorized) {

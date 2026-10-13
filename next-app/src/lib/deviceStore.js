@@ -1,87 +1,194 @@
 import fs from 'fs';
 import path from 'path';
-import Redis from 'ioredis';
+import os from 'os';
+import { DISCORD_BOT_TOKEN, DISCORD_DATABASE_CHANNEL_ID } from './discordConfig.js';
 
-// Conexão Redis (caso configurada em produção na Vercel/Upstash)
-let redisClient = null;
-if (process.env.REDIS_URL || process.env.UPSTASH_REDIS_REST_URL) {
-  try {
-    const url = process.env.REDIS_URL || process.env.UPSTASH_REDIS_REST_URL;
-    redisClient = new Redis(url);
-  } catch (e) {
-    console.warn('Falha ao conectar ao Redis para deviceStore:', e.message);
-  }
-}
+// Cache em memória compartilhado durante o ciclo de vida da instância
+let memoryDb = null;
+let lastFetchTime = 0;
+const MEMORY_TTL_MS = 5000; // 5 segundos de cache para evitar sobrecarga de requisições
 
-// Arquivo JSON de fallback local
+// Caminhos locais de contingência
 const getLocalStorePath = () => {
   return path.join(process.cwd(), 'data', 'devices_store.json');
 };
 
-function ensureDirExists(filePath) {
-  const dir = path.dirname(filePath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+const getTmpStorePath = () => {
+  return path.join(os.tmpdir(), 'cbm_devices_store.json');
+};
+
+function writeSafeLocal(filePath, content) {
+  try {
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(filePath, content, 'utf8');
+  } catch (e) {
+    // EROFS silencioso na Vercel (esperado no /var/task)
   }
 }
 
 /**
- * Lê o banco de dados de militares e vínculos
- * Estrutura:
- * {
- *   "01": {
- *     militarId: "01",
- *     discordId: "123456789",
- *     discordTag: "usuario",
- *     isBotAuthorized: true,
- *     desktopHwid: "hash_pc",
- *     mobileHwid: "hash_celular",
- *     lastLogin: "2026-10-13T...",
- *     sessionToken: "uuid...",
- *     deviceCount: 1
- *   }
- * }
+ * Lê o banco de dados de dispositivos e militares.
+ * Prioridade:
+ * 1. Cache em memória (< 5s)
+ * 2. Canal do Discord (cbm_devices_store.json fixado)
+ * 3. Arquivo local /tmp ou data/devices_store.json
  */
 export async function getDeviceDatabase() {
-  if (redisClient) {
+  const now = Date.now();
+  if (memoryDb && (now - lastFetchTime < MEMORY_TTL_MS)) {
+    return memoryDb;
+  }
+
+  // 1. Tentar ler do Cloud Store no Discord (canal dedicado do bot)
+  if (DISCORD_BOT_TOKEN && DISCORD_DATABASE_CHANNEL_ID) {
     try {
-      const data = await redisClient.get('cbm_devices_store');
-      return data ? JSON.parse(data) : {};
-    } catch (e) {
-      console.error('Erro ao ler devices do Redis:', e);
+      const pinsRes = await fetch(
+        `https://discord.com/api/v10/channels/${DISCORD_DATABASE_CHANNEL_ID}/pins`,
+        {
+          headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` },
+          cache: 'no-store'
+        }
+      );
+
+      if (pinsRes.ok) {
+        const pins = await pinsRes.json();
+        const dbMsg = Array.isArray(pins) 
+          ? pins.find(p => p.attachments?.some(a => a.filename === 'cbm_devices_store.json'))
+          : null;
+
+        if (dbMsg) {
+          const fileAttachment = dbMsg.attachments.find(a => a.filename === 'cbm_devices_store.json');
+          if (fileAttachment?.url) {
+            const fileRes = await fetch(fileAttachment.url, { cache: 'no-store' });
+            if (fileRes.ok) {
+              const cloudDb = await fileRes.json();
+              if (cloudDb && typeof cloudDb === 'object') {
+                memoryDb = cloudDb;
+                lastFetchTime = now;
+                writeSafeLocal(getTmpStorePath(), JSON.stringify(cloudDb, null, 2));
+                return memoryDb;
+              }
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Aviso: Falha ao carregar devices_store do Discord Cloud:', err.message);
     }
   }
 
-  const filePath = getLocalStorePath();
-  if (!fs.existsSync(filePath)) {
-    return {};
+  // 2. Fallback para /tmp (gravável no ambiente Serverless da Vercel)
+  const tmpPath = getTmpStorePath();
+  if (fs.existsSync(tmpPath)) {
+    try {
+      const raw = fs.readFileSync(tmpPath, 'utf8');
+      memoryDb = JSON.parse(raw || '{}');
+      lastFetchTime = now;
+      return memoryDb;
+    } catch (e) {
+      // Ignora erro de parse
+    }
   }
 
-  try {
-    const content = fs.readFileSync(filePath, 'utf8');
-    return JSON.parse(content || '{}');
-  } catch (e) {
-    console.error('Erro ao ler devices_store.json:', e);
-    return {};
+  // 3. Fallback para data/devices_store.json do repositório
+  const localPath = getLocalStorePath();
+  if (fs.existsSync(localPath)) {
+    try {
+      const raw = fs.readFileSync(localPath, 'utf8');
+      memoryDb = JSON.parse(raw || '{}');
+      lastFetchTime = now;
+      return memoryDb;
+    } catch (e) {
+      console.error('Erro ao ler devices_store.json local:', e);
+    }
   }
+
+  memoryDb = {};
+  lastFetchTime = now;
+  return memoryDb;
 }
 
+/**
+ * Salva o banco de dados de dispositivos e militares.
+ * Persiste na nuvem do Discord e em cópias locais (/tmp e local store).
+ */
 export async function saveDeviceDatabase(db) {
-  if (redisClient) {
-    try {
-      await redisClient.set('cbm_devices_store', JSON.stringify(db));
-      return;
-    } catch (e) {
-      console.error('Erro ao salvar devices no Redis:', e);
-    }
-  }
+  memoryDb = db;
+  lastFetchTime = Date.now();
 
-  const filePath = getLocalStorePath();
-  try {
-    ensureDirExists(filePath);
-    fs.writeFileSync(filePath, JSON.stringify(db, null, 2), 'utf8');
-  } catch (e) {
-    console.error('Erro ao salvar arquivo local devices_store.json:', e);
+  const jsonStr = JSON.stringify(db, null, 2);
+
+  // 1. Salvar no /tmp e tentar no diretório do projeto
+  writeSafeLocal(getTmpStorePath(), jsonStr);
+  writeSafeLocal(getLocalStorePath(), jsonStr);
+
+  // 2. Persistir no Discord Cloud Store
+  if (DISCORD_BOT_TOKEN && DISCORD_DATABASE_CHANNEL_ID) {
+    try {
+      const formData = new FormData();
+      const fileBlob = new Blob([jsonStr], { type: 'application/json' });
+      formData.append('files[0]', fileBlob, 'cbm_devices_store.json');
+      formData.append(
+        'payload_json',
+        JSON.stringify({
+          content: `💾 **[CBM DATABASE]** Atualização de cadastro militar e HWIDs (${new Date().toLocaleString('pt-BR')})`
+        })
+      );
+
+      const uploadRes = await fetch(
+        `https://discord.com/api/v10/channels/${DISCORD_DATABASE_CHANNEL_ID}/messages`,
+        {
+          method: 'POST',
+          headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` },
+          body: formData
+        }
+      );
+
+      if (uploadRes.ok) {
+        const newMsg = await uploadRes.json();
+
+        // Fixar a nova mensagem
+        await fetch(
+          `https://discord.com/api/v10/channels/${DISCORD_DATABASE_CHANNEL_ID}/pins/${newMsg.id}`,
+          {
+            method: 'PUT',
+            headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` }
+          }
+        );
+
+        // Limpar mensagens antigas de banco fixadas para manter apenas a mais recente
+        const pinsRes = await fetch(
+          `https://discord.com/api/v10/channels/${DISCORD_DATABASE_CHANNEL_ID}/pins`,
+          { headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` } }
+        );
+
+        if (pinsRes.ok) {
+          const pins = await pinsRes.json();
+          if (Array.isArray(pins)) {
+            const oldPins = pins.filter(
+              p => p.id !== newMsg.id && p.attachments?.some(a => a.filename === 'cbm_devices_store.json')
+            );
+            for (const oldPin of oldPins) {
+              await fetch(
+                `https://discord.com/api/v10/channels/${DISCORD_DATABASE_CHANNEL_ID}/messages/${oldPin.id}`,
+                {
+                  method: 'DELETE',
+                  headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` }
+                }
+              ).catch(() => {});
+            }
+          }
+        }
+      } else {
+        const errText = await uploadRes.text();
+        console.warn('Aviso: Falha ao fazer upload da base para o Discord:', uploadRes.status, errText);
+      }
+    } catch (err) {
+      console.error('Erro ao sincronizar base de dispositivos com o Discord Cloud:', err);
+    }
   }
 }
 
@@ -100,10 +207,11 @@ export async function getMilitarRecord(militarId) {
 export async function saveMilitarRecord(militarId, recordData) {
   const db = await getDeviceDatabase();
   const cleanId = String(militarId).replace(/^[#\s]+/, '').trim();
-  
+
   const existing = db[cleanId] || {
     militarId: cleanId,
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    logs: []
   };
 
   db[cleanId] = {
@@ -118,7 +226,7 @@ export async function saveMilitarRecord(militarId, recordData) {
 }
 
 /**
- * Reseta o HWID de um militar (útil para o painel futuro ou comando)
+ * Reseta o HWID de um militar
  */
 export async function resetMilitarHwid(militarId, targetType = 'all') {
   const db = await getDeviceDatabase();
@@ -196,7 +304,6 @@ export async function addMilitarLog(militarId, logData) {
 
 /**
  * Exclui totalmente o cadastro militar do sistema
- * (Desvincula Discord antigo, apaga ambos os HWIDs e limpa dados)
  */
 export async function deleteMilitarRecord(militarId) {
   const db = await getDeviceDatabase();

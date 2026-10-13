@@ -36,7 +36,8 @@ export async function GET(request) {
     console.error('Falha ao decodificar state:', e);
   }
 
-  const militarId = stateData.id || '';
+  const rawMilitarId = stateData.id || '';
+  const militarId = String(rawMilitarId).replace(/^[#\s]+/, '').trim();
   const hwid = stateData.hwid || '';
   const deviceType = stateData.deviceType || 'desktop';
 

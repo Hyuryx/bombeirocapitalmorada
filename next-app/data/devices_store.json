@@ -1,8 +1,98 @@
 {
+  "666": {
+    "militarId": "666",
+    "createdAt": "2026-10-13T20:50:31.626Z",
+    "logs": [
+      {
+        "id": "log_1791924708104_l7jl",
+        "timestamp": "2026-10-13T20:51:48.104Z",
+        "type": "BOT_PENDING",
+        "title": "Autorização do Bot Pendente (1º Acesso)",
+        "detail": "Militar #666 (XING LING DO PARAGUAI) possui cargo de Bombeiro. Pendente autorizar o Bot CBM no Discord para vincular máquina.",
+        "hwid": "pc_a96335f2207c87c9f4c0541c",
+        "deviceType": "desktop",
+        "success": false
+      },
+      {
+        "id": "log_1791924685410_kpx3",
+        "timestamp": "2026-10-13T20:51:25.410Z",
+        "type": "BOT_PENDING",
+        "title": "Autorização do Bot Pendente (1º Acesso)",
+        "detail": "Militar #666 (XING LING DO PARAGUAI) possui cargo de Bombeiro. Pendente autorizar o Bot CBM no Discord para vincular máquina.",
+        "hwid": "pc_a96335f2207c87c9f4c0541c",
+        "deviceType": "desktop",
+        "success": false
+      },
+      {
+        "id": "log_1791924656078_04b9",
+        "timestamp": "2026-10-13T20:50:56.078Z",
+        "type": "BOT_PENDING",
+        "title": "Autorização do Bot Pendente (1º Acesso)",
+        "detail": "Militar #666 (XING LING DO PARAGUAI) possui cargo de Bombeiro. Pendente autorizar o Bot CBM no Discord para vincular máquina.",
+        "hwid": "pc_a96335f2207c87c9f4c0541c",
+        "deviceType": "desktop",
+        "success": false
+      },
+      {
+        "id": "log_1791924631626_r55c",
+        "timestamp": "2026-10-13T20:50:31.626Z",
+        "type": "BOT_PENDING",
+        "title": "Autorização do Bot Pendente (1º Acesso)",
+        "detail": "Militar #666 (XING LING DO PARAGUAI) possui cargo de Bombeiro. Pendente autorizar o Bot CBM no Discord para vincular máquina.",
+        "hwid": "pc_a96335f2207c87c9f4c0541c",
+        "deviceType": "desktop",
+        "success": false
+      }
+    ]
+  },
   "35904": {
     "militarId": "35904",
     "createdAt": "2026-10-13T20:19:18.124Z",
     "logs": [
+      {
+        "id": "log_1791925347453_jk6o",
+        "type": "HWID_RESET",
+        "title": "Reset de HWID Executado",
+        "detail": "Vínculo de dispositivo (ALL) liberado pelo comando via Painel Administrativo.",
+        "timestamp": "2026-10-13T21:02:27.453Z",
+        "success": true
+      },
+      {
+        "id": "log_1791925237484_4h9x",
+        "timestamp": "2026-10-13T21:00:37.484Z",
+        "type": "LOGIN_SUCCESS",
+        "title": "Autenticação Militar Concluída com Sucesso",
+        "detail": "Militar ErreJota (#35904) autenticado com sucesso no Computador Desktop. Trava HWID validada.",
+        "hwid": "hwid_desktop_35904_valido",
+        "deviceType": "desktop",
+        "success": true
+      },
+      {
+        "id": "log_1791925194289_1rfm",
+        "type": "HWID_RESET",
+        "title": "Reset de HWID Executado",
+        "detail": "Vínculo de dispositivo (DESKTOP) liberado pelo comando via Painel Administrativo.",
+        "timestamp": "2026-10-13T20:59:54.289Z",
+        "success": true
+      },
+      {
+        "id": "log_1791925109896_7v4f",
+        "timestamp": "2026-10-13T20:58:29.896Z",
+        "type": "HWID_BLOCKED",
+        "title": "Acesso Bloqueado - Máquina Não Autorizada",
+        "detail": "Acesso negado em outro computador. HWID da tentativa: [hwid_desktop_359...]. HWID registrado: [pc_hwid_novo_359...]. Possível troca de dispositivo ou tentativa de acesso indevido.",
+        "hwid": "hwid_desktop_35904_valido",
+        "deviceType": "desktop",
+        "success": false
+      },
+      {
+        "id": "log_1791925076283_ga1c",
+        "type": "HWID_RESET",
+        "title": "Reset de HWID Executado",
+        "detail": "Vínculo de dispositivo (DESKTOP) liberado pelo comando via Painel Administrativo.",
+        "timestamp": "2026-10-13T20:57:56.283Z",
+        "success": true
+      },
       {
         "id": "log_1791923018230_kptt",
         "timestamp": "2026-10-13T20:23:38.230Z",
@@ -23,22 +113,19 @@
         "deviceType": "desktop",
         "success": false
       }
-    ]
-  },
-  "888888": {
-    "militarId": "888888",
-    "createdAt": "2026-10-13T20:28:39.835Z",
-    "logs": [
-      {
-        "id": "log_1791923319835_xu8r",
-        "timestamp": "2026-10-13T20:28:39.835Z",
-        "type": "DISCORD_NOT_FOUND",
-        "title": "ID Militar Não Localizado no Discord",
-        "detail": "Tentativa de login: ID #888888 não encontrado no apelido de nenhum membro do servidor CBM. Se já estiver no servidor, certifique-se de que seu apelido contenha \"#888888\".",
-        "hwid": "test_pc_1",
-        "deviceType": "desktop",
-        "success": false
-      }
-    ]
+    ],
+    "nick": "ErreJota",
+    "discordTag": "errejota.fps#0",
+    "discordId": "1207045485907546192",
+    "isBotAuthorized": true,
+    "desktopHwid": null,
+    "desktopDeviceName": null,
+    "mobileHwid": null,
+    "lastLogin": "2026-10-13T21:00:35.815Z",
+    "updatedAt": "2026-10-13T21:02:27.453Z",
+    "sessionToken": null,
+    "lastDesktopLogin": "2026-10-13T21:00:32.196Z",
+    "globalName": "ErreJota",
+    "mobileDeviceName": null
   }
 }
