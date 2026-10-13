@@ -442,3 +442,899 @@ html.cbm-unlocked #login-screen {
 body.locked {
     overflow: hidden !important;
 }
+
+/* ==========================================================================
+   NAVEGAÇÃO POR MONITORES / TELAS DE COMPUTADOR (ABAS)
+   ========================================================================== */
+.monitores-nav-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+  .monitores-nav-wrapper {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.monitor-tab-card {
+  cursor: pointer;
+  position: relative;
+  outline: none;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.monitor-tab-card:hover {
+  transform: translateY(-5px);
+}
+
+.monitor-casing {
+  background: linear-gradient(145deg, #1c2029, #0e1117);
+  border-radius: 16px;
+  padding: 12px;
+  border: 2px solid #2a3140;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  position: relative;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.monitor-tab-card.active .monitor-casing {
+  border-color: #ff3849;
+  box-shadow: 0 0 25px rgba(255, 56, 73, 0.28), 0 14px 35px rgba(0, 0, 0, 0.25);
+}
+
+.monitor-screen {
+  background: radial-gradient(circle at 50% 25%, #181d28 0%, #090b10 100%);
+  border-radius: 10px;
+  padding: 24px 18px;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Reflexo e scanlines sutis na tela */
+.monitor-screen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.monitor-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  color: #9aa5b5;
+  transition: all 0.3s ease;
+}
+
+.monitor-tab-card.active .monitor-icon-wrap {
+  background: rgba(255, 56, 73, 0.15);
+  border-color: #ff3849;
+  color: #ff5263;
+  box-shadow: 0 0 15px rgba(255, 56, 73, 0.3);
+}
+
+.monitor-tag {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #7b889b;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.monitor-tab-card.active .monitor-tag {
+  color: #ff6b7a;
+}
+
+.monitor-title {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #e5ebf2;
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+  font-family: inherit;
+}
+
+.monitor-tab-card.active .monitor-title {
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 56, 73, 0.4);
+}
+
+.monitor-desc {
+  font-size: 12px;
+  color: #8c99ab;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Base e pé do monitor de computador */
+.monitor-chin {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px 0 8px;
+  font-size: 10px;
+  color: #5d6778;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.monitor-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #474f5e;
+  transition: all 0.3s ease;
+}
+
+.monitor-tab-card.active .monitor-led {
+  background: #00e676;
+  box-shadow: 0 0 10px #00e676;
+}
+
+.monitor-stand {
+  width: 50px;
+  height: 14px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #1c2029, #12141a);
+  clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+}
+
+.monitor-base {
+  width: 120px;
+  height: 6px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, #151820, #2c3342, #151820);
+  border-radius: 3px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* ==========================================================================
+   PAINEL ADMINISTRATIVO (CENTRAL DE HWID E DISPOSITIVOS)
+   ========================================================================== */
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 500px) {
+  .admin-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-stat-card {
+  padding: 20px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #feecef;
+  color: #ff3348;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.admin-stat-info .admin-stat-num {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1a1e24;
+  line-height: 1.1;
+}
+
+.admin-stat-info .admin-stat-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #66707c;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* Barra de pesquisa e filtro de militares */
+.admin-toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.admin-search-wrap {
+  flex: 1;
+  min-width: 260px;
+  position: relative;
+}
+
+.admin-search-input {
+  width: 100%;
+  padding: 14px 16px 14px 44px;
+  border-radius: 12px;
+  border: 1px solid #d2d8e0;
+  background: #ffffff;
+  font-size: 14px;
+  color: #1c2026;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-search-input:focus {
+  border-color: #ff3849;
+  box-shadow: 0 0 0 3px rgba(255, 56, 73, 0.15);
+}
+
+.admin-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8c99ab;
+  pointer-events: none;
+}
+
+.admin-btn-refresh {
+  padding: 0 20px;
+  border-radius: 12px;
+  border: none;
+  background: #1c2029;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.admin-btn-refresh:hover {
+  background: #ff3849;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 56, 73, 0.25);
+}
+
+/* Cards individuais dos Militares */
+.militares-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.militar-admin-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #dde3eb;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.militar-admin-card:hover {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.militar-card-header {
+  padding: 18px 22px;
+  background: #f7f9fb;
+  border-bottom: 1px solid #eef2f6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.militar-id-badge {
+  background: #ff3849;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.militar-identity-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.militar-name-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #171b22;
+  margin: 0;
+}
+
+.militar-discord-tag {
+  font-size: 13px;
+  color: #5865f2;
+  font-weight: 600;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bot-status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bot-status-badge.authorized {
+  background: #e6f9ed;
+  color: #0e833f;
+  border: 1px solid #b7edc8;
+}
+
+.bot-status-badge.pending {
+  background: #fff8e6;
+  color: #a46d04;
+  border: 1px solid #ffe6a4;
+}
+
+/* Área de Dispositivos (Desktop e Mobile) */
+.militar-devices-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 22px;
+}
+
+@media (max-width: 768px) {
+  .militar-devices-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.device-slot-card {
+  padding: 16px;
+  border-radius: 12px;
+  background: #fbfcfd;
+  border: 1px solid #e3e8ee;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.device-slot-card.has-device {
+  border-color: #cfd8e3;
+  background: #ffffff;
+}
+
+.device-slot-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.device-slot-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #edf1f7;
+  color: #434c5e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.device-slot-card.has-device .device-slot-icon {
+  background: #e8f5ff;
+  color: #0b76cf;
+}
+
+.device-slot-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #1a1e24;
+}
+
+.device-status-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 99px;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.device-status-pill.bound {
+  background: #e3f5eb;
+  color: #12793b;
+}
+
+.device-status-pill.unbound {
+  background: #f0f3f6;
+  color: #788596;
+}
+
+.device-hwid-box {
+  margin: 10px 0;
+  padding: 8px 10px;
+  background: #f2f5f9;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 12px;
+  color: #3b4252;
+  word-break: break-all;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.device-meta-date {
+  font-size: 11px;
+  color: #8c97a8;
+  margin-bottom: 14px;
+}
+
+.btn-reset-device {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #fecdd3;
+  background: #fff1f2;
+  color: #e11d48;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-reset-device:hover:not(:disabled) {
+  background: #e11d48;
+  color: #ffffff;
+  border-color: #e11d48;
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+}
+
+.btn-reset-device:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-color: #e5e9f0;
+  background: #f7f9fa;
+  color: #a0abb8;
+}
+
+.militar-card-footer {
+  padding: 14px 22px;
+  background: #fcfdfe;
+  border-top: 1px solid #edf1f6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.btn-reset-all {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #d92d20;
+  background: transparent;
+  color: #d92d20;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-reset-all:hover {
+  background: #d92d20;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(217, 45, 32, 0.25);
+}
+
+/* Modal de Confirmação */
+.cbm-admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(5px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.cbm-admin-modal-box {
+  background: #ffffff;
+  border-radius: 18px;
+  max-width: 440px;
+  width: 100%;
+  padding: 26px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.cbm-admin-modal-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #feecef;
+  color: #ff3348;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+}
+
+.cbm-admin-modal-title {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #171b22;
+}
+
+.cbm-admin-modal-desc {
+  margin: 0 0 24px 0;
+  font-size: 14px;
+  color: #5e6b7c;
+  line-height: 1.5;
+}
+
+.cbm-admin-modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.cbm-modal-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.cbm-modal-btn.cancel {
+  background: #eef2f6;
+  color: #4b5563;
+}
+
+.cbm-modal-btn.cancel:hover {
+  background: #e2e8f0;
+}
+
+.cbm-modal-btn.confirm {
+  background: #e11d48;
+  color: #ffffff;
+}
+
+.cbm-modal-btn.confirm:hover {
+  background: #be123c;
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+}
+
+/* Ações no rodapé do Card Militar */
+.militar-card-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-view-logs {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #c7d2fe;
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-view-logs:hover {
+  background: #4338ca;
+  color: #ffffff;
+  border-color: #4338ca;
+  box-shadow: 0 4px 12px rgba(67, 56, 202, 0.25);
+}
+
+.btn-delete-militar {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #fecdd3;
+  background: #fff1f2;
+  color: #be123c;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-delete-militar:hover {
+  background: #be123c;
+  color: #ffffff;
+  border-color: #be123c;
+  box-shadow: 0 4px 12px rgba(190, 18, 60, 0.25);
+}
+
+/* Modal de Exclusão (Perigo) */
+.danger-box {
+  border: 1px solid #fecdd3;
+}
+
+.danger-icon {
+  background: #ffe4e6;
+  color: #b91c1c;
+}
+
+.cbm-modal-btn.danger-confirm {
+  background: #b91c1c;
+  color: #ffffff;
+}
+
+.cbm-modal-btn.danger-confirm:hover {
+  background: #991b1b;
+  box-shadow: 0 4px 14px rgba(185, 28, 28, 0.35);
+}
+
+/* Modal de Logs de Auditoria */
+.logs-modal-box {
+  max-width: 680px;
+  text-align: left;
+  padding: 24px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.logs-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #edf1f6;
+  margin-bottom: 16px;
+}
+
+.logs-header-info {
+  flex: 1;
+}
+
+.logs-badge-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eef2ff;
+  color: #4338ca;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.logs-militar-name {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #171b22;
+}
+
+.logs-militar-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.logs-btn-close {
+  background: #f1f5f9;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  color: #64748b;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.logs-btn-close:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.logs-timeline-container {
+  overflow-y: auto;
+  max-height: 480px;
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.logs-timeline-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.logs-timeline-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 6px;
+}
+
+.logs-timeline-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+}
+
+.log-entry-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  position: relative;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.log-entry-item:hover {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+}
+
+.log-entry-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.log-badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.log-badge-status.success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.log-badge-status.blocked {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.log-badge-status.info {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.log-badge-status.warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.log-entry-time {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.log-entry-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 6px 0;
+}
+
+.log-entry-detail {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.log-entry-hwid {
+  margin-top: 8px;
+  font-size: 11px;
+  font-family: monospace;
+  background: #e2e8f0;
+  color: #334155;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.logs-modal-footer {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #edf1f6;
+  display: flex;
+  justify-content: flex-end;
+}
+

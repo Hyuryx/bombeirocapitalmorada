@@ -48,6 +48,7 @@ export default function RootLayout({ children }) {
       </head>
       <body suppressHydrationWarning>
         {children}
+        <Script src="/js/deviceFingerprint.js" strategy="beforeInteractive" />
         <Script src="/js/particles.min.js?v=2" strategy="beforeInteractive" />
         <Script src="/js/script.js?v=12" strategy="afterInteractive" />
         <Script src="/js/notificacoes.js" strategy="afterInteractive" />

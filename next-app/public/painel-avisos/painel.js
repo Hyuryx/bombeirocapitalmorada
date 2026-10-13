@@ -782,3 +782,485 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+// ==========================================================================
+// CONTROLE DAS ABAS (MONITORES) E PAINEL ADMINISTRATIVO DE HWID
+// ==========================================================================
+document.addEventListener("DOMContentLoaded", () => {
+    const tabAvisos = document.getElementById("tab-btn-avisos");
+    const tabAdmin = document.getElementById("tab-btn-admin");
+    const conteudoAvisos = document.getElementById("aba-conteudo-avisos");
+    const conteudoAdmin = document.getElementById("aba-conteudo-admin");
+
+    const statMilitares = document.getElementById("admin-stat-militares");
+    const statDesktops = document.getElementById("admin-stat-desktops");
+    const statMobiles = document.getElementById("admin-stat-mobiles");
+    const statBots = document.getElementById("admin-stat-bots");
+
+    const searchInput = document.getElementById("admin-search-input");
+    const btnRefresh = document.getElementById("admin-btn-refresh");
+    const containerLista = document.getElementById("admin-militares-lista");
+
+    const modalConfirm = document.getElementById("modal-confirm-reset");
+    const modalTitle = document.getElementById("modal-reset-title");
+    const modalDesc = document.getElementById("modal-reset-desc");
+    const modalBtnCancel = document.getElementById("modal-btn-cancel");
+    const modalBtnConfirm = document.getElementById("modal-btn-confirm");
+
+    // Modal Exclusão de Cadastro
+    const modalDelete = document.getElementById("modal-confirm-delete");
+    const modalDeleteTitle = document.getElementById("modal-delete-title");
+    const modalDeleteDesc = document.getElementById("modal-delete-desc");
+    const modalBtnDeleteCancel = document.getElementById("modal-btn-delete-cancel");
+    const modalBtnDeleteConfirm = document.getElementById("modal-btn-delete-confirm");
+
+    // Modal de Logs de Acesso
+    const modalLogs = document.getElementById("modal-logs-militar");
+    const modalLogsTitle = document.getElementById("modal-logs-militar-title");
+    const modalLogsSubtitle = document.getElementById("modal-logs-militar-subtitle");
+    const modalLogsTimeline = document.getElementById("modal-logs-timeline");
+    const modalLogsBtnClose = document.getElementById("modal-logs-btn-close");
+    const modalLogsBtnFechar = document.getElementById("modal-logs-btn-fechar");
+
+    let militaresData = [];
+    let pendingResetPayload = null;
+    let pendingDeletePayload = null;
+
+    // Alternância de Abas
+    function switchTab(target) {
+        if (target === 'admin') {
+            if (tabAvisos) tabAvisos.classList.remove('active');
+            if (tabAdmin) tabAdmin.classList.add('active');
+            if (conteudoAvisos) conteudoAvisos.style.display = 'none';
+            if (conteudoAdmin) conteudoAdmin.style.display = 'block';
+            carregarMilitares();
+        } else {
+            if (tabAdmin) tabAdmin.classList.remove('active');
+            if (tabAvisos) tabAvisos.classList.add('active');
+            if (conteudoAdmin) conteudoAdmin.style.display = 'none';
+            if (conteudoAvisos) conteudoAvisos.style.display = 'block';
+        }
+    }
+
+    if (tabAvisos) tabAvisos.addEventListener('click', () => switchTab('avisos'));
+    if (tabAdmin) tabAdmin.addEventListener('click', () => switchTab('admin'));
+
+    // Carregar lista de militares do backend
+    async function carregarMilitares() {
+        if (!containerLista) return;
+        containerLista.innerHTML = `
+            <div style="padding: 40px; text-align: center; color: #66707c; background: #fff; border-radius: 14px;">
+                <div style="font-weight: 700; font-size: 15px; margin-bottom: 6px;">Consultando banco de dados militar...</div>
+                <div style="font-size: 13px;">Carregando registros e vínculos de máquinas</div>
+            </div>
+        `;
+
+        try {
+            const res = await fetch('/api/admin/devices');
+            const data = await res.json();
+
+            if (data.sucesso && Array.isArray(data.militares)) {
+                militaresData = data.militares;
+                atualizarEstatisticas(militaresData);
+                renderizarMilitares(militaresData);
+            } else {
+                containerLista.innerHTML = `
+                    <div style="padding: 30px; text-align: center; color: #b91c1c; background: #fff5f5; border-radius: 14px;">
+                        Erro ao carregar dados: ${data.erro || 'Falha na resposta do servidor'}
+                    </div>
+                `;
+            }
+        } catch (err) {
+            console.error('Erro ao buscar militares:', err);
+            containerLista.innerHTML = `
+                <div style="padding: 30px; text-align: center; color: #b91c1c; background: #fff5f5; border-radius: 14px;">
+                    Falha na comunicação com o servidor de dispositivos.
+                </div>
+            `;
+        }
+    }
+
+    // Atualizar números no topo
+    function atualizarEstatisticas(lista) {
+        if (!statMilitares) return;
+        const total = lista.length;
+        const desktops = lista.filter(m => !!m.desktopHwid).length;
+        const mobiles = lista.filter(m => !!m.mobileHwid).length;
+        const bots = lista.filter(m => m.isBotAuthorized === true).length;
+
+        statMilitares.textContent = total;
+        if (statDesktops) statDesktops.textContent = desktops;
+        if (statMobiles) statMobiles.textContent = mobiles;
+        if (statBots) statBots.textContent = bots;
+    }
+
+    // Renderizar Cards de Militares
+    function renderizarMilitares(lista) {
+        if (!containerLista) return;
+
+        const termo = searchInput ? searchInput.value.trim().toLowerCase() : '';
+        const filtrados = lista.filter(m => {
+            if (!termo) return true;
+            const id = String(m.militarId || '').toLowerCase();
+            const nick = String(m.nick || m.globalName || '').toLowerCase();
+            const tag = String(m.discordTag || '').toLowerCase();
+            return id.includes(termo) || nick.includes(termo) || tag.includes(termo);
+        });
+
+        if (filtrados.length === 0) {
+            containerLista.innerHTML = `
+                <div style="padding: 40px; text-align: center; color: #66707c; background: #fff; border-radius: 14px; border: 1px dashed #d2d8e0;">
+                    <div style="font-size: 28px; margin-bottom: 8px;">🛡️</div>
+                    <div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">Nenhum registro militar encontrado</div>
+                    <div style="font-size: 13px;">${termo ? 'Tente buscar com outro termo ou limpe o filtro.' : 'Nenhum militar registrou máquina no sistema até o momento.'}</div>
+                </div>
+            `;
+            return;
+        }
+
+        containerLista.innerHTML = filtrados.map(m => {
+            const hasDesktop = !!m.desktopHwid;
+            const hasMobile = !!m.mobileHwid;
+            const isBotOk = m.isBotAuthorized === true;
+
+            const formatHwid = (hwid) => {
+                if (!hwid) return 'Não registrado';
+                return hwid.length > 28 ? `${hwid.substring(0, 14)}...${hwid.substring(hwid.length - 10)}` : hwid;
+            };
+
+            const formatDate = (iso) => {
+                if (!iso) return 'Ainda não registrado';
+                try {
+                    const d = new Date(iso);
+                    return d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                } catch(e) {
+                    return iso;
+                }
+            };
+
+            return `
+                <div class="militar-admin-card" data-militar-id="${m.militarId}">
+                    <div class="militar-card-header">
+                        <div class="militar-identity-group">
+                            <span class="militar-id-badge">ID #${m.militarId}</span>
+                            <div>
+                                <h3 class="militar-name-title">${escaparHtml(m.nick || m.globalName || 'Militar')}</h3>
+                                <div class="militar-discord-tag">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                                    <span>${escaparHtml(m.discordTag || 'Discord não vinculado')}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <span class="bot-status-badge ${isBotOk ? 'authorized' : 'pending'}">
+                            ${isBotOk ? '✓ Bot Autorizado' : '⚠️ Autorização Pendente'}
+                        </span>
+                    </div>
+
+                    <div class="militar-devices-grid">
+                        <!-- Slot Desktop -->
+                        <div class="device-slot-card ${hasDesktop ? 'has-device' : ''}">
+                            <div>
+                                <div class="device-slot-top">
+                                    <div class="device-slot-icon">
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                                        </svg>
+                                    </div>
+                                    <div class="device-slot-header">
+                                        <h4>Computador (Desktop)</h4>
+                                        <span class="device-status-pill ${hasDesktop ? 'bound' : 'unbound'}">
+                                            ${hasDesktop ? '✓ Vinculado' : 'Livre para Registro'}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="device-hwid-box" title="${m.desktopHwid || ''}">
+                                    <span>HWID: ${formatHwid(m.desktopHwid)}</span>
+                                </div>
+                                <div class="device-meta-date">
+                                    Último login: ${formatDate(m.lastDesktopLogin || m.lastLogin)}
+                                </div>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="btn-reset-device"
+                                ${!hasDesktop ? 'disabled' : ''}
+                                onclick="window.solicitarResetHwid('${m.militarId}', 'desktop', '${escaparHtml(m.nick || m.militarId)}')"
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+                                <span>Resetar HWID do PC</span>
+                            </button>
+                        </div>
+
+                        <!-- Slot Mobile -->
+                        <div class="device-slot-card ${hasMobile ? 'has-device' : ''}">
+                            <div>
+                                <div class="device-slot-top">
+                                    <div class="device-slot-icon">
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                        </svg>
+                                    </div>
+                                    <div class="device-slot-header">
+                                        <h4>Dispositivo Móvel</h4>
+                                        <span class="device-status-pill ${hasMobile ? 'bound' : 'unbound'}">
+                                            ${hasMobile ? '✓ Vinculado' : 'Livre para Registro'}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="device-hwid-box" title="${m.mobileHwid || ''}">
+                                    <span>HWID: ${formatHwid(m.mobileHwid)}</span>
+                                </div>
+                                <div class="device-meta-date">
+                                    Último login: ${formatDate(m.lastMobileLogin || m.lastLogin)}
+                                </div>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="btn-reset-device"
+                                ${!hasMobile ? 'disabled' : ''}
+                                onclick="window.solicitarResetHwid('${m.militarId}', 'mobile', '${escaparHtml(m.nick || m.militarId)}')"
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+                                <span>Resetar HWID do Celular</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="militar-card-footer">
+                        <span style="font-size: 12px; color: #8c97a8;">
+                            Regra ativa: 1 PC + 1 Mobile por militar
+                        </span>
+                        <div class="militar-card-footer-actions">
+                            <button
+                                type="button"
+                                class="btn-view-logs"
+                                onclick="window.abrirLogsMilitar('${m.militarId}')"
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                <span>Ver Logs (${(m.logs && m.logs.length) || 0})</span>
+                            </button>
+                            <button
+                                type="button"
+                                class="btn-reset-all"
+                                onclick="window.solicitarResetHwid('${m.militarId}', 'all', '${escaparHtml(m.nick || m.militarId)}')"
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                                <span>Resetar HWIDs</span>
+                            </button>
+                            <button
+                                type="button"
+                                class="btn-delete-militar"
+                                onclick="window.solicitarExcluirMilitar('${m.militarId}', '${escaparHtml(m.nick || m.militarId)}')"
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                <span>Excluir Cadastro</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Modal de Confirmação de Reset
+    window.solicitarResetHwid = function(militarId, target, nome) {
+        pendingResetPayload = { militarId, target, nome };
+        if (!modalConfirm) return;
+
+        let targetLabel = 'Todos os Dispositivos';
+        if (target === 'desktop') targetLabel = 'Computador (Desktop)';
+        if (target === 'mobile') targetLabel = 'Dispositivo Móvel (Celular)';
+
+        if (modalTitle) modalTitle.textContent = `Resetar HWID do ${targetLabel}?`;
+        if (modalDesc) {
+            modalDesc.textContent = `Você está liberando o vínculo do ${targetLabel} para o militar #${militarId} (${nome}). No próximo acesso, um novo dispositivo poderá ser registrado normalmente.`;
+        }
+        modalConfirm.style.display = 'flex';
+    };
+
+    if (modalBtnCancel) {
+        modalBtnCancel.addEventListener('click', () => {
+            if (modalConfirm) modalConfirm.style.display = 'none';
+            pendingResetPayload = null;
+        });
+    }
+
+    if (modalBtnConfirm) {
+        modalBtnConfirm.addEventListener('click', async () => {
+            if (!pendingResetPayload) return;
+            const { militarId, target } = pendingResetPayload;
+            modalBtnConfirm.disabled = true;
+            modalBtnConfirm.textContent = 'Resetando...';
+
+            try {
+                const res = await fetch('/api/admin/devices', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ militarId, target })
+                });
+                const data = await res.json();
+
+                if (data.sucesso) {
+                    alert(data.mensagem || 'HWID resetado com sucesso!');
+                    if (modalConfirm) modalConfirm.style.display = 'none';
+                    pendingResetPayload = null;
+                    carregarMilitares();
+                } else {
+                    alert('Erro ao resetar: ' + (data.erro || 'Falha no servidor'));
+                }
+            } catch (err) {
+                console.error('Erro na requisição de reset:', err);
+                alert('Erro de conexão ao solicitar o reset de HWID.');
+            } finally {
+                modalBtnConfirm.disabled = false;
+                modalBtnConfirm.textContent = 'Confirmar Reset';
+            }
+        });
+    }
+
+    // Modal de Confirmação de Exclusão de Cadastro
+    window.solicitarExcluirMilitar = function(militarId, nome) {
+        pendingDeletePayload = { militarId, nome };
+        if (!modalDelete) return;
+
+        if (modalDeleteTitle) modalDeleteTitle.textContent = `Excluir Cadastro do Militar #${militarId}?`;
+        if (modalDeleteDesc) {
+            modalDeleteDesc.innerHTML = `Tem certeza que deseja apagar permanentemente o registro de <strong>#${militarId} (${nome})</strong>?<br><br>Isso removerá a vinculação com a conta do Discord antiga, apagará a trava de HWID do Computador e do Celular, e limpará todos os logs. O militar precisará refazer o vínculo com novo Discord/máquina do zero.`;
+        }
+        modalDelete.style.display = 'flex';
+    };
+
+    if (modalBtnDeleteCancel) {
+        modalBtnDeleteCancel.addEventListener('click', () => {
+            if (modalDelete) modalDelete.style.display = 'none';
+            pendingDeletePayload = null;
+        });
+    }
+
+    if (modalBtnDeleteConfirm) {
+        modalBtnDeleteConfirm.addEventListener('click', async () => {
+            if (!pendingDeletePayload) return;
+            const { militarId, nome } = pendingDeletePayload;
+            modalBtnDeleteConfirm.disabled = true;
+            modalBtnDeleteConfirm.textContent = 'Excluindo...';
+
+            try {
+                const res = await fetch('/api/admin/devices', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ militarId, action: 'delete' })
+                });
+                const data = await res.json();
+
+                if (data.sucesso) {
+                    alert(data.mensagem || `Cadastro do militar #${militarId} excluído com sucesso!`);
+                    if (modalDelete) modalDelete.style.display = 'none';
+                    pendingDeletePayload = null;
+                    carregarMilitares();
+                } else {
+                    alert('Erro ao excluir registro: ' + (data.erro || 'Falha no servidor'));
+                }
+            } catch (err) {
+                console.error('Erro na requisição de exclusão:', err);
+                alert('Erro de conexão ao solicitar exclusão do cadastro militar.');
+            } finally {
+                modalBtnDeleteConfirm.disabled = false;
+                modalBtnDeleteConfirm.textContent = 'Sim, Excluir Cadastro';
+            }
+        });
+    }
+
+    // Modal de Histórico e Auditoria de Logs
+    window.abrirLogsMilitar = function(militarId) {
+        const militar = militaresData.find(m => String(m.militarId) === String(militarId));
+        if (!militar || !modalLogs) return;
+
+        const nome = militar.nick || militar.globalName || `Militar #${militarId}`;
+        if (modalLogsTitle) modalLogsTitle.textContent = `Logs de Acesso - #${militarId} (${nome})`;
+        if (modalLogsSubtitle) {
+            modalLogsSubtitle.textContent = `Histórico de segurança, tentativas com HWID divergente e autorizações.`;
+        }
+
+        const logs = Array.isArray(militar.logs) ? militar.logs : [];
+
+        if (logs.length === 0) {
+            modalLogsTimeline.innerHTML = `
+                <div style="padding: 40px; text-align: center; color: #64748b; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1;">
+                    <div style="font-size: 26px; margin-bottom: 6px;">📋</div>
+                    <div style="font-weight: 700; font-size: 14px; margin-bottom: 2px;">Nenhum evento registrado ainda</div>
+                    <div style="font-size: 12px;">Os acessos, tentativas com outros dispositivos e resets de HWID aparecerão aqui.</div>
+                </div>
+            `;
+        } else {
+            modalLogsTimeline.innerHTML = logs.map(log => {
+                let badgeClass = 'info';
+                let badgeLabel = 'Info';
+                if (log.type === 'LOGIN_SUCCESS') {
+                    badgeClass = 'success';
+                    badgeLabel = 'Sucesso';
+                } else if (log.type === 'HWID_BLOCKED') {
+                    badgeClass = 'blocked';
+                    badgeLabel = 'HWID Bloqueado';
+                } else if (log.type === 'ROLE_MISSING' || log.type === 'DISCORD_NOT_FOUND') {
+                    badgeClass = 'blocked';
+                    badgeLabel = 'Discord Negado';
+                } else if (log.type === 'HWID_RESET') {
+                    badgeClass = 'warning';
+                    badgeLabel = 'HWID Resetado';
+                } else if (log.type === 'DISCORD_LINKED') {
+                    badgeClass = 'info';
+                    badgeLabel = 'Discord Vinculado';
+                } else if (log.type === 'BOT_PENDING') {
+                    badgeClass = 'warning';
+                    badgeLabel = 'Bot Pendente';
+                }
+
+                let timeFormatted = log.timestamp;
+                try {
+                    const d = new Date(log.timestamp);
+                    timeFormatted = d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR');
+                } catch(e) {}
+
+                return `
+                    <div class="log-entry-item">
+                        <div class="log-entry-top">
+                            <span class="log-badge-status ${badgeClass}">
+                                ${badgeLabel}
+                            </span>
+                            <span class="log-entry-time">${timeFormatted}</span>
+                        </div>
+                        <h4 class="log-entry-title">${escaparHtml(log.title || 'Evento do Sistema')}</h4>
+                        <p class="log-entry-detail">${escaparHtml(log.detail || '')}</p>
+                        ${log.hwid ? `<div class="log-entry-hwid">HWID Registrado: ${escaparHtml(log.hwid)}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        modalLogs.style.display = 'flex';
+    };
+
+    const fecharModalLogs = () => {
+        if (modalLogs) modalLogs.style.display = 'none';
+    };
+    if (modalLogsBtnClose) modalLogsBtnClose.addEventListener('click', fecharModalLogs);
+    if (modalLogsBtnFechar) modalLogsBtnFechar.addEventListener('click', fecharModalLogs);
+
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            renderizarMilitares(militaresData);
+        });
+    }
+
+    if (btnRefresh) {
+        btnRefresh.addEventListener('click', carregarMilitares);
+    }
+});

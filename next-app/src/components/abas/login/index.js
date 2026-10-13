@@ -68,31 +68,31 @@ export default `<div id="login-screen">
                 <div class="cbm-step-item pending" id="step-2" data-step="2">
                     <div class="cbm-step-icon"></div>
                     <div class="cbm-step-content">
-                        <div class="cbm-step-title">Consultando banco de dados de registros militares...</div>
+                        <div class="cbm-step-title">Consultando registro militar no Discord do CBM...</div>
                     </div>
                 </div>
                 <div class="cbm-step-item pending" id="step-3" data-step="3">
                     <div class="cbm-step-icon"></div>
                     <div class="cbm-step-content">
-                        <div class="cbm-step-title">Validando identificação e registro do militar...</div>
+                        <div class="cbm-step-title">Validando autorização do Bot e cargo militar...</div>
                     </div>
                 </div>
                 <div class="cbm-step-item pending" id="step-4" data-step="4">
                     <div class="cbm-step-icon"></div>
                     <div class="cbm-step-content">
-                        <div class="cbm-step-title">Verificando vínculo com o Corpo de Bombeiros...</div>
+                        <div class="cbm-step-title">Identificando dispositivo e plataforma de acesso...</div>
                     </div>
                 </div>
                 <div class="cbm-step-item pending" id="step-5" data-step="5">
                     <div class="cbm-step-icon"></div>
                     <div class="cbm-step-content">
-                        <div class="cbm-step-title">Confirmando permissões e autorização de acesso...</div>
+                        <div class="cbm-step-title">Validando trava de máquina autorizada (HWID Lock)...</div>
                     </div>
                 </div>
                 <div class="cbm-step-item pending" id="step-6" data-step="6">
                     <div class="cbm-step-icon"></div>
                     <div class="cbm-step-content">
-                        <div class="cbm-step-title">Finalizando processo de autenticação...</div>
+                        <div class="cbm-step-title">Finalizando processo de autenticação militar...</div>
                     </div>
                 </div>
             </div>
@@ -121,7 +121,12 @@ export default `<div id="login-screen">
             </div>
             <h3 class="cbm-result-title">ACESSO NEGADO</h3>
             <p class="cbm-result-status" id="cbm-denied-msg">Não foi possível confirmar sua autorização de acesso.</p>
-            <p class="cbm-result-detail">Verifique seu ID militar ou entre em contato com o responsável pelo sistema.</p>
+            <p class="cbm-result-detail" id="cbm-denied-detail">Verifique seu ID militar ou entre em contato com o responsável pelo sistema.</p>
+            
+            <a id="btn-auth-action" class="cbm-btn-entrar" style="display: none; text-decoration: none; margin-bottom: 12px; width: 100%; justify-content: center; align-items: center;" href="#">
+                <span id="btn-auth-action-text">AÇÃO NECESSÁRIA</span>
+            </a>
+
             <button id="btn-auth-retry" class="cbm-btn-retry" type="button">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>

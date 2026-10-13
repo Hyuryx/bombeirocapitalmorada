@@ -684,6 +684,42 @@ window.initApp = function() {
         // Inicialização: a aplicação sempre inicia bloqueada exigindo a interação do crachá e o login militar
         lockScreen(false);
 
+        // Tratamento de retorno da autorização do Discord
+        const urlParams = new URLSearchParams(window.location.search);
+        const discordAuthSuccess = urlParams.get('discord_auth') === 'success';
+        const redirectedMilitarId = urlParams.get('militar_id');
+        const authErrorParam = urlParams.get('auth_error');
+
+        if (discordAuthSuccess && redirectedMilitarId) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            setTimeout(() => {
+                const lanyardScreen = document.getElementById('cbm-lanyard-overlay');
+                if (lanyardScreen) {
+                    lanyardScreen.style.opacity = '0';
+                    lanyardScreen.style.pointerEvents = 'none';
+                    setTimeout(() => { lanyardScreen.style.display = 'none'; }, 400);
+                }
+                if (loginPassword) {
+                    loginPassword.value = redirectedMilitarId;
+                }
+                setTimeout(() => {
+                    handleLogin();
+                }, 500);
+            }, 200);
+        } else if (authErrorParam) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            const lanyardScreen = document.getElementById('cbm-lanyard-overlay');
+            if (lanyardScreen) {
+                lanyardScreen.style.opacity = '0';
+                lanyardScreen.style.pointerEvents = 'none';
+                setTimeout(() => { lanyardScreen.style.display = 'none'; }, 400);
+            }
+            if (loginError) {
+                loginError.textContent = decodeURIComponent(authErrorParam);
+                loginError.style.display = 'block';
+            }
+        }
+
         function unlockApp() {
             isUnlocked = true;
             try {
@@ -805,11 +841,25 @@ window.initApp = function() {
                 setStepState(s, 'pending', null);
             }
 
+            // Coleta identificação e HWID da máquina/dispositivo
+            let deviceInfo = { hwid: 'default_hwid', deviceType: 'desktop', isMobile: false };
+            try {
+                if (typeof window.generateDeviceFingerprint === 'function') {
+                    deviceInfo = await window.generateDeviceFingerprint();
+                }
+            } catch (fpErr) {
+                console.warn('Erro ao gerar HWID:', fpErr);
+            }
+
             // Dispara requisição real em segundo plano para o backend
             const authPromise = fetch('/api/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: enteredValue })
+                body: JSON.stringify({
+                    id: enteredValue,
+                    hwid: deviceInfo.hwid,
+                    deviceType: deviceInfo.deviceType
+                })
             }).then(async res => {
                 const data = await res.json().catch(() => ({}));
                 return { ok: res.ok, status: res.status, data };
@@ -862,9 +912,43 @@ window.initApp = function() {
                     // Exibe tela ACESSO NEGADO
                     if (stepsView) stepsView.style.display = 'none';
                     if (deniedView) deniedView.style.display = 'flex';
+                    
                     const deniedMsg = document.getElementById('cbm-denied-msg');
+                    const deniedDetail = document.getElementById('cbm-denied-detail');
+                    const actionBtn = document.getElementById('btn-auth-action');
+                    const actionBtnText = document.getElementById('btn-auth-action-text');
+
                     if (deniedMsg) {
-                        deniedMsg.textContent = "Não foi possível confirmar sua autorização de acesso.";
+                        deniedMsg.textContent = data.erro || "Não foi possível confirmar sua autorização de acesso.";
+                    }
+
+                    if (data.action && data.actionUrl && actionBtn) {
+                        actionBtn.href = data.actionUrl;
+                        if (data.actionUrl.startsWith('http')) {
+                            actionBtn.target = '_blank';
+                            actionBtn.rel = 'noopener noreferrer';
+                        } else {
+                            actionBtn.removeAttribute('target');
+                            actionBtn.removeAttribute('rel');
+                        }
+                        actionBtn.style.display = 'flex';
+                        if (actionBtnText) {
+                            actionBtnText.textContent = data.actionLabel || 'PROSSEGUIR';
+                        }
+                    } else if (actionBtn) {
+                        actionBtn.style.display = 'none';
+                    }
+
+                    if (deniedDetail) {
+                        if (data.action === 'AUTHORIZE_BOT') {
+                            deniedDetail.textContent = "Clique no botão abaixo para autorizar o Bot do CBM no seu Discord e vincular esta máquina.";
+                        } else if (data.action === 'JOIN_DISCORD') {
+                            deniedDetail.textContent = "Você precisa fazer parte do servidor oficial do Corpo de Bombeiros no Discord para ter acesso.";
+                        } else if (data.action === 'HWID_LOCKED') {
+                            deniedDetail.textContent = "Seu cadastro militar já possui uma máquina vinculada. Solicite ao Comando a liberação do dispositivo.";
+                        } else {
+                            deniedDetail.textContent = "Verifique seu ID militar ou entre em contato com o Comando para autorização.";
+                        }
                     }
 
                     isAuthenticating = false;
@@ -937,6 +1021,8 @@ window.initApp = function() {
                 const deniedView = document.getElementById('cbm-denied-view');
                 const loginFrame = document.getElementById('cbm-login-frame');
                 if (deniedView) deniedView.style.display = 'none';
+                const actionBtn = document.getElementById('btn-auth-action');
+                if (actionBtn) actionBtn.style.display = 'none';
                 if (stepsView) stepsView.style.display = 'none';
                 if (successView) successView.style.display = 'none';
                 if (formView) formView.style.display = 'flex';
