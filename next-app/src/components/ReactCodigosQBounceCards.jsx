@@ -90,41 +90,22 @@ export default function ReactCodigosQBounceCards() {
     ];
 
     const cardElements = qCodes.map((card, idx) => (
-      <div key={`txt-${idx}`} style={{ width: '100%', height: '100%', padding: '15px' }}>
+      <div key={`txt-${idx}`} className="modulacao-card-outer">
         <div
-          className="neon-breathing-card"
+          className="neon-breathing-card modulacao-card-inner"
           style={{
-            backgroundColor: 'rgba(15, 15, 20, 0.85)',
-            width: '100%',
-            height: '100%',
-            borderRadius: '20px',
-            padding: '1.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            boxSizing: 'border-box',
-            border: `2px solid ${card.color || '#ff1a1a'}`,
             '--neon-color': card.color || '#ff1a1a',
-            animation: 'neonBreathe 2s ease-in-out infinite'
+            border: `2px solid ${card.color || '#ff1a1a'}`
           }}
         >
-          <h2
-            style={{
-              color: '#fff',
-              fontSize: '1.3rem',
-              fontWeight: 'bold',
-              textAlign: 'center',
-              marginBottom: '1rem',
-              textTransform: 'uppercase',
-              letterSpacing: '1px'
-            }}
-          >
+          <h2 className="modulacao-card-title">
             {card.title}
           </h2>
-          <div style={{ width: '80%', height: '1px', backgroundColor: 'rgba(255,255,255,0.2)', margin: '0 auto 1rem auto' }} />
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly' }}>
+          <div className="modulacao-card-divider" />
+          <ul className="modulacao-card-list">
             {card.lines.map((line, lIdx) => (
-              <li key={lIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '0.95rem', color: '#e2e8f0', lineHeight: 1.4 }}>
-                <span style={{ color: card.color || '#ff1a1a', fontSize: '1.2rem', lineHeight: 1 }}>•</span>
+              <li key={lIdx} className="modulacao-card-item">
+                <span className="modulacao-card-bullet" style={{ color: card.color || '#ff1a1a' }}>•</span>
                 <span>{line}</span>
               </li>
             ))}
@@ -137,22 +118,15 @@ export default function ReactCodigosQBounceCards() {
       'assets/codigos de comunicaçao/codigoq.png',
       'assets/codigos de comunicaçao/codigo_de_intensidade.png'
     ].map((imgSrc, idx) => (
-      <div key={`img-${idx}`} style={{ width: '100%', height: '100%', padding: '15px' }} onClick={() => setExpandedImage(imgSrc)}>
+      <div key={`img-${idx}`} className="modulacao-card-outer" onClick={() => setExpandedImage(imgSrc)}>
         <div
-          className="neon-breathing-card"
+          className="neon-breathing-card modulacao-card-inner"
           style={{
-            backgroundColor: 'rgba(15, 15, 20, 0.85)',
-            width: '100%',
-            height: '100%',
-            borderRadius: '20px',
             padding: '0',
-            display: 'flex',
             overflow: 'hidden',
             cursor: 'pointer',
-            boxSizing: 'border-box',
             border: `2px solid #ff1a1a`,
-            '--neon-color': '#ff1a1a',
-            animation: 'neonBreathe 2s ease-in-out infinite'
+            '--neon-color': '#ff1a1a'
           }}
         >
           <img src={imgSrc} alt="Código" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -164,15 +138,134 @@ export default function ReactCodigosQBounceCards() {
   }, []);
 
   return (
-    <div ref={containerRef} style={{ height: '700px', width: '100%', position: 'relative', margin: '40px 0' }}>
+    <div ref={containerRef} className="modulacao-gallery-container">
       <style>{`
+        .modulacao-gallery-container {
+          height: 700px;
+          width: 100%;
+          position: relative;
+          margin: 40px 0;
+        }
+        @media (max-width: 768px) {
+          .modulacao-gallery-container {
+            height: clamp(560px, 80vh, 700px);
+          }
+        }
+        .modulacao-card-outer {
+          width: 100%;
+          height: 100%;
+          padding: 10px;
+          box-sizing: border-box;
+        }
+        .modulacao-card-inner {
+          background-color: rgba(15, 15, 20, 0.92);
+          width: 100%;
+          height: 100%;
+          border-radius: 20px;
+          padding: 1.4rem;
+          display: flex;
+          flex-direction: column;
+          box-sizing: border-box;
+          animation: neonBreathe 2.5s ease-in-out infinite;
+          overflow: hidden;
+          transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        body.light-theme .modulacao-card-inner,
+        html.light-theme .modulacao-card-inner {
+          background-color: rgba(255, 255, 255, 0.95);
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+        .modulacao-card-title {
+          color: #ffffff;
+          font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+          font-weight: 700;
+          text-align: center;
+          margin-bottom: 0.8rem;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          line-height: 1.25;
+        }
+        body.light-theme .modulacao-card-title,
+        html.light-theme .modulacao-card-title {
+          color: #0f172a;
+        }
+        .modulacao-card-divider {
+          width: 80%;
+          height: 1px;
+          background-color: rgba(255, 255, 255, 0.2);
+          margin: 0 auto 0.85rem auto;
+        }
+        body.light-theme .modulacao-card-divider,
+        html.light-theme .modulacao-card-divider {
+          background-color: rgba(0, 0, 0, 0.12);
+        }
+        .modulacao-card-list {
+          list-style: none;
+          padding: 0 4px 0 0;
+          margin: 0;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justifyContent: space-evenly;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          gap: 10px;
+        }
+        .modulacao-card-list::-webkit-scrollbar {
+          width: 4px;
+        }
+        .modulacao-card-list::-webkit-scrollbar-thumb {
+          background: rgba(255, 26, 26, 0.3);
+          border-radius: 4px;
+        }
+        .modulacao-card-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          font-size: clamp(0.82rem, 2.2vw, 0.94rem);
+          color: #e2e8f0;
+          line-height: 1.45;
+        }
+        body.light-theme .modulacao-card-item,
+        html.light-theme .modulacao-card-item {
+          color: #334155;
+        }
+        .modulacao-card-bullet {
+          font-size: 1.2rem;
+          line-height: 1;
+          flex-shrink: 0;
+        }
+        @media (max-width: 600px) {
+          .modulacao-card-outer {
+            padding: 6px;
+          }
+          .modulacao-card-inner {
+            padding: 1rem 0.9rem;
+            border-radius: 16px;
+          }
+          .modulacao-card-title {
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+          }
+          .modulacao-card-divider {
+            margin-bottom: 0.5rem;
+          }
+          .modulacao-card-item {
+            font-size: 0.82rem;
+            line-height: 1.35;
+            gap: 6px;
+          }
+          .modulacao-card-list {
+            gap: 8px;
+          }
+        }
         @keyframes neonBreathe {
           0%, 100% {
             box-shadow: 0 0 5px var(--neon-color), inset 0 0 5px var(--neon-color);
             border-color: rgba(255, 26, 26, 0.35);
           }
           50% {
-            box-shadow: 0 0 25px var(--neon-color), inset 0 0 15px var(--neon-color);
+            box-shadow: 0 0 22px var(--neon-color), inset 0 0 12px var(--neon-color);
             border-color: rgba(255, 26, 26, 1);
           }
         }
@@ -181,7 +274,7 @@ export default function ReactCodigosQBounceCards() {
         <TiltedGridHero
           items={items}
           speed={6}
-          tileHeight={65}
+          tileHeight={68}
           aspectRatio={0.7}
           gap={10}
           axis={50}

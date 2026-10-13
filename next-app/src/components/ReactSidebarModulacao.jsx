@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import PixelCard from './ui/PixelCard';
 import StickerPeel from './StickerPeel';
 import ShinyText from './ShinyText';
+import MobileSubnav from './MobileSubnav';
 
 export default function ReactSidebarModulacao() {
   const [activeId, setActiveId] = useState('home');
@@ -90,6 +91,7 @@ export default function ReactSidebarModulacao() {
   ];
 
   const [userName, setUserName] = useState('');
+  const [userId, setUserId] = useState('');
   const [theme, setTheme] = useState('dark');
   const [noEffects, setNoEffects] = useState(false);
 
@@ -118,15 +120,32 @@ export default function ReactSidebarModulacao() {
     window.dispatchEvent(new CustomEvent('tabChanged', { detail: { targetId } }));
   };
 
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem('cbm_auth_unlocked');
+      sessionStorage.removeItem('cbm_auth_unlocked');
+      sessionStorage.removeItem('cbm_session_start');
+      sessionStorage.removeItem('cbm_last_activity');
+      document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    } catch (e) {}
+
+    document.documentElement.classList.remove('cbm-unlocked');
+    document.body.classList.add('locked');
+    window.dispatchEvent(new CustomEvent('cbm_lock_screen'));
+    window.dispatchEvent(new CustomEvent('cbm_show_cracha'));
+  };
+
   useEffect(() => {
     try {
       setUserName(localStorage.getItem('cbm_user_name') || '');
+      setUserId(localStorage.getItem('cbm_user_id') || '');
       setTheme(localStorage.getItem('cbm_theme') || 'dark');
       setNoEffects(localStorage.getItem('cbm-no-effects') === 'true');
     } catch (e) {}
 
     const onProfileUpdate = (e) => {
       if (e.detail?.name !== undefined) setUserName(e.detail.name);
+      if (e.detail?.id !== undefined) setUserId(e.detail.id);
       if (e.detail?.theme !== undefined) setTheme(e.detail.theme);
       if (e.detail?.noEffects !== undefined) setNoEffects(e.detail.noEffects);
     };
@@ -146,7 +165,17 @@ export default function ReactSidebarModulacao() {
   }, []);
 
   return (
-    <aside className="sidebar" id="sidebar-modulacao" ref={sidebarRef}>
+    <>
+      {/* Barra de Sub-abas Mobile (Visível apenas em celulares e tablets) */}
+      <MobileSubnav
+        items={modulacaoItems}
+        activeId={activeId}
+        onSelect={handleSelect}
+        sectionTitle="MODULAÇÃO CBM"
+        theme={theme}
+      />
+
+      <aside className="sidebar" id="sidebar-modulacao" ref={sidebarRef}>
       {/* Top Header com PORTAL CBM, Logo do Bombeiro e Saudação */}
       <div className="sidebar-top-header">
         <span 
@@ -194,6 +223,11 @@ export default function ReactSidebarModulacao() {
               disabled={noEffects}
             />
           </span>
+          {userId && (
+            <span className="welcome-id">
+              {userId}
+            </span>
+          )}
         </div>
       </div>
 
@@ -297,6 +331,30 @@ export default function ReactSidebarModulacao() {
           </PixelCard>
         </div>
 
+        {/* Botão SAIR Tático Neon Vermelho */}
+        <button
+          className="sidebar-btn-logout"
+          onClick={handleLogout}
+          title="Sair do Sistema"
+          type="button"
+        >
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          <span>SAIR</span>
+        </button>
+
         <div className="sidebar-capital-container">
           <img
             src="assets/fotos/logo-capital.png"
@@ -307,5 +365,6 @@ export default function ReactSidebarModulacao() {
         </div>
       </div>
     </aside>
+    </>
   );
 }

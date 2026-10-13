@@ -10,25 +10,87 @@
             </button>
         </div>
 
-        <!-- Botão Menu Mobile -->
-        <div class="mobile-menu-btn" id="mobile-menu-btn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-        </div>
+        <!-- Botão Menu Mobile (Gaveta Tática) -->
+        <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir Menu de Navegação" type="button">
+            <span class="hamburger-bar bar-1"></span>
+            <span class="hamburger-bar bar-2"></span>
+            <span class="hamburger-bar bar-3"></span>
+        </button>
+
+        <!-- Overlay Backdrop para a Gaveta -->
+        <div class="nav-overlay" id="nav-overlay"></div>
 
         <ul class="nav-tabs" id="nav-tabs">
-            <li class="nav-item active" data-global-target="view-inicio">INÍCIO</li>
-            <li class="nav-item" data-global-target="view-avisos">AVISOS GERAIS</li>
-            <li class="nav-item" data-global-target="view-regras">REGRAS</li>
-            <li class="nav-item" data-global-target="view-uniformes">UNIFORMES</li>
-            <li class="nav-item" data-global-target="view-cursos">CURSOS</li>
-            <li class="nav-item" data-global-target="view-modulacao">MODULAÇÃO</li>
-            <li class="nav-item" data-global-target="view-viaturas">VIATURAS</li>
-            <li class="nav-item" data-global-target="view-hierarquia">HIERARQUIA</li>
-            <li class="nav-item" data-global-target="view-planilhas">PLANILHA</li>
-            <li class="nav-item" data-global-target="view-galeria">GALERIA</li>
+            <!-- Cabeçalho do Drawer Mobile -->
+            <li class="nav-drawer-header">
+                <div class="drawer-header-brand">
+                    <img src="assets/fotos/logo-capital.png" alt="Logo CBM" class="drawer-logo">
+                    <div class="drawer-header-text">
+                        <span class="drawer-title">PORTAL CBM</span>
+                        <span class="drawer-subtitle">MENU OPERACIONAL</span>
+                    </div>
+                </div>
+                <button class="drawer-close-btn" id="drawer-close-btn" aria-label="Fechar Menu" type="button">✕</button>
+            </li>
+
+            <li class="nav-item active" data-global-target="view-inicio">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">INÍCIO</span>
+            </li>
+            <li class="nav-item" data-global-target="view-avisos">
+                <span class="nav-icon">📢</span>
+                <span class="nav-text">AVISOS GERAIS</span>
+            </li>
+            <li class="nav-item" data-global-target="view-regras">
+                <span class="nav-icon">📜</span>
+                <span class="nav-text">REGRAS</span>
+            </li>
+            <li class="nav-item" data-global-target="view-uniformes">
+                <span class="nav-icon">👕</span>
+                <span class="nav-text">UNIFORMES</span>
+            </li>
+            <li class="nav-item" data-global-target="view-cursos">
+                <span class="nav-icon">🎓</span>
+                <span class="nav-text">CURSOS</span>
+            </li>
+            <li class="nav-item" data-global-target="view-modulacao">
+                <span class="nav-icon">📻</span>
+                <span class="nav-text">MODULAÇÃO</span>
+            </li>
+            <li class="nav-item" data-global-target="view-viaturas">
+                <span class="nav-icon">🚒</span>
+                <span class="nav-text">VIATURAS</span>
+            </li>
+            <li class="nav-item" data-global-target="view-hierarquia">
+                <span class="nav-icon">⭐</span>
+                <span class="nav-text">HIERARQUIA</span>
+            </li>
+            <li class="nav-item" data-global-target="view-planilhas">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">PLANILHA</span>
+            </li>
+            <li class="nav-item" data-global-target="view-galeria">
+                <span class="nav-icon">📸</span>
+                <span class="nav-text">GALERIA</span>
+            </li>
+
+            <!-- Rodapé da Gaveta Mobile (Configurações e Logout) -->
+            <li class="nav-drawer-footer">
+                <button class="drawer-action-btn config" id="drawer-btn-config" type="button">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <span>Configurações</span>
+                </button>
+                <button class="drawer-action-btn logout" id="drawer-btn-logout" type="button">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span>Sair do Sistema</span>
+                </button>
+            </li>
         </ul>
     </nav>

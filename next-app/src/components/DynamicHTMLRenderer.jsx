@@ -240,34 +240,6 @@ export default function DynamicHTMLRenderer({ htmlString }) {
       if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.id === 'galeria-menu') {
         return <ReactGaleriaFolders />;
       }
-      
-      // Replace nav-tabs with GooeyNav
-      if (domNode.type === 'tag' && domNode.attribs && domNode.attribs.class && domNode.attribs.class.includes('nav-tabs')) {
-        const items = [
-          { label: "INÍCIO", href: "#", target: "view-inicio" },
-          { label: "AVISOS GERAIS", href: "#", target: "view-avisos" },
-          { label: "REGRAS", href: "#", target: "view-regras" },
-          { label: "UNIFORMES", href: "#", target: "view-uniformes" },
-          { label: "CURSOS", href: "#", target: "view-cursos" },
-          { label: "MODULAÇÃO", href: "#", target: "view-modulacao" },
-          { label: "VIATURAS", href: "#", target: "view-viaturas" },
-          { label: "HIERARQUIA", href: "#", target: "view-hierarquia" },
-          { label: "PLANILHA", href: "#", target: "view-planilhas" },
-          { label: "GALERIA", href: "#", target: "view-galeria" }
-        ];
-        return (
-          <GooeyNav
-            items={items}
-            particleCount={15}
-            particleDistances={[90, 10]}
-            particleR={100}
-            initialActiveIndex={0}
-            animationTime={600}
-            timeVariance={300}
-            colors={[1, 2, 3, 1, 2, 3, 1, 4]}
-          />
-        );
-      }
 
       // Remover scripts para não duplicar, pois o layout.js já os carrega
       if (domNode.name === 'script') {

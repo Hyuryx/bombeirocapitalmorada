@@ -1,22 +1,133 @@
 <div id="login-screen">
-        <div class="login-background"></div>
-        <div class="login-container">
-            <img src="assets/fotos/logo-capital.png" alt="Logo Capital" class="login-logo">
-            <div id="login-clock" style="text-align: center; color: white; margin-bottom: 20px;">
-                <div id="login-time" style="font-size: 3rem; font-weight: 800; letter-spacing: 2px; line-height: 1;">
-                    00:00:00</div>
-                <div id="login-date" style="font-size: 1rem; color: #ccc; margin-top: 5px;">Data</div>
-            </div>
-            <h2>PORTAL CBM</h2>
-            <div class="login-input-group">
-                <input type="password" id="login-password" placeholder="Digite a senha de acesso..." autocomplete="off">
-                <button id="login-submit">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
+    <div class="login-background"></div>
+    <div id="particles-login" class="particles-container-login" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;"></div>
+    <div class="cbm-login-screen-frame" id="cbm-login-frame">
+        <!-- Cantoneiras Futuristas Vermelhas (HUD) -->
+        <span class="cbm-corner cbm-tl"></span>
+        <span class="cbm-corner cbm-tr"></span>
+        <span class="cbm-corner cbm-bl"></span>
+        <span class="cbm-corner cbm-br"></span>
+
+        <!-- Relógio HUD no Topo -->
+        <div id="login-clock" style="text-align: center; color: white; margin-bottom: 12px;">
+            <div id="login-time" style="font-size: 2.2rem; font-weight: 800; letter-spacing: 2px; line-height: 1; font-family: 'Rajdhani', sans-serif;">00:00:00</div>
+            <div id="login-date" style="font-size: 0.85rem; color: #ff5565; margin-top: 4px; letter-spacing: 1.5px; text-transform: uppercase; font-family: 'Rajdhani', sans-serif; font-weight: 700;">Data</div>
+        </div>
+
+        <!-- Brasão Oficial dos Bombeiros com Halo de Luz Neon Pulsante -->
+        <div class="cbm-badge-wrap">
+            <div class="cbm-badge-halo"></div>
+            <img src="/assets/fotos/logo-capital.png" alt="Brasão Oficial Capital" class="cbm-badge-img">
+        </div>
+
+        <!-- Identificação Institucional -->
+        <div class="cbm-title-group">
+            <h2>CORPO DE BOMBEIROS</h2>
+            <p>CAPITAL MORADA</p>
+        </div>
+
+        <!-- FASE 1: FORMULÁRIO DE ENTRADA (ID MILITAR) -->
+        <div class="cbm-form-box" id="cbm-form-view">
+            <div class="cbm-input-container" id="cbm-input-wrap">
+                <span class="cbm-lock-ico">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
-                </button>
+                </span>
+                <input type="text" id="login-password" class="cbm-input-text" placeholder="Digite seu ID" autocomplete="off" inputmode="numeric">
             </div>
-            <p id="login-error" style="display: none;">Senha incorreta. Tente novamente.</p>
+
+            <p id="login-error" class="cbm-error-alert" style="display: none;"></p>
+
+            <button id="login-submit" class="cbm-btn-entrar" type="button">
+                <span>ENTRAR</span>
+            </button>
+
+            <button id="btn-show-cracha" class="btn-voltar-cracha" type="button" onclick="window.dispatchEvent(new CustomEvent('cbm_show_cracha'))">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+                <span>Voltar ao Crachá</span>
+            </button>
+        </div>
+
+        <!-- FASE 2: ETAPAS DE AUTENTICAÇÃO MILITAR COM VERIFICAÇÃO REAL -->
+        <div class="cbm-auth-steps-box" id="cbm-steps-view" style="display: none;">
+            <div class="cbm-steps-header">
+                <div class="cbm-steps-pulse-dot"></div>
+                <span>SISTEMA DE AUTENTICAÇÃO MILITAR</span>
+            </div>
+            <div class="cbm-steps-list">
+                <div class="cbm-step-item pending" id="step-1" data-step="1">
+                    <div class="cbm-step-icon"></div>
+                    <div class="cbm-step-content">
+                        <div class="cbm-step-title">Estabelecendo conexão segura com o sistema de autenticação...</div>
+                    </div>
+                </div>
+                <div class="cbm-step-item pending" id="step-2" data-step="2">
+                    <div class="cbm-step-icon"></div>
+                    <div class="cbm-step-content">
+                        <div class="cbm-step-title">Consultando banco de dados de registros militares...</div>
+                    </div>
+                </div>
+                <div class="cbm-step-item pending" id="step-3" data-step="3">
+                    <div class="cbm-step-icon"></div>
+                    <div class="cbm-step-content">
+                        <div class="cbm-step-title">Validando identificação e registro do militar...</div>
+                    </div>
+                </div>
+                <div class="cbm-step-item pending" id="step-4" data-step="4">
+                    <div class="cbm-step-icon"></div>
+                    <div class="cbm-step-content">
+                        <div class="cbm-step-title">Verificando vínculo com o Corpo de Bombeiros...</div>
+                    </div>
+                </div>
+                <div class="cbm-step-item pending" id="step-5" data-step="5">
+                    <div class="cbm-step-icon"></div>
+                    <div class="cbm-step-content">
+                        <div class="cbm-step-title">Confirmando permissões e autorização de acesso...</div>
+                    </div>
+                </div>
+                <div class="cbm-step-item pending" id="step-6" data-step="6">
+                    <div class="cbm-step-icon"></div>
+                    <div class="cbm-step-content">
+                        <div class="cbm-step-title">Finalizando processo de autenticação...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASE 3: RESULTADO FINAL — ACESSO LIBERADO -->
+        <div class="cbm-result-box cbm-result-granted" id="cbm-success-view" style="display: none;">
+            <div class="cbm-result-icon-wrap cbm-icon-granted">
+                <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h3 class="cbm-result-title">ACESSO LIBERADO</h3>
+            <p class="cbm-result-status">Identificação militar validada com sucesso.</p>
+            <p class="cbm-result-welcome">Bem-vindo ao sistema do Corpo de Bombeiros, <span id="cbm-auth-militar-name">Militar</span>.</p>
+        </div>
+
+        <!-- FASE 4: RESULTADO FINAL — ACESSO NEGADO -->
+        <div class="cbm-result-box cbm-result-denied" id="cbm-denied-view" style="display: none;">
+            <div class="cbm-result-icon-wrap cbm-icon-denied">
+                <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    <line x1="4" y1="4" x2="20" y2="20" stroke="#ff2638" stroke-width="2.5"></line>
+                </svg>
+            </div>
+            <h3 class="cbm-result-title">ACESSO NEGADO</h3>
+            <p class="cbm-result-status" id="cbm-denied-msg">Não foi possível confirmar sua autorização de acesso.</p>
+            <p class="cbm-result-detail">Verifique seu ID militar ou entre em contato com o responsável pelo sistema.</p>
+            <button id="btn-auth-retry" class="cbm-btn-retry" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                </svg>
+                <span>TENTAR NOVAMENTE</span>
+            </button>
         </div>
     </div>
+</div>

@@ -63,9 +63,10 @@ function measure(
   gap: number,
   bend: number,
 ) {
+  const maxWidthPct = width < 600 ? 82 : width < 900 ? 70 : MAX_WIDTH;
   const h = Math.min(
     (tile / 100) * height,
-    ((MAX_WIDTH / 100) * width) / aspect,
+    ((maxWidthPct / 100) * width) / aspect,
   );
   const radius = width * arc(bend);
   if (!(h > 0) || !(radius > 0))

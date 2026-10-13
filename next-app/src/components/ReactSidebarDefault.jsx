@@ -8,18 +8,21 @@ import ShinyText from './ShinyText';
 export default function ReactSidebarDefault() {
   const sidebarRef = useRef(null);
   const [userName, setUserName] = useState('');
+  const [userId, setUserId] = useState('');
   const [theme, setTheme] = useState('dark');
   const [noEffects, setNoEffects] = useState(false);
 
   useEffect(() => {
     try {
       setUserName(localStorage.getItem('cbm_user_name') || '');
+      setUserId(localStorage.getItem('cbm_user_id') || '');
       setTheme(localStorage.getItem('cbm_theme') || 'dark');
       setNoEffects(localStorage.getItem('cbm-no-effects') === 'true');
     } catch (e) {}
 
     const onProfileUpdate = (e) => {
       if (e.detail?.name !== undefined) setUserName(e.detail.name);
+      if (e.detail?.id !== undefined) setUserId(e.detail.id);
       if (e.detail?.theme !== undefined) setTheme(e.detail.theme);
       if (e.detail?.noEffects !== undefined) setNoEffects(e.detail.noEffects);
     };
@@ -29,6 +32,21 @@ export default function ReactSidebarDefault() {
 
   const handleOpenConfiguracoes = () => {
     window.dispatchEvent(new CustomEvent('openConfiguracoes'));
+  };
+
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem('cbm_auth_unlocked');
+      sessionStorage.removeItem('cbm_auth_unlocked');
+      sessionStorage.removeItem('cbm_session_start');
+      sessionStorage.removeItem('cbm_last_activity');
+      document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    } catch (e) {}
+
+    document.documentElement.classList.remove('cbm-unlocked');
+    document.body.classList.add('locked');
+    window.dispatchEvent(new CustomEvent('cbm_lock_screen'));
+    window.dispatchEvent(new CustomEvent('cbm_show_cracha'));
   };
 
   return (
@@ -80,6 +98,11 @@ export default function ReactSidebarDefault() {
               disabled={noEffects}
             />
           </span>
+          {userId && (
+            <span className="welcome-id">
+              {userId}
+            </span>
+          )}
         </div>
       </div>
 
@@ -141,6 +164,30 @@ export default function ReactSidebarDefault() {
             </div>
           </PixelCard>
         </div>
+
+        {/* Botão SAIR Tático Neon Vermelho */}
+        <button
+          className="sidebar-btn-logout"
+          onClick={handleLogout}
+          title="Sair do Sistema"
+          type="button"
+        >
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          <span>SAIR</span>
+        </button>
 
         <div className="sidebar-capital-container">
           <img

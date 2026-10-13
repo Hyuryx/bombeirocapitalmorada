@@ -1,67 +1,43 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const particlesContainer = document.getElementById('particles-js');
+// Proteção Anti-Clone Front-end
+(function() {
+    const host = window.location.hostname;
+    const isLocalhost = host === 'localhost' || host === '127.0.0.1' || host === '' || host.endsWith('.local') || host.startsWith('192.168.') || host.startsWith('10.');
+    const isAllowedDomain = host.includes('bombeirocapitalmorada.vercel.app');
 
-    // Inicializar particles.js (sem a parte do stats.js que é só para teste de performance)
-    if (particlesContainer && typeof particlesJS !== 'undefined') {
-        particlesJS("particles-js", {
-            "particles": {
-                "number": { "value": 35, "density": { "enable": true, "value_area": 1000 } },
-                "color": { "value": "#ffffff" },
-                "shape": {
-                    "type": "circle",
-                    "stroke": { "width": 0, "color": "#000000" }
-                },
-                "opacity": {
-                    "value": 0.25,
-                    "random": true,
-                    "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false }
-                },
-                "size": {
-                    "value": 2.5,
-                    "random": true,
-                    "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false }
-                },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 180,
-                    "color": "#ffffff",
-                    "opacity": 0.15,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 2.5,
-                    "direction": "none",
-                    "random": false,
-                    "straight": false,
-                    "out_mode": "out",
-                    "bounce": false,
-                    "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 }
-                }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": { "enable": true, "mode": ["grab", "repulse"] },
-                    "onclick": { "enable": true, "mode": "push" },
-                    "resize": true
-                },
-                "modes": {
-                    "grab": { "distance": 200, "line_linked": { "opacity": 0.8 } },
-                    "repulse": { "distance": 120, "duration": 0.4 },
-                    "push": { "particles_nb": 4 }
-                }
-            },
-            "retina_detect": true
-        });
+    if (!isLocalhost && !isAllowedDomain) {
+        document.body.innerHTML = `
+            <div style="display:flex;justify-content:center;align-items:center;height:100vh;background-color:#111;color:#ff3333;font-family:sans-serif;text-align:center;padding:20px;">
+                <div>
+                    <h1 style="font-size:3em;margin-bottom:10px;">⚠️ ACESSO NEGADO</h1>
+                    <p style="font-size:1.5em;color:#fff;">Cópia Pirata ou Domínio Não Autorizado.</p>
+                </div>
+            </div>
+        `;
+        throw new Error("Execução bloqueada por proteção anti-clone.");
     }
+})();
+
+window.initApp = function() {
 
     // Lógica da Navegação Global
     const globalNavItems = document.querySelectorAll('.nav-item');
     const globalViews = document.querySelectorAll('.global-view');
 
-    function switchGlobalView(targetId) {
+    window.switchGlobalView = function(targetId) {
         localStorage.setItem('activeTab', targetId);
+        
+        const gradientBg = document.getElementById('gradient-waves-bg');
+        if (gradientBg) {
+            gradientBg.style.transition = 'opacity 0.5s ease, visibility 0.5s ease';
+            if (targetId === 'view-inicio') {
+                gradientBg.style.opacity = '0';
+                gradientBg.style.visibility = 'hidden';
+            } else {
+                gradientBg.style.opacity = '1';
+                gradientBg.style.visibility = 'visible';
+            }
+        }
+
         globalNavItems.forEach(nav => {
             if(nav.getAttribute('data-global-target') === targetId) {
                 nav.classList.add('active');
@@ -137,24 +113,141 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetId = item.getAttribute('data-global-target');
             switchGlobalView(targetId);
             
-            // Fechar menu mobile ao clicar em um item
-            const navTabs = document.getElementById('nav-tabs');
-            if (navTabs && navTabs.classList.contains('open')) {
-                navTabs.classList.remove('open');
-            }
+            // Fechar menu gaveta mobile ao clicar em um item
+            closeMobileDrawer();
         });
     });
 
-    // Lógica do botão de menu mobile (Global Navbar)
+    // Funções de Controle da Gaveta Mobile (Drawer Tático)
+    function openMobileDrawer() {
+        const navTabs = document.getElementById('nav-tabs');
+        const navOverlay = document.getElementById('nav-overlay');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        if (navTabs) navTabs.classList.add('open');
+        if (navOverlay) navOverlay.classList.add('active');
+        if (mobileMenuBtn) mobileMenuBtn.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileDrawer() {
+        const navTabs = document.getElementById('nav-tabs');
+        const navOverlay = document.getElementById('nav-overlay');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        if (navTabs) navTabs.classList.remove('open');
+        if (navOverlay) navOverlay.classList.remove('active');
+        if (mobileMenuBtn) mobileMenuBtn.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function toggleMobileDrawer() {
+        const navTabs = document.getElementById('nav-tabs');
+        if (navTabs && navTabs.classList.contains('open')) {
+            closeMobileDrawer();
+        } else {
+            openMobileDrawer();
+        }
+    }
+
+    // Botão Hambúrguer Mobile
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     if (mobileMenuBtn) {
-        mobileMenuBtn.addEventListener('click', () => {
-            const navTabs = document.getElementById('nav-tabs');
-            if (navTabs) {
-                navTabs.classList.toggle('open');
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleMobileDrawer();
+        });
+    }
+
+    // Botão Fechar no Cabeçalho do Drawer
+    const drawerCloseBtn = document.getElementById('drawer-close-btn');
+    if (drawerCloseBtn) {
+        drawerCloseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeMobileDrawer();
+        });
+    }
+
+    // Overlay de fundo escuro fecha a gaveta
+    const navOverlay = document.getElementById('nav-overlay');
+    if (navOverlay) {
+        navOverlay.addEventListener('click', closeMobileDrawer);
+    }
+
+    // Tecla ESC fecha a gaveta mobile
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeMobileDrawer();
+            const modal = document.getElementById("image-modal");
+            if (modal && modal.style.display === "flex") {
+                modal.style.display = "none";
+                if (typeof resetZoom === 'function') resetZoom();
+            }
+        }
+    });
+
+    // Botões de Ação na Gaveta (Configurações e Logout)
+    const drawerBtnConfig = document.getElementById('drawer-btn-config');
+    if (drawerBtnConfig) {
+        drawerBtnConfig.addEventListener('click', () => {
+            closeMobileDrawer();
+            window.dispatchEvent(new CustomEvent('openConfiguracoes'));
+        });
+    }
+
+    const drawerBtnLogout = document.getElementById('drawer-btn-logout');
+    if (drawerBtnLogout) {
+        drawerBtnLogout.addEventListener('click', () => {
+            closeMobileDrawer();
+            if (typeof window.handleCbmLogout === 'function') {
+                window.handleCbmLogout();
+            } else {
+                window.dispatchEvent(new CustomEvent('cbm_logout'));
             }
         });
     }
+
+    // Logout Global Unificado
+    window.handleCbmLogout = function() {
+        try {
+            localStorage.removeItem('cbm_auth_unlocked');
+            localStorage.removeItem('cbm_auth_user');
+            localStorage.removeItem('cbm_session_start');
+            localStorage.removeItem('cbm_last_activity');
+            sessionStorage.removeItem('cbm_auth_unlocked');
+            sessionStorage.removeItem('cbm_session_start');
+            sessionStorage.removeItem('cbm_last_activity');
+            document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        } catch (e) {}
+
+        document.documentElement.classList.remove('cbm-unlocked');
+        document.body.classList.add('locked');
+        window.dispatchEvent(new CustomEvent('cbm_lock_screen'));
+        window.dispatchEvent(new CustomEvent('cbm_show_cracha'));
+    };
+    window.addEventListener('cbm_logout', window.handleCbmLogout);
+
+    // Inicialização das Partículas NASA na Tela de Login
+    function initLoginParticles() {
+        const loginContainer = document.getElementById('particles-login');
+        if (!loginContainer) return;
+        if (loginContainer.querySelector('.particles-js-canvas-el')) return;
+        if (!Array.isArray(window.pJSDom)) window.pJSDom = [];
+        if (typeof window.particlesJS === 'function' && typeof window.particlesJS.load === 'function') {
+            try {
+                window.particlesJS.load('particles-login', '/particlesjs-config.json');
+            } catch (err) {
+                console.warn('Erro ao carregar particles-login:', err);
+            }
+        } else {
+            setTimeout(initLoginParticles, 100);
+        }
+    }
+    initLoginParticles();
+    window.addEventListener('cbm_lock_screen', () => {
+        setTimeout(initLoginParticles, 120);
+    });
+    window.addEventListener('cbm_cracha_dismissed', () => {
+        setTimeout(initLoginParticles, 50);
+    });
 
     // Ação de clique na logo da sidebar para voltar à tela inicial (Início)
     // Atualizado para pegar todas as logos de sidebars no site
@@ -233,57 +326,65 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (modal && modalImg) {
-        document.querySelectorAll('.content-section img:not(.no-lightbox), .cards-grid img:not(.no-lightbox)').forEach(img => {
-            img.addEventListener('click', function() {
+        // Abertura Universal Delegada de Imagens (Desktop e Mobile)
+        document.addEventListener('click', function(e) {
+            const target = e.target;
+            if (!target || target.tagName !== 'IMG') return;
+            if (target.classList.contains('no-lightbox') || 
+                target.closest('#modal-destaque') || 
+                target.closest('#modal-evento-precos') || 
+                target.closest('.sidebar-logo-container') || 
+                target.closest('.nav-brand') || 
+                target.closest('.drawer-header-brand') ||
+                target.id === 'modal-img') return;
+
+            const isLightboxTarget = target.closest('.cards-grid') || 
+                                     target.closest('.content-section') || 
+                                     target.closest('.video-gallery-grid') || 
+                                     target.closest('.card') || 
+                                     target.closest('.info-card') ||
+                                     target.getAttribute('data-title') || 
+                                     target.classList.contains('expandable-image') ||
+                                     window.getComputedStyle(target).cursor === 'pointer';
+
+            if (isLightboxTarget) {
                 modal.style.display = "flex";
-                modalImg.src = this.src;
-                
-                // Reseta o zoom toda vez que abre uma nova imagem
+                modalImg.src = target.src;
                 resetZoom();
-                
-                // Popula o painel de informações se a imagem tiver os dados
-                const title = this.getAttribute('data-title');
-                const desc = this.getAttribute('data-desc');
+
+                const title = target.getAttribute('data-title') || target.alt || '';
+                const desc = target.getAttribute('data-desc') || '';
                 const infoPanel = document.getElementById('modal-info-panel');
                 const titleEl = document.getElementById('modal-title');
                 const descEl = document.getElementById('modal-desc');
-                
-                if (title && desc && infoPanel) {
-                    titleEl.textContent = title;
-                    descEl.innerHTML = desc;
+
+                if ((title || desc) && infoPanel) {
+                    if (titleEl) titleEl.textContent = title;
+                    if (descEl) descEl.innerHTML = desc;
                     infoPanel.style.display = "block";
                 } else if (infoPanel) {
                     infoPanel.style.display = "none";
                 }
-            });
-        });
-
-        // Evento de Scroll para Zoom
-        modalImg.addEventListener('wheel', (e) => {
-            e.preventDefault(); // Evita a rolagem da página
-            
-            // Calcula a direção do zoom (aumentar ou diminuir)
-            const delta = Math.sign(e.deltaY) * -0.2;
-            const newScale = scale + delta;
-            
-            // Limita o zoom entre 1x e 5x
-            if (newScale >= 1 && newScale <= 5) {
-                scale = newScale;
-                
-                // Se voltou ao tamanho normal, reseta a posição de arrasto
-                if (scale === 1) {
-                    pointX = 0;
-                    pointY = 0;
-                    modalImg.style.cursor = 'zoom-in';
-                } else {
-                    modalImg.style.cursor = 'grab';
-                }
-                
-                modalImg.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
             }
         });
 
-        // Eventos para Arrastar (Pan) a imagem quando estiver com zoom
+        // Evento de Scroll para Zoom (Mouse Wheel)
+        modalImg.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const delta = Math.sign(e.deltaY) * -0.25;
+            const newScale = Math.min(5, Math.max(1, scale + delta));
+            scale = newScale;
+            if (scale === 1) {
+                pointX = 0;
+                pointY = 0;
+                modalImg.style.cursor = 'zoom-in';
+            } else {
+                modalImg.style.cursor = 'grab';
+            }
+            modalImg.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+        });
+
+        // Eventos de Mouse para Arrastar (Pan) a imagem com zoom
         modalImg.addEventListener('mousedown', (e) => {
             if (scale > 1) {
                 e.preventDefault();
@@ -316,6 +417,68 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        // Suporte a Toque Mobile (Double-Tap Zoom & Touch Pan)
+        let lastTouchTime = 0;
+        let initialPinchDist = 0;
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        modalImg.addEventListener('touchstart', (e) => {
+            const now = Date.now();
+            if (e.touches.length === 1) {
+                // Detecção de Duplo Toque para Zoom Rápido no Celular
+                if (now - lastTouchTime < 320) {
+                    e.preventDefault();
+                    if (scale > 1) {
+                        resetZoom();
+                    } else {
+                        scale = 2.5;
+                        pointX = 0;
+                        pointY = 0;
+                        modalImg.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+                    }
+                    lastTouchTime = 0;
+                    return;
+                }
+                lastTouchTime = now;
+
+                if (scale > 1) {
+                    panning = true;
+                    touchStartX = e.touches[0].clientX - pointX;
+                    touchStartY = e.touches[0].clientY - pointY;
+                }
+            } else if (e.touches.length === 2) {
+                // Pinch-to-zoom
+                panning = false;
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                initialPinchDist = Math.hypot(dx, dy);
+            }
+        }, { passive: false });
+
+        modalImg.addEventListener('touchmove', (e) => {
+            if (panning && e.touches.length === 1 && scale > 1) {
+                e.preventDefault();
+                pointX = e.touches[0].clientX - touchStartX;
+                pointY = e.touches[0].clientY - touchStartY;
+                modalImg.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+            } else if (e.touches.length === 2 && initialPinchDist > 0) {
+                e.preventDefault();
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                const currentDist = Math.hypot(dx, dy);
+                const zoomFactor = currentDist / initialPinchDist;
+                scale = Math.min(5, Math.max(1, scale * (zoomFactor > 1 ? 1.03 : 0.97)));
+                initialPinchDist = currentDist;
+                modalImg.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+            }
+        }, { passive: false });
+
+        modalImg.addEventListener('touchend', () => {
+            panning = false;
+            initialPinchDist = 0;
+        });
+
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
                 modal.style.display = "none";
@@ -324,7 +487,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         modal.addEventListener('click', (e) => {
-            // Fecha o modal se clicar fora da imagem ou do painel de info
             if (e.target === modal || e.target.classList.contains('modal-image-container')) {
                 modal.style.display = "none";
                 resetZoom();
@@ -399,6 +561,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const activeTab = localStorage.getItem('activeTab');
     if (activeTab) {
         switchGlobalView(activeTab);
+    } else {
+        switchGlobalView('view-inicio');
     }
 
     // Lógica da Tela de Login / Bloqueio
@@ -451,15 +615,15 @@ document.addEventListener('DOMContentLoaded', () => {
         let isUnlocked = false;
 
         function lockScreen(animate = true) {
-            if (isLocalHost) return;
             isUnlocked = false;
-            sessionStorage.removeItem('cbm_auth_unlocked');
-            sessionStorage.removeItem('cbm_session_start');
-            sessionStorage.removeItem('cbm_last_activity');
+            try {
+                localStorage.removeItem('cbm_auth_unlocked');
+                sessionStorage.removeItem('cbm_auth_unlocked');
+                sessionStorage.removeItem('cbm_session_start');
+                sessionStorage.removeItem('cbm_last_activity');
+                document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            } catch (e) {}
             document.documentElement.classList.remove('cbm-unlocked');
-
-            // Remove o cookie para garantir coerência no middleware
-            document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
             if (loginScreen) {
                 loginScreen.style.display = 'flex';
@@ -467,28 +631,40 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => {
                         loginScreen.style.opacity = '1';
                         loginScreen.style.visibility = 'visible';
+                        loginScreen.style.pointerEvents = 'auto';
                     }, 10);
                 } else {
                     loginScreen.style.opacity = '1';
                     loginScreen.style.visibility = 'visible';
+                    loginScreen.style.pointerEvents = 'auto';
                 }
             }
             document.body.classList.add('locked');
             const digitalClock = document.getElementById('digital-clock');
             if (digitalClock) digitalClock.style.display = 'none';
-            if (loginPassword) loginPassword.value = '';
+            if (loginPassword) {
+                loginPassword.value = '';
+                setTimeout(() => loginPassword.focus(), 150);
+            }
             if (loginError) loginError.style.display = 'none';
+            const formView = document.getElementById('cbm-form-view');
+            const stepsView = document.getElementById('cbm-steps-view');
+            const successView = document.getElementById('cbm-success-view');
+            const deniedView = document.getElementById('cbm-denied-view');
+            const loginFrame = document.getElementById('cbm-login-frame');
+            if (formView) formView.style.display = 'flex';
+            if (stepsView) stepsView.style.display = 'none';
+            if (successView) successView.style.display = 'none';
+            if (deniedView) deniedView.style.display = 'none';
+            if (loginFrame) loginFrame.classList.remove('authorized');
+            for (let s = 1; s <= 6; s++) {
+                setStepState(s, 'pending', null);
+            }
             stopTimers();
         }
 
-        function startTimers(customInactivityMs, customAbsoluteMs) {
-            stopTimers();
-            if (isLocalHost) return;
-            const inactMs = (typeof customInactivityMs === 'number') ? customInactivityMs : INACTIVITY_LIMIT;
-            const absMs = (typeof customAbsoluteMs === 'number') ? customAbsoluteMs : ABSOLUTE_LIMIT;
-
-            inactivityTimer = setTimeout(() => lockScreen(true), inactMs);
-            absoluteTimer = setTimeout(() => lockScreen(true), absMs);
+        function startTimers() {
+            // Desativado: o militar permanece autenticado até clicar manualmente no botão SAIR
         }
 
         function stopTimers() {
@@ -497,21 +673,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function resetInactivityTimer() {
-            if (isLocalHost) return;
-            if (isUnlocked) {
-                const now = Date.now();
-                const sessionStart = parseInt(sessionStorage.getItem('cbm_session_start') || '0', 10);
-                
-                // Se ultrapassou o limite absoluto de 6 minutos, bloqueia imediatamente
-                if (sessionStart > 0 && (now - sessionStart >= ABSOLUTE_LIMIT)) {
-                    lockScreen(true);
-                    return;
-                }
-
-                clearTimeout(inactivityTimer);
-                inactivityTimer = setTimeout(() => lockScreen(true), INACTIVITY_LIMIT);
-                sessionStorage.setItem('cbm_last_activity', now.toString());
-            }
+            // Desativado: o militar permanece autenticado até clicar manualmente no botão SAIR
         }
 
         ['mousemove', 'mousedown', 'keypress', 'touchmove', 'scroll'].forEach(evt => 
@@ -522,91 +684,57 @@ document.addEventListener('DOMContentLoaded', () => {
         const isLoginSuccess = urlParams.get('login') === 'success';
 
         if (isLoginSuccess) {
-            // Remove o parâmetro da URL sem recarregar a página
             const newUrl = window.location.pathname;
             window.history.replaceState({}, document.title, newUrl);
-            
-            // Marca a sessão como ativa
-            const now = Date.now();
-            sessionStorage.setItem('cbm_auth_unlocked', 'true');
-            sessionStorage.setItem('cbm_session_start', now.toString());
-            sessionStorage.setItem('cbm_last_activity', now.toString());
+            try {
+                sessionStorage.setItem('cbm_auth_unlocked', 'true');
+                localStorage.removeItem('cbm_auth_unlocked');
+            } catch (e) {}
         }
 
-        // Validação da Sessão (F5 na mesma aba preserva sessionStorage; fechar aba apaga)
-        const isSessionStored = sessionStorage.getItem('cbm_auth_unlocked') === 'true';
-        const sessionStart = parseInt(sessionStorage.getItem('cbm_session_start') || '0', 10);
-        const lastActivity = parseInt(sessionStorage.getItem('cbm_last_activity') || '0', 10);
-        const now = Date.now();
+        // Validação da Sessão Ativa: persiste no F5 enquanto o navegador estiver aberto
+        const isSessionUnlocked = (function() {
+            try {
+                return sessionStorage.getItem('cbm_auth_unlocked') === 'true';
+            } catch (e) {
+                return false;
+            }
+        })();
 
-        const timeSinceStart = sessionStart > 0 ? (now - sessionStart) : Infinity;
-        const timeSinceActivity = lastActivity > 0 ? (now - lastActivity) : Infinity;
-
-        const isSessionValid = isSessionStored && 
-                               (timeSinceStart < ABSOLUTE_LIMIT) && 
-                               (timeSinceActivity < INACTIVITY_LIMIT);
-
-        if (isLocalHost) {
-            // Em ambiente local, desbloqueia imediatamente e sem senha
+        if (isSessionUnlocked) {
             isUnlocked = true;
             document.documentElement.classList.add('cbm-unlocked');
             if (loginScreen) {
                 loginScreen.style.display = 'none';
                 loginScreen.style.opacity = '0';
                 loginScreen.style.visibility = 'hidden';
+                loginScreen.style.pointerEvents = 'none';
             }
             document.body.classList.remove('locked');
             const digitalClock = document.getElementById('digital-clock');
             if (digitalClock) digitalClock.style.display = 'block';
-            setTimeout(() => {
-                window.dispatchEvent(new CustomEvent('tabChanged', { detail: { targetId: 'login-event' } }));
-            }, 300);
-        } else if (isSessionValid) {
-            // Inicia desbloqueado (mantido no F5 / Refresh)
-            isUnlocked = true;
-            document.documentElement.classList.add('cbm-unlocked');
-            if (loginScreen) {
-                loginScreen.style.display = 'none';
-                loginScreen.style.opacity = '0';
-                loginScreen.style.visibility = 'hidden';
-            }
-            document.body.classList.remove('locked');
-            const digitalClock = document.getElementById('digital-clock');
-            if (digitalClock) digitalClock.style.display = 'block';
-
-            // Retoma os temporizadores com o tempo restante
-            const remainingInactivity = Math.max(1000, INACTIVITY_LIMIT - timeSinceActivity);
-            const remainingAbsolute = Math.max(1000, ABSOLUTE_LIMIT - timeSinceStart);
-            startTimers(remainingInactivity, remainingAbsolute);
-
-            if (isLoginSuccess) {
-                setTimeout(() => {
-                    window.dispatchEvent(new CustomEvent('tabChanged', { detail: { targetId: 'login-event' } }));
-                }, 500);
-            }
         } else {
-            // Inicia bloqueado (nova aba ou tempo esgotado)
             lockScreen(false);
         }
 
         function unlockApp() {
             isUnlocked = true;
-            const now = Date.now();
-            sessionStorage.setItem('cbm_auth_unlocked', 'true');
-            sessionStorage.setItem('cbm_session_start', now.toString());
-            sessionStorage.setItem('cbm_last_activity', now.toString());
-            document.documentElement.classList.add('cbm-unlocked');
+            try {
+                sessionStorage.setItem('cbm_auth_unlocked', 'true');
+                localStorage.removeItem('cbm_auth_unlocked');
+            } catch (e) {}
 
             if (loginError) loginError.style.display = 'none';
             if (loginScreen) {
                 loginScreen.style.opacity = '0';
+                loginScreen.style.pointerEvents = 'none';
                 setTimeout(() => {
                     loginScreen.style.display = 'none';
                     loginScreen.style.visibility = 'hidden';
+                    document.documentElement.classList.add('cbm-unlocked');
                     document.body.classList.remove('locked');
                     const digitalClock = document.getElementById('digital-clock');
                     if (digitalClock) digitalClock.style.display = 'block';
-                    if (!isLocalHost) startTimers();
                     const btn = document.getElementById('login-submit');
                     if (btn) btn.disabled = false;
                     
@@ -614,62 +742,277 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.dispatchEvent(new CustomEvent('tabChanged', { detail: { targetId: 'login-event' } }));
                 }, 500);
             } else {
+                document.documentElement.classList.add('cbm-unlocked');
                 document.body.classList.remove('locked');
                 const digitalClock = document.getElementById('digital-clock');
                 if (digitalClock) digitalClock.style.display = 'block';
-                if (!isLocalHost) startTimers();
                 const btn = document.getElementById('login-submit');
                 if (btn) btn.disabled = false;
             }
         }
+        window.unlockApp = unlockApp;
 
-        async function handleLogin() {
-            if (isLocalHost) {
-                unlockApp();
-                return;
-            }
-            const btn = document.getElementById('login-submit');
-            if (btn) btn.disabled = true;
-            try {
-                const response = await fetch('/api/auth', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password: loginPassword.value })
-                });
+        // Listener para evento de logout externo
+        window.addEventListener('cbm_lock_screen', () => {
+            lockScreen(true);
+        });
 
-                if (response.ok) {
-                    unlockApp();
+        function setStepState(stepNumber, state, detailText) {
+            const el = document.getElementById(`step-${stepNumber}`);
+            if (!el) return;
+            el.className = `cbm-step-item ${state}`;
+            const iconEl = el.querySelector('.cbm-step-icon');
+            const contentEl = el.querySelector('.cbm-step-content');
+            
+            if (iconEl) {
+                if (state === 'success') {
+                    iconEl.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                } else if (state === 'error') {
+                    iconEl.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
                 } else {
-                    // Senha Incorreta
-                    loginError.textContent = "Senha incorreta. Tente novamente.";
-                    loginError.style.display = 'block';
-                    loginPassword.value = '';
-                    loginPassword.focus();
-                    if (btn) btn.disabled = false;
+                    iconEl.innerHTML = '';
                 }
-            } catch (error) {
-                console.error("Erro na autenticação:", error);
-                // Fallback de contingência local se a API não estiver respondendo
-                if (loginPassword.value.trim().toUpperCase() === 'HONRA') {
-                    unlockApp();
-                } else {
-                    loginError.textContent = "Erro ao conectar com o servidor.";
-                    loginError.style.display = 'block';
-                    if (btn) btn.disabled = false;
+            }
+            
+            if (contentEl) {
+                let detailEl = contentEl.querySelector('.cbm-step-detail');
+                if (detailText) {
+                    if (!detailEl) {
+                        detailEl = document.createElement('div');
+                        detailEl.className = 'cbm-step-detail';
+                        contentEl.appendChild(detailEl);
+                    }
+                    detailEl.textContent = detailText;
+                    if (state === 'error') {
+                        detailEl.style.color = '#ff5565';
+                    } else {
+                        detailEl.style.color = '#00e676';
+                    }
+                } else if (detailEl) {
+                    detailEl.remove();
                 }
             }
         }
 
+        let isAuthenticating = false;
+
+        async function handleLogin() {
+            if (isAuthenticating) return;
+
+            const enteredValue = loginPassword ? loginPassword.value.trim() : '';
+            const formView = document.getElementById('cbm-form-view');
+            const stepsView = document.getElementById('cbm-steps-view');
+            const successView = document.getElementById('cbm-success-view');
+            const deniedView = document.getElementById('cbm-denied-view');
+            const loginFrame = document.getElementById('cbm-login-frame');
+            const inputWrap = document.getElementById('cbm-input-wrap');
+            const btn = document.getElementById('login-submit');
+
+            if (!enteredValue) {
+                if (inputWrap) {
+                    inputWrap.classList.add('has-error');
+                    setTimeout(() => inputWrap.classList.remove('has-error'), 450);
+                }
+                if (loginError) {
+                    loginError.textContent = "Por favor, digite seu ID militar.";
+                    loginError.style.display = 'block';
+                }
+                if (loginPassword) loginPassword.focus();
+                return;
+            }
+
+            isAuthenticating = true;
+            if (btn) btn.disabled = true;
+            if (loginPassword) loginPassword.disabled = true;
+            if (loginError) loginError.style.display = 'none';
+
+            // Muda visual para as Etapas de Autenticação Militar
+            if (formView) formView.style.display = 'none';
+            if (stepsView) stepsView.style.display = 'flex';
+            if (successView) successView.style.display = 'none';
+            if (deniedView) deniedView.style.display = 'none';
+            if (loginFrame) loginFrame.classList.remove('authorized');
+
+            // Prepara as 6 etapas no estado pendente
+            for (let s = 1; s <= 6; s++) {
+                setStepState(s, 'pending', null);
+            }
+
+            // Dispara requisição real em segundo plano para o backend
+            const authPromise = fetch('/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: enteredValue })
+            }).then(async res => {
+                const data = await res.json().catch(() => ({}));
+                return { ok: res.ok, status: res.status, data };
+            }).catch(err => {
+                console.error("Falha ao comunicar com o servidor de auth:", err);
+                return {
+                    ok: false,
+                    status: 503,
+                    data: {
+                        sucesso: false,
+                        failedAtStep: 1,
+                        erro: 'Falha de comunicação segura com o servidor.'
+                    }
+                };
+            });
+
+            // Execução sequencial das 6 etapas com cadência visual (~880ms por etapa = ~5.3s total)
+            let authResult = null;
+            let hadFailure = false;
+
+            for (let stepIndex = 1; stepIndex <= 6; stepIndex++) {
+                setStepState(stepIndex, 'loading');
+
+                // Cadência para legibilidade tática
+                await new Promise(r => setTimeout(r, 880));
+
+                if (!authResult) {
+                    authResult = await authPromise;
+                }
+
+                const data = authResult.data || {};
+                const failedAt = data.failedAtStep;
+
+                // Verifica se falhou nesta etapa
+                const stepFailed = (failedAt === stepIndex) || (!authResult.ok && !data.steps && stepIndex === 1);
+
+                if (stepFailed) {
+                    hadFailure = true;
+                    const errorMsg = data.erro || 'Falha na validação desta etapa.';
+                    setStepState(stepIndex, 'error', errorMsg);
+
+                    // Pula as etapas subsequentes
+                    for (let rem = stepIndex + 1; rem <= 6; rem++) {
+                        setStepState(rem, 'skipped');
+                    }
+
+                    // Aguarda o usuário ver a etapa que falhou
+                    await new Promise(r => setTimeout(r, 900));
+
+                    // Exibe tela ACESSO NEGADO
+                    if (stepsView) stepsView.style.display = 'none';
+                    if (deniedView) deniedView.style.display = 'flex';
+                    const deniedMsg = document.getElementById('cbm-denied-msg');
+                    if (deniedMsg) {
+                        deniedMsg.textContent = "Não foi possível confirmar sua autorização de acesso.";
+                    }
+
+                    isAuthenticating = false;
+                    return;
+                } else {
+                    // Etapa aprovada com sucesso!
+                    const stepDetail = data.steps?.[stepIndex - 1]?.detail || null;
+                    setStepState(stepIndex, 'success', stepDetail);
+                }
+            }
+
+            // Se todas as 6 etapas passaram:
+            if (!hadFailure && authResult && authResult.data && authResult.data.sucesso) {
+                const data = authResult.data;
+                await new Promise(r => setTimeout(r, 650));
+
+                // Exibe tela ACESSO LIBERADO
+                if (stepsView) stepsView.style.display = 'none';
+                if (successView) successView.style.display = 'flex';
+                if (loginFrame) loginFrame.classList.add('authorized');
+
+                const militarNameEl = document.getElementById('cbm-auth-militar-name');
+                if (militarNameEl) {
+                    militarNameEl.textContent = data.userName || 'Combatente';
+                }
+
+                // Salva nome e ID no localStorage
+                if (data.userName) {
+                    localStorage.setItem('cbm_user_name', data.userName);
+                }
+                if (data.userId) {
+                    localStorage.setItem('cbm_user_id', data.userId);
+                }
+
+                // Notifica as sidebars React
+                window.dispatchEvent(new CustomEvent('userProfileUpdated', {
+                    detail: { name: data.userName, id: data.userId }
+                }));
+
+                // Aguarda confirmação visual e libera o portal
+                setTimeout(() => {
+                    unlockApp();
+                    setTimeout(() => {
+                        if (formView) formView.style.display = 'flex';
+                        if (stepsView) stepsView.style.display = 'none';
+                        if (successView) successView.style.display = 'none';
+                        if (deniedView) deniedView.style.display = 'none';
+                        if (loginFrame) loginFrame.classList.remove('authorized');
+                        if (loginPassword) {
+                            loginPassword.disabled = false;
+                            loginPassword.value = '';
+                        }
+                        if (btn) btn.disabled = false;
+                        for (let s = 1; s <= 6; s++) {
+                            setStepState(s, 'pending', null);
+                        }
+                        isAuthenticating = false;
+                    }, 600);
+                }, 1800);
+            }
+        }
+
+        // Botão Tentar Novamente na tela de erro
+        const retryBtn = document.getElementById('btn-auth-retry');
+        if (retryBtn) {
+            retryBtn.addEventListener('click', () => {
+                const formView = document.getElementById('cbm-form-view');
+                const stepsView = document.getElementById('cbm-steps-view');
+                const successView = document.getElementById('cbm-success-view');
+                const deniedView = document.getElementById('cbm-denied-view');
+                const loginFrame = document.getElementById('cbm-login-frame');
+                if (deniedView) deniedView.style.display = 'none';
+                if (stepsView) stepsView.style.display = 'none';
+                if (successView) successView.style.display = 'none';
+                if (formView) formView.style.display = 'flex';
+                if (loginFrame) loginFrame.classList.remove('authorized');
+                for (let s = 1; s <= 6; s++) {
+                    setStepState(s, 'pending', null);
+                }
+                if (loginPassword) {
+                    loginPassword.disabled = false;
+                    loginPassword.value = '';
+                    loginPassword.focus();
+                }
+                const btn = document.getElementById('login-submit');
+                if (btn) btn.disabled = false;
+                isAuthenticating = false;
+            });
+        }
+
         if (loginSubmit) loginSubmit.addEventListener('click', handleLogin);
-        if (loginPassword) loginPassword.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                handleLogin();
+        if (loginPassword) {
+            loginPassword.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleLogin();
+                }
+            });
+        }
+        // Permitir que ao apertar ENTER na tela de login entre normalmente ou tente novamente
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !isUnlocked && loginScreen && loginScreen.style.display !== 'none') {
+                const deniedView = document.getElementById('cbm-denied-view');
+                if (deniedView && deniedView.style.display === 'flex') {
+                    e.preventDefault();
+                    const retryBtnEl = document.getElementById('btn-auth-retry');
+                    if (retryBtnEl) retryBtnEl.click();
+                } else if (!isAuthenticating) {
+                    e.preventDefault();
+                    handleLogin();
+                }
             }
         });
     }
-});
-
+};
 // Gallery Folders Logic
 function openGalleryFolder(folderName) {
     const galeriaMenu = document.getElementById('galeria-menu');
@@ -851,7 +1194,7 @@ function initCustomVideoPlayers() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+window.initSecondaryApp = function() {
     initCustomVideoPlayers();
 
     // Alternar Efeitos Gráficos (Modo Desempenho / Olhinho)
@@ -888,6 +1231,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const newNoEffects = !currentNoEffects;
             localStorage.setItem('cbm-no-effects', newNoEffects);
             updateEffectsUI(newNoEffects);
+            window.dispatchEvent(new CustomEvent('userProfileUpdated', { detail: { noEffects: newNoEffects } }));
+        });
+
+        window.addEventListener('userProfileUpdated', (e) => {
+            if (e.detail?.noEffects !== undefined) {
+                updateEffectsUI(Boolean(e.detail.noEffects));
+            }
+        });
+    }
+
+    // Botão de Configurações no topo
+    const btnNavConfig = document.getElementById('btn-nav-config');
+    if (btnNavConfig) {
+        btnNavConfig.addEventListener('click', () => {
+            window.dispatchEvent(new CustomEvent('openConfiguracoes'));
         });
     }
 
@@ -1041,7 +1399,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
+};
 
 // ==========================================
 // SISTEMA ANTI-CLONAGEM (FRONT-END)

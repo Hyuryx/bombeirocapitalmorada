@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import LightRays from './LightRays';
 import GradientWaves from './GradientWaves';
+import NasaParticles from './NasaParticles';
 
 export default function ThemeBackground() {
   const [theme, setTheme] = useState('dark');
@@ -43,63 +44,80 @@ export default function ThemeBackground() {
   }, []);
 
   return (
-    <div
-      id="gradient-waves-bg"
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        zIndex: 0,
-        pointerEvents: 'none',
-        overflow: 'hidden'
-      }}
-    >
-      {theme === 'light' ? (
-        /* Fundo do Tema Claro: Ondas fluidas com tonalidade Cinza Fumaça */
-        <GradientWaves
-          key="theme-light-waves"
-          horizonColor="#8c96a4"
-          waveColor="#333c4d"
-          crestColor="#e2e8f0"
-          speed={0.35}
-          amplitude={2.5}
-          waveScale={0.6}
-          waveRatio={0.9}
-          swell={35}
-          turbulence={20}
-          tilt={1.11}
-          zoom={1}
-          height={5.5}
-          fogDepth={15}
-          detail="medium"
-          brightness={1.0}
-          opacity={1.0}
-          mouseInteraction
-          parallaxStrength={0.5}
-          grain
-          grainIntensity={0.04}
-        />
-      ) : (
-        /* Fundo do Tema Escuro: Feixes de luz LightRays originais */
-        <LightRays
-          key="theme-dark-rays"
-          raysOrigin="top-center"
-          raysColor="#ffffff"
-          raysSpeed={1}
-          lightSpread={0.5}
-          rayLength={3}
-          followMouse={true}
-          mouseInfluence={0.1}
-          noiseAmount={0}
-          distortion={0}
-          className="custom-rays"
-          pulsating={false}
-          fadeDistance={1}
-          saturation={1}
-        />
-      )}
-    </div>
+    <>
+      <div
+        id="gradient-waves-bg"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: 0,
+          pointerEvents: 'none',
+          overflow: 'hidden'
+        }}
+      >
+        {theme === 'light' ? (
+          /* Fundo do Tema Claro: Ondas fluidas com tonalidade Cinza Fumaça */
+          <GradientWaves
+            key="theme-light-waves"
+            horizonColor="#8c96a4"
+            waveColor="#333c4d"
+            crestColor="#e2e8f0"
+            speed={0.35}
+            amplitude={2.5}
+            waveScale={0.6}
+            waveRatio={0.9}
+            swell={35}
+            turbulence={20}
+            tilt={1.11}
+            zoom={1}
+            height={5.5}
+            fogDepth={15}
+            detail="medium"
+            brightness={1.0}
+            opacity={1.0}
+            mouseInteraction
+            parallaxStrength={0.5}
+            grain
+            grainIntensity={0.04}
+          />
+        ) : (
+          /* Fundo do Tema Escuro: Feixes de luz LightRays originais */
+          <LightRays
+            key="theme-dark-rays"
+            raysOrigin="top-center"
+            raysColor="#ffffff"
+            raysSpeed={1}
+            lightSpread={0.5}
+            rayLength={3}
+            followMouse={true}
+            mouseInfluence={0.1}
+            noiseAmount={0}
+            distortion={0}
+            className="custom-rays"
+            pulsating={false}
+            fadeDistance={1}
+            saturation={1}
+          />
+        )}
+      </div>
+
+      {/* Partículas NASA Vermelhas Flutuantes (Ativas nas abas do portal) */}
+      <NasaParticles
+        id="particles-portal"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: 1,
+          pointerEvents: 'none',
+          opacity: theme === 'light' ? 0.45 : 0.85
+        }}
+      />
+    </>
   );
 }

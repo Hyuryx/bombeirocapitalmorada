@@ -1,6 +1,7 @@
 import ThemeBackground from '@/components/ThemeBackground';
 import NoSSRDynamicHTMLRenderer from '@/components/NoSSRDynamicHTMLRenderer';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import NoSSRLanyardBadgeScreen from '@/components/NoSSRLanyardBadgeScreen';
 
 // Importando o conteúdo HTML como strings JS puras
 import loginHTML from '@/components/abas/login/index.js';
@@ -42,6 +43,7 @@ export default function Home() {
   return (
     <div suppressHydrationWarning>
       <ThemeBackground />
+      <NoSSRLanyardBadgeScreen />
       <ErrorBoundary>
         <NoSSRDynamicHTMLRenderer htmlString={htmlContent} />
       </ErrorBoundary>

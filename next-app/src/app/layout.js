@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./style.css";
 import "./globals.css";
+import "@/components/FuturisticLogin.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,6 +22,9 @@ export default function RootLayout({ children }) {
         <meta name="darkreader-lock" />
         <meta name="color-scheme" content="dark" />
         <link rel="icon" type="image/png" href="/assets/iconesite/icone.png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700;800&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="/css/style.css?v=20" />
         <link rel="stylesheet" href="/css/notificacoes.css?v=20" />
         <link rel="stylesheet" href="/css/border-glow.css" />
@@ -28,6 +32,9 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{
             __html: `
               try {
+                localStorage.removeItem('cbm_auth_unlocked');
+                sessionStorage.removeItem('cbm_auth_unlocked');
+                document.documentElement.classList.remove('cbm-unlocked');
                 if (localStorage.getItem('cbm_theme') === 'light') {
                   document.documentElement.classList.add('light-theme');
                 }
@@ -41,7 +48,8 @@ export default function RootLayout({ children }) {
       </head>
       <body suppressHydrationWarning>
         {children}
-        <Script src="/js/script.js?v=2" strategy="afterInteractive" />
+        <Script src="/js/particles.min.js?v=2" strategy="beforeInteractive" />
+        <Script src="/js/script.js?v=12" strategy="afterInteractive" />
         <Script src="/js/notificacoes.js" strategy="afterInteractive" />
         <Script src="/js/inicio-videos.js" strategy="afterInteractive" />
         <Script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js" strategy="afterInteractive" />
