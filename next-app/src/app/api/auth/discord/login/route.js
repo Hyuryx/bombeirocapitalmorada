@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID || '1529936529064067255';
+import { DISCORD_CLIENT_ID } from '@/lib/discordConfig';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);

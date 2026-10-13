@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import { saveMilitarRecord, getMilitarRecord, addMilitarLog } from '@/lib/deviceStore';
 
-const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID || '1529936529064067255';
-const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
-const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID || '1505995174801702912';
-const DISCORD_ROLE_BOMBEIRO = process.env.DISCORD_ROLE_BOMBEIRO || '1505995174906429566';
-const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
+import { 
+  DISCORD_CLIENT_ID, 
+  DISCORD_CLIENT_SECRET, 
+  DISCORD_GUILD_ID, 
+  DISCORD_ROLE_BOMBEIRO, 
+  DISCORD_BOT_TOKEN 
+} from '@/lib/discordConfig';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);

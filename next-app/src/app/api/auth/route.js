@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getMilitarRecord, saveMilitarRecord, addMilitarLog } from '@/lib/deviceStore';
 
-const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
-const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID || '1505995174801702912';
-const DISCORD_ROLE_BOMBEIRO = process.env.DISCORD_ROLE_BOMBEIRO || '1505995174906429566';
-const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID || '1529936529064067255';
-const DISCORD_INVITE_URL = process.env.DISCORD_INVITE_URL || 'https://discord.gg/JdAB2NVss';
+import { 
+  DISCORD_BOT_TOKEN, 
+  DISCORD_GUILD_ID, 
+  DISCORD_ROLE_BOMBEIRO, 
+  DISCORD_CLIENT_ID, 
+  DISCORD_INVITE_URL 
+} from '@/lib/discordConfig';
 
 // Cache em memória de membros do Discord (60 segundos)
 let cachedMembers = null;
@@ -101,6 +103,7 @@ export async function POST(request) {
     }
 
     // ETAPA 2: Consulta de presença no Discord oficial do CBM
+    const idNumber = parseInt(cleanId, 10);
     const targetMember = members.find(m => {
       const nick = m.nick || '';
       const globalName = m.user?.global_name || '';
@@ -109,8 +112,18 @@ export async function POST(request) {
 
       return fullNames.some(name => {
         if (!name) return false;
-        const regex = new RegExp(`#\\s*${cleanId}(?:\\b|\\s|$)`, 'i');
-        return regex.test(name);
+        // 1. Número exato em #(\d+) (ex: #35903, #01 -> 1)
+        if (!isNaN(idNumber)) {
+          const hashMatch = name.match(/#\s*(\d+)/i);
+          if (hashMatch && parseInt(hashMatch[1], 10) === idNumber) return true;
+        }
+        // 2. Procura com # (ex: #35903)
+        if (new RegExp(`#\\s*0*${cleanId}(?:\\b|\\s|$)`, 'i').test(name)) return true;
+        // 3. Procura com separadores (ex: [35903], - 35903, | 35903, ID 35903)
+        if (new RegExp(`(?:[\\[\\(\\|\\-]\\s*|\\b(?:id|rg)\\s*[:\\-]?\\s*)0*${cleanId}(?:\\b|\\s|[\\]\\)]|$)`, 'i').test(name)) return true;
+        // 4. Termina com o número do ID
+        if (new RegExp(`\\b0*${cleanId}$`, 'i').test(name.trim())) return true;
+        return false;
       });
     });
 

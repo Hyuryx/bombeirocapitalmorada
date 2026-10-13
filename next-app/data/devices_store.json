@@ -1,17 +1,1 @@
-{
-  "35903": {
-    "militarId": "35903",
-    "createdAt": "2026-10-13T18:02:07.764Z",
-    "discordId": "1075923753680257046",
-    "discordTag": ".gagox#0",
-    "globalName": "Gagox",
-    "nick": "Alvaro Martini #35903",
-    "isBotAuthorized": true,
-    "lastAuthDate": "2026-10-13T18:02:07.764Z",
-    "desktopHwid": null,
-    "desktopDeviceName": null,
-    "updatedAt": "2026-10-13T18:40:39.027Z",
-    "sessionToken": null,
-    "lastLogin": "2026-10-13T18:02:09.278Z"
-  }
-}
+{}

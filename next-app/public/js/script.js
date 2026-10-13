@@ -906,8 +906,8 @@ window.initApp = function() {
                         setStepState(rem, 'skipped');
                     }
 
-                    // Aguarda o usuário ver a etapa que falhou
-                    await new Promise(r => setTimeout(r, 900));
+                    // Aguarda o usuário ver a etapa que falhou com clareza
+                    await new Promise(r => setTimeout(r, 1600));
 
                     // Exibe tela ACESSO NEGADO
                     if (stepsView) stepsView.style.display = 'none';

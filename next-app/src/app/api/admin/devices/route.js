@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDeviceDatabase, resetMilitarHwid, deleteMilitarRecord } from '@/lib/deviceStore';
 
-const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
-const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID || '1505995174801702912';
+import { DISCORD_GUILD_ID } from '@/lib/discordConfig';
 
 // GET: Retorna todos os militares registrados e seus dispositivos vinculados
 export async function GET() {
