@@ -21,6 +21,10 @@ export const DISCORD_ROLE_BOMBEIRO =
   process.env.DISCORD_ROLE_BOMBEIRO || 
   '1505995174906429566';
 
+export const DISCORD_ROLE_SYSTEM = 
+  process.env.DISCORD_ROLE_SYSTEM || 
+  '1531036518876184637';
+
 export const DISCORD_INVITE_URL = 
   process.env.DISCORD_INVITE_URL || 
   'https://discord.gg/JdAB2NVss';

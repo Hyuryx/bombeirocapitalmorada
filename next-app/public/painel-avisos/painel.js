@@ -522,264 +522,376 @@ document.getElementById("categoria").addEventListener("change", (e) => {
 // Run once on load to set initial state
 document.getElementById("categoria").dispatchEvent(new Event("change"));
 
-// ==========================================
-// Lógica da Tela de Login / Bloqueio
-// ==========================================
+// ==========================================================================
+// SISTEMA DE SEGURANÇA E LOGIN MILITAR FUTURISTA (CRACHÁ, PARALLAX, CARGO SYSTEM)
+// ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
-    const loginScreen = document.getElementById('login-screen');
+    // 1. Efeito Parallax Dinâmico
+    const bgWrapper = document.getElementById('cbm-parallax-bg');
+    const lightRays = document.getElementById('cbm-light-rays');
+    if (bgWrapper) {
+        window.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 30;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            if (lightRays) {
+                lightRays.style.transform = `translateX(calc(-50% + ${x * 0.8}px)) translateY(${y * 0.5}px)`;
+            }
+        });
+    }
+
+    // 2. Efeito Sonoro de Cordão Retrátil (Web Audio API)
+    function playTacticalPullSound() {
+        try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            const ctx = new AudioCtx();
+            if (ctx.state === 'suspended') ctx.resume();
+
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(340, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.16);
+            gain.gain.setValueAtTime(0.09, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.18);
+        } catch (e) {}
+    }
+
+    // 3. Controle do Crachá (Lanyard Badge Screen)
+    const lanyardOverlay = document.getElementById('cbm-lanyard-overlay');
+    const lanyardStage = document.getElementById('lanyard-stage');
+    const btnShowCracha = document.getElementById('btn-show-cracha');
+    const btnLockScreen = document.getElementById('btn-lock-screen');
     const loginPassword = document.getElementById('login-password');
+
+    function dismissCracha() {
+        if (!lanyardOverlay || lanyardOverlay.classList.contains('is-hiding')) return;
+        playTacticalPullSound();
+        lanyardOverlay.classList.add('is-hiding');
+        setTimeout(() => {
+            if (loginPassword) loginPassword.focus();
+        }, 550);
+    }
+
+    function showCracha() {
+        if (!lanyardOverlay) return;
+        lanyardOverlay.classList.remove('is-hiding');
+    }
+
+    if (lanyardStage) {
+        let isDragging = false;
+        let startY = 0;
+        let currentY = 0;
+
+        lanyardStage.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startY = e.clientY;
+            lanyardStage.style.transition = 'none';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            currentY = e.clientY - startY;
+            if (currentY > 0) {
+                lanyardStage.style.transform = `translateY(${Math.min(currentY, 150)}px)`;
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            lanyardStage.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            if (currentY > 55) {
+                dismissCracha();
+            } else {
+                lanyardStage.style.transform = 'translateY(0)';
+            }
+            currentY = 0;
+        });
+
+        // Touch support para celular / mobile
+        lanyardStage.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startY = e.touches[0].clientY;
+            lanyardStage.style.transition = 'none';
+        }, { passive: true });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            currentY = e.touches[0].clientY - startY;
+            if (currentY > 0) {
+                lanyardStage.style.transform = `translateY(${Math.min(currentY, 150)}px)`;
+            }
+        }, { passive: true });
+
+        window.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            lanyardStage.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            if (currentY > 55) {
+                dismissCracha();
+            } else {
+                lanyardStage.style.transform = 'translateY(0)';
+            }
+            currentY = 0;
+        });
+
+        // Clique direto no crachá também abre
+        lanyardStage.addEventListener('click', () => {
+            dismissCracha();
+        });
+    }
+
+    if (btnShowCracha) {
+        btnShowCracha.addEventListener('click', showCracha);
+    }
+
+    if (btnLockScreen) {
+        btnLockScreen.addEventListener('click', () => {
+            sessionStorage.removeItem('cbm_system_unlocked');
+            sessionStorage.removeItem('cbm_system_time');
+            document.documentElement.classList.remove('cbm-unlocked');
+            showCracha();
+            resetLoginViews();
+        });
+    }
+
+    // 4. Relógio HUD Militar em Tempo Real
+    const loginTime = document.getElementById('login-time');
+    const loginDate = document.getElementById('login-date');
+    function updateHudClock() {
+        if (loginTime && loginDate) {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            loginTime.textContent = `${hours}:${minutes}:${seconds}`;
+
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            loginDate.textContent = now.toLocaleDateString('pt-BR', options);
+        }
+    }
+    setInterval(updateHudClock, 1000);
+    updateHudClock();
+
+    // 5. Fluxo de Autenticação Militar (CARGO SYSTEM)
+    const formView = document.getElementById('cbm-form-view');
+    const stepsView = document.getElementById('cbm-steps-view');
+    const successView = document.getElementById('cbm-success-view');
+    const deniedView = document.getElementById('cbm-denied-view');
     const loginSubmit = document.getElementById('login-submit');
     const loginError = document.getElementById('login-error');
+    const btnAuthRetry = document.getElementById('btn-auth-retry');
+    const militarNameSpan = document.getElementById('cbm-auth-militar-name');
 
-    if (loginScreen) {
-        // Relógio da tela de login
-        const loginTime = document.getElementById('login-time');
-        const loginDate = document.getElementById('login-date');
-        
-        function updateLoginClock() {
-            if (loginTime && loginDate) {
-                const now = new Date();
-                const hours = String(now.getHours()).padStart(2, '0');
-                const minutes = String(now.getMinutes()).padStart(2, '0');
-                const seconds = String(now.getSeconds()).padStart(2, '0');
-                loginTime.textContent = `${hours}:${minutes}:${seconds}`;
-                
-                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                loginDate.textContent = now.toLocaleDateString('pt-BR', options);
-            }
+    function resetLoginViews() {
+        if (formView) formView.style.display = 'flex';
+        if (stepsView) stepsView.style.display = 'none';
+        if (successView) successView.style.display = 'none';
+        if (deniedView) deniedView.style.display = 'none';
+        if (loginSubmit) loginSubmit.disabled = false;
+        if (loginError) loginError.style.display = 'none';
+        for (let s = 1; s <= 6; s++) {
+            setStepState(s, 'pending');
         }
-        setInterval(updateLoginClock, 1000);
-        updateLoginClock();
+    }
 
-        let inactivityTimer;
-        let absoluteTimer;
-        const INACTIVITY_LIMIT = 3 * 60 * 1000; // 3 min ausente
-        const ABSOLUTE_LIMIT = 6 * 60 * 1000; // 6 min mexendo
+    if (btnAuthRetry) {
+        btnAuthRetry.addEventListener('click', resetLoginViews);
+    }
 
-        const isLocalHost = (function() {
-            try {
-                const proto = window.location.protocol;
-                const host = window.location.hostname;
-                return proto === 'file:' || 
-                       host === 'localhost' || 
-                       host === '127.0.0.1' || 
-                       host === '' || 
-                       host.endsWith('.local') || 
-                       host.startsWith('192.168.') || 
-                       host.startsWith('10.');
-            } catch (e) {
-                return false;
+    function setStepState(stepNum, state, detailText) {
+        const item = document.getElementById(`step-${stepNum}`);
+        if (!item) return;
+        item.classList.remove('pending', 'loading', 'success', 'error', 'skipped');
+        item.classList.add(state);
+
+        if (detailText) {
+            const titleEl = item.querySelector('.cbm-step-title');
+            if (titleEl) titleEl.textContent = detailText;
+        }
+    }
+
+    async function handleLogin() {
+        const enteredId = String(loginPassword.value || '').trim();
+        const cleanId = enteredId.replace(/^[#\s]+/, '').trim();
+
+        if (!cleanId) {
+            if (loginError) {
+                loginError.textContent = "Por favor, digite seu ID militar.";
+                loginError.style.display = 'block';
             }
-        })();
+            if (loginPassword) loginPassword.focus();
+            return;
+        }
 
-        let isUnlocked = false;
+        if (loginError) loginError.style.display = 'none';
+        if (loginSubmit) loginSubmit.disabled = true;
 
-        function lockScreen(animate = true) {
-            if (isLocalHost) return;
-            isUnlocked = false;
-            sessionStorage.removeItem('cbm_auth_unlocked');
-            sessionStorage.removeItem('cbm_session_start');
-            sessionStorage.removeItem('cbm_last_activity');
-            document.documentElement.classList.remove('cbm-unlocked');
+        // Troca para visualização de etapas
+        if (formView) formView.style.display = 'none';
+        if (stepsView) stepsView.style.display = 'flex';
+        if (deniedView) deniedView.style.display = 'none';
+        if (successView) successView.style.display = 'none';
 
-            // Remove o cookie
-            document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        for (let s = 1; s <= 6; s++) {
+            setStepState(s, 'pending');
+        }
 
-            if (loginScreen) {
-                loginScreen.style.display = 'flex';
-                if (animate) {
-                    setTimeout(() => {
-                        loginScreen.style.opacity = '1';
-                        loginScreen.style.visibility = 'visible';
-                    }, 10);
-                } else {
-                    loginScreen.style.opacity = '1';
-                    loginScreen.style.visibility = 'visible';
+        // Coleta identificação e HWID da máquina
+        let deviceInfo = { hwid: 'default_hwid', deviceType: 'desktop' };
+        try {
+            if (typeof window.generateDeviceFingerprint === 'function') {
+                deviceInfo = await window.generateDeviceFingerprint();
+            }
+        } catch (e) {
+            console.warn('Erro ao gerar HWID:', e);
+        }
+
+        // Dispara requisição real para o backend com painel avisos (CARGO SYSTEM!)
+        const authPromise = fetch('/api/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id: cleanId,
+                hwid: deviceInfo.hwid,
+                deviceType: deviceInfo.deviceType,
+                panel: 'avisos' // Exige validação do CARGO SYSTEM
+            })
+        }).then(async res => {
+            const data = await res.json().catch(() => ({}));
+            return { ok: res.ok, status: res.status, data };
+        }).catch(err => {
+            console.error("Falha ao comunicar com o servidor de auth:", err);
+            return {
+                ok: false,
+                status: 503,
+                data: {
+                    sucesso: false,
+                    failedAtStep: 1,
+                    erro: 'Falha de comunicação segura com o servidor.'
                 }
+            };
+        });
+
+        // Execução sequencial visual com cadência tática (~800ms por etapa)
+        let authResult = null;
+        let hadFailure = false;
+
+        for (let stepIndex = 1; stepIndex <= 6; stepIndex++) {
+            setStepState(stepIndex, 'loading');
+            await new Promise(r => setTimeout(r, 780));
+
+            if (!authResult) {
+                authResult = await authPromise;
             }
-            document.body.classList.add('locked');
-            const digitalClock = document.getElementById('digital-clock');
-            if (digitalClock) digitalClock.style.display = 'none';
-            if (loginPassword) loginPassword.value = '';
-            if (loginError) loginError.style.display = 'none';
-            stopTimers();
-        }
 
-        function startTimers(customInactivityMs, customAbsoluteMs) {
-            stopTimers();
-            if (isLocalHost) return;
-            const inactMs = (typeof customInactivityMs === 'number') ? customInactivityMs : INACTIVITY_LIMIT;
-            const absMs = (typeof customAbsoluteMs === 'number') ? customAbsoluteMs : ABSOLUTE_LIMIT;
+            const data = authResult.data || {};
+            const failedAt = data.failedAtStep;
+            const stepFailed = (failedAt === stepIndex) || (!authResult.ok && !data.steps && stepIndex === 1);
 
-            inactivityTimer = setTimeout(() => lockScreen(true), inactMs);
-            absoluteTimer = setTimeout(() => lockScreen(true), absMs);
-        }
+            if (stepFailed) {
+                hadFailure = true;
+                const errorMsg = data.erro || 'Falha na validação desta etapa.';
+                setStepState(stepIndex, 'error', errorMsg);
 
-        function stopTimers() {
-            clearTimeout(inactivityTimer);
-            clearTimeout(absoluteTimer);
-        }
-
-        function resetInactivityTimer() {
-            if (isLocalHost) return;
-            if (isUnlocked) {
-                const now = Date.now();
-                const sessionStart = parseInt(sessionStorage.getItem('cbm_session_start') || '0', 10);
-                
-                // Se ultrapassou o limite absoluto de 6 minutos, bloqueia imediatamente
-                if (sessionStart > 0 && (now - sessionStart >= ABSOLUTE_LIMIT)) {
-                    lockScreen(true);
-                    return;
+                for (let rem = stepIndex + 1; rem <= 6; rem++) {
+                    setStepState(rem, 'skipped');
                 }
 
-                clearTimeout(inactivityTimer);
-                inactivityTimer = setTimeout(() => lockScreen(true), INACTIVITY_LIMIT);
-                sessionStorage.setItem('cbm_last_activity', now.toString());
-            }
-        }
+                await new Promise(r => setTimeout(r, 1400));
 
-        ['mousemove', 'mousedown', 'keypress', 'touchmove', 'scroll'].forEach(evt => 
-            document.addEventListener(evt, resetInactivityTimer)
-        );
+                if (stepsView) stepsView.style.display = 'none';
+                if (deniedView) deniedView.style.display = 'flex';
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const isLoginSuccess = urlParams.get('login') === 'success';
+                const deniedMsg = document.getElementById('cbm-denied-msg');
+                const deniedDetail = document.getElementById('cbm-denied-detail');
+                const actionBtn = document.getElementById('btn-auth-action');
+                const actionBtnText = document.getElementById('btn-auth-action-text');
 
-        if (isLoginSuccess) {
-            // Remove o parâmetro da URL sem recarregar a página
-            const newUrl = window.location.pathname;
-            window.history.replaceState({}, document.title, newUrl);
-            
-            // Marca a sessão como ativa
-            const now = Date.now();
-            sessionStorage.setItem('cbm_auth_unlocked', 'true');
-            sessionStorage.setItem('cbm_session_start', now.toString());
-            sessionStorage.setItem('cbm_last_activity', now.toString());
-        }
+                if (deniedMsg) {
+                    deniedMsg.textContent = data.erro || "Acesso restrito ao Painel de Avisos.";
+                }
 
-        // Validação da Sessão (F5 na mesma aba preserva sessionStorage; fechar aba apaga)
-        const isSessionStored = sessionStorage.getItem('cbm_auth_unlocked') === 'true';
-        const sessionStart = parseInt(sessionStorage.getItem('cbm_session_start') || '0', 10);
-        const lastActivity = parseInt(sessionStorage.getItem('cbm_last_activity') || '0', 10);
-        const now = Date.now();
+                if (deniedDetail) {
+                    deniedDetail.textContent = data.detail || "Verifique sua identificação militar ou solicite a atribuição do cargo SYSTEM ao Comando.";
+                }
 
-        const timeSinceStart = sessionStart > 0 ? (now - sessionStart) : Infinity;
-        const timeSinceActivity = lastActivity > 0 ? (now - lastActivity) : Infinity;
+                if (data.action && data.actionUrl && actionBtn) {
+                    actionBtn.href = data.actionUrl;
+                    if (data.actionUrl.startsWith('http')) {
+                        actionBtn.target = '_blank';
+                        actionBtn.rel = 'noopener noreferrer';
+                    } else {
+                        actionBtn.removeAttribute('target');
+                    }
+                    actionBtn.style.display = 'flex';
+                    if (actionBtnText) {
+                        actionBtnText.textContent = data.actionLabel || 'PROSSEGUIR';
+                    }
+                } else if (actionBtn) {
+                    actionBtn.style.display = 'none';
+                }
 
-        const isSessionValid = isSessionStored && 
-                               (timeSinceStart < ABSOLUTE_LIMIT) && 
-                               (timeSinceActivity < INACTIVITY_LIMIT);
-
-        if (isLocalHost) {
-            // Em ambiente local, desbloqueia imediatamente e sem senha
-            isUnlocked = true;
-            document.documentElement.classList.add('cbm-unlocked');
-            if (loginScreen) {
-                loginScreen.style.display = 'none';
-                loginScreen.style.opacity = '0';
-                loginScreen.style.visibility = 'hidden';
-            }
-            document.body.classList.remove('locked');
-            const digitalClock = document.getElementById('digital-clock');
-            if (digitalClock) digitalClock.style.display = 'block';
-        } else if (isSessionValid) {
-            // Inicia desbloqueado (mantido no F5 / Refresh)
-            isUnlocked = true;
-            document.documentElement.classList.add('cbm-unlocked');
-            if (loginScreen) {
-                loginScreen.style.display = 'none';
-                loginScreen.style.opacity = '0';
-                loginScreen.style.visibility = 'hidden';
-            }
-            document.body.classList.remove('locked');
-            const digitalClock = document.getElementById('digital-clock');
-            if (digitalClock) digitalClock.style.display = 'block';
-
-            // Retoma os temporizadores com o tempo restante
-            const remainingInactivity = Math.max(1000, INACTIVITY_LIMIT - timeSinceActivity);
-            const remainingAbsolute = Math.max(1000, ABSOLUTE_LIMIT - timeSinceStart);
-            startTimers(remainingInactivity, remainingAbsolute);
-        } else {
-            // Inicia bloqueado (nova aba ou tempo esgotado)
-            lockScreen(false);
-        }
-
-        function unlockApp() {
-            isUnlocked = true;
-            const now = Date.now();
-            sessionStorage.setItem('cbm_auth_unlocked', 'true');
-            sessionStorage.setItem('cbm_session_start', now.toString());
-            sessionStorage.setItem('cbm_last_activity', now.toString());
-            document.documentElement.classList.add('cbm-unlocked');
-
-            if (loginError) loginError.style.display = 'none';
-            if (loginScreen) {
-                loginScreen.style.opacity = '0';
-                setTimeout(() => {
-                    loginScreen.style.display = 'none';
-                    loginScreen.style.visibility = 'hidden';
-                    document.body.classList.remove('locked');
-                    const digitalClock = document.getElementById('digital-clock');
-                    if (digitalClock) digitalClock.style.display = 'block';
-                    if (!isLocalHost) startTimers();
-                    const btn = document.getElementById('login-submit');
-                    if (btn) btn.disabled = false;
-                }, 500);
+                break;
             } else {
-                document.body.classList.remove('locked');
+                let okDetail = null;
+                if (data.steps && data.steps[stepIndex - 1]?.detail) {
+                    okDetail = data.steps[stepIndex - 1].detail;
+                }
+                setStepState(stepIndex, 'success', okDetail);
+            }
+        }
+
+        // Se passou em todas as 6 etapas com sucesso:
+        if (!hadFailure && authResult && authResult.ok) {
+            await new Promise(r => setTimeout(r, 500));
+            if (stepsView) stepsView.style.display = 'none';
+            if (successView) successView.style.display = 'flex';
+
+            const userName = authResult.data?.userName || authResult.data?.displayName || 'Militar';
+            if (militarNameSpan) militarNameSpan.textContent = userName;
+
+            // Salva a sessão autenticada com cargo SYSTEM
+            sessionStorage.setItem('cbm_system_unlocked', 'true');
+            sessionStorage.setItem('cbm_system_time', Date.now().toString());
+
+            setTimeout(() => {
+                document.documentElement.classList.add('cbm-unlocked');
                 const digitalClock = document.getElementById('digital-clock');
                 if (digitalClock) digitalClock.style.display = 'block';
-                if (!isLocalHost) startTimers();
-                const btn = document.getElementById('login-submit');
-                if (btn) btn.disabled = false;
-            }
-        }
-
-        async function handleLogin() {
-            if (isLocalHost) {
-                unlockApp();
-                return;
-            }
-            const btn = document.getElementById('login-submit');
-            if (btn) btn.disabled = true;
-            try {
-                const response = await fetch('/api/auth', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password: loginPassword.value })
-                });
-
-                if (response.ok) {
-                    unlockApp();
-                } else {
-                    // Senha Incorreta
-                    loginError.textContent = "Senha incorreta. Tente novamente.";
-                    loginError.style.display = 'block';
-                    loginPassword.value = '';
-                    loginPassword.focus();
-                    if (btn) btn.disabled = false;
+                // Atualiza listas do painel administrativo
+                if (typeof window.carregarMilitaresAdmin === 'function') {
+                    window.carregarMilitaresAdmin();
                 }
-            } catch (error) {
-                console.error("Erro na autenticação:", error);
-                // Fallback de contingência local se a API não estiver respondendo
-                if (loginPassword.value.trim().toUpperCase() === 'HONRA') {
-                    unlockApp();
-                } else {
-                    loginError.textContent = "Erro ao conectar com o servidor.";
-                    loginError.style.display = 'block';
-                    if (btn) btn.disabled = false;
-                }
-            }
+            }, 1400);
         }
+    }
 
-        if (loginSubmit) loginSubmit.addEventListener('click', handleLogin);
-        if (loginPassword) loginPassword.addEventListener('keypress', (e) => {
+    if (loginSubmit) loginSubmit.addEventListener('click', handleLogin);
+    if (loginPassword) {
+        loginPassword.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                // Evita que o 'Enter' envie o form do painel acidentalmente
-                e.preventDefault(); 
+                e.preventDefault();
                 handleLogin();
             }
         });
+    }
+
+    // Tratar retornos automáticos via URL (?discord_auth=success&militar_id=35904)
+    const urlParams = new URLSearchParams(window.location.search);
+    const returnMilitarId = urlParams.get('militar_id');
+    const isDiscordSuccess = urlParams.get('discord_auth') === 'success';
+    if (isDiscordSuccess && returnMilitarId && loginPassword) {
+        dismissCracha();
+        loginPassword.value = returnMilitarId;
+        setTimeout(() => {
+            handleLogin();
+        }, 600);
     }
 });
 

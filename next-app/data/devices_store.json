@@ -1,4 +1,25 @@
 {
+  "1": {
+    "militarId": "1",
+    "createdAt": "2026-10-13T21:20:06.531Z",
+    "logs": [
+      {
+        "id": "log_1791926408115_zyp8",
+        "timestamp": "2026-10-13T21:20:08.115Z",
+        "type": "DISCORD_NOT_FOUND",
+        "title": "ID Militar Não Localizado no Discord",
+        "detail": "Tentativa de login: ID #1 não encontrado no apelido de nenhum membro do servidor CBM. Se já estiver no servidor, certifique-se de que seu apelido contenha \"#1\".",
+        "hwid": "pc_23c24f3589418f5137205e16",
+        "deviceType": "desktop",
+        "success": false
+      }
+    ],
+    "lastLogin": "2026-10-13T21:20:06.531Z",
+    "lastDesktopLogin": "2026-10-13T21:20:06.531Z",
+    "desktopHwid": "pc_23c24f3589418f5137205e16",
+    "desktopDeviceName": "Computador Desktop",
+    "updatedAt": "2026-10-13T21:20:06.531Z"
+  },
   "666": {
     "militarId": "666",
     "createdAt": "2026-10-13T20:50:31.626Z",
@@ -45,10 +66,68 @@
       }
     ]
   },
+  "24216": {
+    "militarId": "24216",
+    "createdAt": "2026-10-13T21:20:33.967Z",
+    "logs": [
+      {
+        "id": "log_1791926490514_vydi",
+        "timestamp": "2026-10-13T21:21:30.514Z",
+        "type": "LOGIN_SUCCESS",
+        "title": "Autenticação Militar Concluída com Sucesso",
+        "detail": "Militar Daniel Lancaster (#24216) autenticado com sucesso no Computador Desktop. Trava HWID validada.",
+        "hwid": "pc_23c24f3589418f5137205e16",
+        "deviceType": "desktop",
+        "success": true
+      },
+      {
+        "id": "log_1791926482947_6dff",
+        "timestamp": "2026-10-13T21:21:22.947Z",
+        "type": "DISCORD_LINKED",
+        "title": "Discord Autorizado e Vinculado",
+        "detail": "Conta Discord vinculada: @daniel_lancaster (447803458502787082). Setagem CBM confirmada.",
+        "hwid": "pc_23c24f3589418f5137205e16",
+        "deviceType": "desktop",
+        "success": true
+      },
+      {
+        "id": "log_1791926435755_jesn",
+        "timestamp": "2026-10-13T21:20:35.755Z",
+        "type": "BOT_PENDING",
+        "title": "Autorização do Bot Pendente (1º Acesso)",
+        "detail": "Militar #24216 (Daniel Lancaster) possui cargo de Bombeiro. Pendente autorizar o Bot CBM no Discord para vincular máquina.",
+        "hwid": "pc_23c24f3589418f5137205e16",
+        "deviceType": "desktop",
+        "success": false
+      }
+    ],
+    "lastLogin": "2026-10-13T21:21:29.704Z",
+    "lastDesktopLogin": "2026-10-13T21:21:27.572Z",
+    "desktopHwid": "pc_23c24f3589418f5137205e16",
+    "desktopDeviceName": "Computador Desktop",
+    "updatedAt": "2026-10-13T21:21:29.704Z",
+    "nick": "Daniel Lancaster",
+    "discordTag": "daniel_lancaster#0",
+    "discordId": "447803458502787082",
+    "globalName": "Daniel Lancaster",
+    "isBotAuthorized": true,
+    "lastAuthDate": "2026-10-13T21:21:21.548Z",
+    "sessionToken": "cbm_sec_1791926489704_j22tqaxk"
+  },
   "35904": {
     "militarId": "35904",
     "createdAt": "2026-10-13T20:19:18.124Z",
     "logs": [
+      {
+        "id": "log_1791927209385_c3tg",
+        "timestamp": "2026-10-13T21:33:29.385Z",
+        "type": "LOGIN_SUCCESS",
+        "title": "Autenticação Militar Concluída com Sucesso",
+        "detail": "Militar ErreJota (#35904) autenticado com sucesso no Computador Desktop. Trava HWID validada.",
+        "hwid": "hwid_desktop_35904_valido",
+        "deviceType": "desktop",
+        "success": true
+      },
       {
         "id": "log_1791925347453_jk6o",
         "type": "HWID_RESET",
@@ -118,13 +197,13 @@
     "discordTag": "errejota.fps#0",
     "discordId": "1207045485907546192",
     "isBotAuthorized": true,
-    "desktopHwid": null,
-    "desktopDeviceName": null,
+    "desktopHwid": "hwid_desktop_35904_valido",
+    "desktopDeviceName": "Computador Desktop",
     "mobileHwid": null,
-    "lastLogin": "2026-10-13T21:00:35.815Z",
-    "updatedAt": "2026-10-13T21:02:27.453Z",
-    "sessionToken": null,
-    "lastDesktopLogin": "2026-10-13T21:00:32.196Z",
+    "lastLogin": "2026-10-13T21:33:26.974Z",
+    "updatedAt": "2026-10-13T21:33:26.974Z",
+    "sessionToken": "cbm_sec_1791927206974_cjjf6sy6",
+    "lastDesktopLogin": "2026-10-13T21:33:22.703Z",
     "globalName": "ErreJota",
     "mobileDeviceName": null
   }

@@ -7,6 +7,7 @@ export async function GET(request) {
   const militarId = searchParams.get('id') || '';
   const hwid = searchParams.get('hwid') || '';
   const deviceType = searchParams.get('type') || 'desktop';
+  const panel = searchParams.get('panel') || '';
 
   // Obter o host atual dinamicamente
   const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || 'localhost:3000';
@@ -19,6 +20,7 @@ export async function GET(request) {
       id: militarId,
       hwid,
       deviceType,
+      panel,
       ts: Date.now()
     })
   ).toString('base64');

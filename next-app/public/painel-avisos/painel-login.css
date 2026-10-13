@@ -1,0 +1,881 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700;800&display=swap');
+
+/* ==========================================================================
+   FUNDO PARALLAX E NÉVOA (FOG & LIGHT RAYS)
+   ========================================================================== */
+.cbm-parallax-bg-wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 35%, #181114 0%, #0c090b 60%, #050406 100%);
+}
+
+/* Camadas de névoa / smoke volumétrico */
+.cbm-fog-container {
+  position: absolute;
+  inset: -20%;
+  width: 140%;
+  height: 140%;
+  overflow: hidden;
+  opacity: 0.65;
+  filter: blur(28px);
+  pointer-events: none;
+}
+
+.cbm-fog-layer {
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+  background-size: 800px 800px;
+  will-change: transform;
+}
+
+.cbm-fog-1 {
+  background-image: radial-gradient(circle at 30% 40%, rgba(220, 38, 38, 0.22) 0%, rgba(185, 28, 28, 0.08) 45%, transparent 70%),
+                    radial-gradient(circle at 75% 65%, rgba(239, 68, 68, 0.18) 0%, transparent 60%);
+  animation: fogFloat1 32s ease-in-out infinite alternate;
+}
+
+.cbm-fog-2 {
+  background-image: radial-gradient(circle at 70% 30%, rgba(153, 27, 27, 0.25) 0%, rgba(127, 29, 29, 0.08) 50%, transparent 75%),
+                    radial-gradient(circle at 25% 75%, rgba(220, 38, 38, 0.16) 0%, transparent 65%);
+  animation: fogFloat2 40s ease-in-out infinite alternate;
+  opacity: 0.85;
+}
+
+.cbm-fog-3 {
+  background-image: radial-gradient(circle at 50% 50%, rgba(254, 202, 202, 0.04) 0%, transparent 65%);
+  animation: fogFloat3 48s linear infinite;
+  opacity: 0.5;
+}
+
+@keyframes fogFloat1 {
+  0% { transform: translate(-4%, -3%) scale(1); }
+  50% { transform: translate(3%, 4%) scale(1.08); }
+  100% { transform: translate(-2%, 5%) scale(1.02); }
+}
+
+@keyframes fogFloat2 {
+  0% { transform: translate(4%, 3%) scale(1.04); }
+  50% { transform: translate(-3%, -4%) scale(0.96); }
+  100% { transform: translate(2%, -3%) scale(1.06); }
+}
+
+@keyframes fogFloat3 {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* Feixes de luz sutis (Light Rays) */
+.cbm-light-rays {
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120vw;
+  height: 100vh;
+  background: conic-gradient(
+    from 180deg at 50% 0%,
+    transparent 0deg,
+    rgba(239, 68, 68, 0.08) 15deg,
+    transparent 35deg,
+    rgba(220, 38, 38, 0.06) 55deg,
+    transparent 75deg,
+    rgba(255, 100, 100, 0.09) 95deg,
+    transparent 120deg
+  );
+  filter: blur(35px);
+  pointer-events: none;
+  animation: lightRaysSway 18s ease-in-out infinite alternate;
+}
+
+@keyframes lightRaysSway {
+  0% { transform: translateX(-50%) rotate(-4deg); opacity: 0.7; }
+  100% { transform: translateX(-50%) rotate(4deg); opacity: 1; }
+}
+
+/* Partículas no ar */
+.cbm-ambient-sparks {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(rgba(255, 120, 120, 0.35) 1px, transparent 1px),
+    radial-gradient(rgba(255, 60, 60, 0.25) 1.5px, transparent 1.5px);
+  background-size: 55px 55px, 110px 110px;
+  background-position: 0 0, 30px 45px;
+  opacity: 0.45;
+  animation: ambientFloat 25s linear infinite;
+}
+
+@keyframes ambientFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-110px); }
+}
+
+/* ==========================================================================
+   CRACHÁ DE ACESSO COM CORDÃO RETRÁTIL (LANYARD BADGE SCREEN)
+   ========================================================================== */
+#cbm-lanyard-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100000;
+  background: radial-gradient(circle at 50% 38%, #141013 0%, #0b090b 55%, #050405 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.65s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#cbm-lanyard-overlay.is-hiding {
+  opacity: 0;
+  transform: translateY(-50px) scale(0.97);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+html.cbm-unlocked #cbm-lanyard-overlay {
+  display: none !important;
+}
+
+/* Halo neon do crachá */
+.lanyard-halo {
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.2) 0%, rgba(185, 28, 28, 0.05) 50%, transparent 70%);
+  filter: blur(65px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Palco central do Crachá */
+.lanyard-stage {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 440px;
+  margin-top: 0;
+  cursor: grab;
+  touch-action: none;
+  transition: transform 0.1s ease-out;
+}
+
+.lanyard-stage:active {
+  cursor: grabbing;
+}
+
+/* O Cordão Superior (Strap) */
+.lanyard-strap {
+  width: 28px;
+  height: 90px;
+  background: linear-gradient(180deg, #b91c1c 0%, #dc2626 50%, #991b1b 100%);
+  position: relative;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  border-left: 2px solid rgba(255, 255, 255, 0.2);
+  border-right: 2px solid rgba(0, 0, 0, 0.4);
+  background-size: 100% 12px;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 3px,
+    transparent 3px,
+    transparent 6px
+  );
+}
+
+/* Presilha / Clamp de Metal Cromado */
+.lanyard-clamp {
+  width: 42px;
+  height: 28px;
+  background: linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 35%, #64748b 70%, #94a3b8 100%);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  position: relative;
+  margin-top: -2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 6;
+}
+
+.lanyard-clamp-rivet {
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, #475569 0%, #1e293b 100%);
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* Anel de conexão */
+.lanyard-ring {
+  width: 22px;
+  height: 22px;
+  border: 3.5px solid #cbd5e1;
+  border-radius: 50%;
+  margin-top: -6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Cartão do Crachá (Frente Oficial com a Foto) */
+.lanyard-card-wrap {
+  position: relative;
+  width: 290px;
+  height: 480px;
+  margin-top: -6px;
+  border-radius: 20px;
+  padding: 8px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.04) 50%, rgba(239, 68, 68, 0.15) 100%);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85),
+              0 0 30px rgba(220, 38, 38, 0.25),
+              inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transform-origin: top center;
+  animation: crachaBalanço 6s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes crachaBalanço {
+  0% { transform: rotate(-1.5deg) translateY(0); }
+  50% { transform: rotate(1.2deg) translateY(3px); }
+  100% { transform: rotate(-0.8deg) translateY(0); }
+}
+
+.lanyard-card-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  background: #0b090b;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.lanyard-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Brilho reflexivo holográfico animado */
+.lanyard-card-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.0) 38%,
+    rgba(255, 255, 255, 0.25) 45%,
+    rgba(255, 255, 255, 0.0) 52%,
+    transparent 100%
+  );
+  transform: translateX(-120%);
+  animation: crachaShine 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes crachaShine {
+  0%, 60% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+/* Indicador de puxar no rodapé */
+.lanyard-pull-hint {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  z-index: 10;
+  text-align: center;
+}
+
+.lanyard-pull-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #ff6b78;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.lanyard-pull-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lanyard-pull-arrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff5565;
+  animation: pullBounce 1.8s ease-in-out infinite;
+}
+
+@keyframes pullBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* ==========================================================================
+   TELA DE LOGIN MILITAR FUTURISTA (HUD)
+   ========================================================================== */
+#login-screen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99990;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s ease;
+  overflow-y: auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+html.cbm-unlocked #login-screen {
+  display: none !important;
+}
+
+/* Moldura HUD futurista */
+.cbm-login-screen-frame {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 440px;
+  background: rgba(15, 12, 14, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 60, 60, 0.22);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85),
+              0 0 45px rgba(220, 38, 38, 0.18),
+              inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  padding: 36px 32px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Cantoneiras HUD vermelhas neon */
+.cbm-corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-color: #ff3344;
+  border-style: solid;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px #ff2233);
+}
+
+.cbm-tl { top: 12px; left: 12px; border-width: 2.5px 0 0 2.5px; }
+.cbm-tr { top: 12px; right: 12px; border-width: 2.5px 2.5px 0 0; }
+.cbm-bl { bottom: 12px; left: 12px; border-width: 0 0 2.5px 2.5px; }
+.cbm-br { bottom: 12px; right: 12px; border-width: 0 2.5px 2.5px 0; }
+
+/* Relógio HUD Militar */
+#login-clock {
+  text-align: center;
+  color: white;
+  margin-bottom: 14px;
+}
+
+#login-time {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  line-height: 1;
+  color: #ffffff;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+#login-date {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ff5565;
+  margin-top: 4px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Brasão Oficial dos Bombeiros com Halo Neon */
+.cbm-badge-wrap {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cbm-badge-halo {
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.35) 0%, transparent 70%);
+  filter: blur(10px);
+  animation: haloPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes haloPulse {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+.cbm-badge-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 16px rgba(220, 38, 38, 0.5));
+  position: relative;
+  z-index: 2;
+}
+
+/* Título Institucional e Badge de Segurança */
+.cbm-title-group {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.cbm-title-group h2 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #ffffff;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.cbm-title-group p {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  color: #ff4d5a;
+  margin: 2px 0 8px 0;
+}
+
+.cbm-system-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(220, 38, 38, 0.18);
+  border: 1px solid rgba(255, 60, 60, 0.4);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: #ff99a2;
+  text-transform: uppercase;
+}
+
+/* Formulário de ID Militar */
+.cbm-form-box {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cbm-input-container {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1.5px solid rgba(255, 60, 60, 0.28);
+  border-radius: 12px;
+  padding: 4px 14px;
+  transition: all 0.25s ease;
+}
+
+.cbm-input-container:focus-within {
+  border-color: #ff3b4b;
+  box-shadow: 0 0 18px rgba(255, 40, 55, 0.35);
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.cbm-lock-ico {
+  color: #ff5565;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.cbm-input-text {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 10px 0;
+  outline: none;
+}
+
+.cbm-input-text::placeholder {
+  color: #64748b;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.cbm-btn-entrar {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  border: 1px solid rgba(255, 120, 120, 0.35);
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  padding: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.cbm-btn-entrar:hover {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.6);
+  transform: translateY(-1px);
+}
+
+.cbm-btn-entrar:active {
+  transform: translateY(1px);
+}
+
+.cbm-btn-entrar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-voltar-cracha {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: #94a3b8;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-voltar-cracha:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ==========================================================================
+   FASE 2: ETAPAS DE AUTENTICAÇÃO MILITAR
+   ========================================================================== */
+.cbm-auth-steps-box {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cbm-steps-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cbm-steps-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff3344;
+  box-shadow: 0 0 10px #ff3344;
+  animation: dotPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes dotPulse {
+  0% { transform: scale(0.8); opacity: 0.6; }
+  100% { transform: scale(1.3); opacity: 1; }
+}
+
+.cbm-steps-header span {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #cbd5e1;
+  text-transform: uppercase;
+}
+
+.cbm-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cbm-step-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.25s ease;
+}
+
+.cbm-step-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cbm-step-item.pending .cbm-step-icon {
+  border: 2px solid #475569;
+}
+
+.cbm-step-item.loading {
+  background: rgba(220, 38, 38, 0.12);
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.cbm-step-item.loading .cbm-step-icon {
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  border-top-color: #ff3344;
+  animation: stepSpin 0.7s linear infinite;
+}
+
+@keyframes stepSpin {
+  100% { transform: rotate(360deg); }
+}
+
+.cbm-step-item.success {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.cbm-step-item.success .cbm-step-icon {
+  background: #10b981;
+  color: white;
+}
+.cbm-step-item.success .cbm-step-icon::after {
+  content: "✓";
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.cbm-step-item.error {
+  background: rgba(239, 68, 68, 0.16);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.cbm-step-item.error .cbm-step-icon {
+  background: #ef4444;
+  color: white;
+}
+.cbm-step-item.error .cbm-step-icon::after {
+  content: "✕";
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.cbm-step-item.skipped {
+  opacity: 0.35;
+}
+
+.cbm-step-content {
+  flex: 1;
+}
+
+.cbm-step-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #cbd5e1;
+  line-height: 1.35;
+}
+
+.cbm-step-item.success .cbm-step-title {
+  color: #a7f3d0;
+  font-weight: 600;
+}
+
+.cbm-step-item.error .cbm-step-title {
+  color: #fca5a5;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   FASE 3 & 4: RESULTADO FINAL (ACESSO LIBERADO / NEGADO)
+   ========================================================================== */
+.cbm-result-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.cbm-result-icon-wrap {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.cbm-icon-granted {
+  background: rgba(16, 185, 129, 0.18);
+  border: 2px solid #10b981;
+  color: #10b981;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+}
+
+.cbm-icon-denied {
+  background: rgba(239, 68, 68, 0.18);
+  border: 2px solid #ef4444;
+  color: #ef4444;
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+}
+
+.cbm-result-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin: 0 0 6px 0;
+}
+
+.cbm-result-granted .cbm-result-title { color: #10b981; }
+.cbm-result-denied .cbm-result-title { color: #ef4444; }
+
+.cbm-result-status {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 0 0 8px 0;
+}
+
+.cbm-result-welcome {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.cbm-result-detail {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin: 0 0 16px 0;
+  line-height: 1.45;
+}
+
+.cbm-btn-retry {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: #ffffff;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 10px 20px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.cbm-btn-retry:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Botão de trancar no cabeçalho do painel */
+.btn-lock-panel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 8px;
+  color: #ef4444;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-lock-panel:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.45);
+  color: #ff6b78;
+}

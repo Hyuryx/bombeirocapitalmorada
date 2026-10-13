@@ -4,7 +4,8 @@ import { getMilitarRecord, saveMilitarRecord, addMilitarLog } from '@/lib/device
 import { 
   DISCORD_BOT_TOKEN, 
   DISCORD_GUILD_ID, 
-  DISCORD_ROLE_BOMBEIRO, 
+  DISCORD_ROLE_BOMBEIRO,
+  DISCORD_ROLE_SYSTEM,
   DISCORD_CLIENT_ID, 
   DISCORD_INVITE_URL 
 } from '@/lib/discordConfig';
@@ -51,6 +52,12 @@ export async function POST(request) {
     const rawDeviceType = String(body.deviceType || 'desktop').toLowerCase();
     const isMobile = rawDeviceType === 'mobile';
     const deviceType = isMobile ? 'mobile' : 'desktop';
+
+    // Diferenciação de painel: para o Painel de Avisos/Admin exige CARGO SYSTEM (1531036518876184637)
+    const rawPanel = String(body.panel || body.requiredRole || '').toLowerCase();
+    const isSystemPanel = rawPanel === 'avisos' || rawPanel === 'system' || rawPanel === 'admin';
+    const requiredRoleId = isSystemPanel ? DISCORD_ROLE_SYSTEM : DISCORD_ROLE_BOMBEIRO;
+    const requiredRoleName = isSystemPanel ? 'SYSTEM (Administrador)' : 'Bombeiro';
 
     // Obter URL base da requisição para redirecionamentos
     const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || 'localhost:3000';
@@ -219,12 +226,12 @@ export async function POST(request) {
     });
 
     // ETAPA 3: Validar cargo militar e autorização do Bot CBM
-    const hasRole = Array.isArray(targetMember.roles) && targetMember.roles.includes(DISCORD_ROLE_BOMBEIRO);
+    const hasRole = Array.isArray(targetMember.roles) && targetMember.roles.includes(requiredRoleId);
     if (!hasRole) {
       await addMilitarLog(cleanId, {
         type: 'ROLE_MISSING',
-        title: 'Setagem Oficial de Bombeiro Não Confirmada',
-        detail: `Tentativa de login: Usuário "${extractedName}" (${targetMember.user?.id}) está no Discord CBM, mas não possui a setagem oficial de Bombeiro.`,
+        title: `Setagem Oficial de ${requiredRoleName} Não Confirmada`,
+        detail: `Tentativa de login: Usuário "${extractedName}" (${targetMember.user?.id}) está no Discord CBM, mas não possui a setagem oficial de ${requiredRoleName}.`,
         hwid: clientHwid || null,
         deviceType: deviceType,
         success: false
@@ -233,15 +240,17 @@ export async function POST(request) {
         {
           sucesso: false,
           failedAtStep: 3,
-          erro: `Setagem oficial de Bombeiro não confirmada para o militar #${cleanId}.`,
-          detail: `Seu usuário "${extractedName}" foi localizado no Discord dos Bombeiros, porém ainda não possui o cargo militar de Bombeiro. Solicite a sua setagem com um Oficial no Discord.`,
+          erro: `Setagem oficial de ${requiredRoleName} não confirmada para o militar #${cleanId}.`,
+          detail: isSystemPanel
+            ? `Seu usuário "${extractedName}" foi localizado no Discord dos Bombeiros, porém não possui o cargo SYSTEM necessário para gerenciar o Painel de Avisos. Solicite a sua setagem de Administrador com um Oficial no Discord.`
+            : `Seu usuário "${extractedName}" foi localizado no Discord dos Bombeiros, porém ainda não possui o cargo militar de Bombeiro. Solicite a sua setagem com um Oficial no Discord.`,
           action: 'JOIN_DISCORD',
           actionUrl: DISCORD_INVITE_URL,
           actionLabel: 'Abrir Discord dos Bombeiros',
           steps: [
             { id: 1, title: 'Estabelecendo conexão segura com o sistema de autenticação...', ok: true },
             { id: 2, title: 'Consultando registro militar no Discord do CBM...', ok: true, detail: `Militar localizado: ${extractedName} (#${cleanId})` },
-            { id: 3, title: 'Validando autorização do Bot e cargo militar...', ok: false, detail: 'Setagem oficial de Bombeiro não encontrada' },
+            { id: 3, title: `Validando autorização do Bot e cargo militar (${requiredRoleName})...`, ok: false, detail: `Setagem oficial de ${requiredRoleName} não encontrada` },
             { id: 4, title: 'Identificando dispositivo e plataforma de acesso...', ok: null },
             { id: 5, title: 'Validando trava de máquina autorizada (HWID Lock)...', ok: null },
             { id: 6, title: 'Finalizando processo de autenticação militar...', ok: null }
@@ -259,25 +268,25 @@ export async function POST(request) {
       await addMilitarLog(cleanId, {
         type: 'BOT_PENDING',
         title: 'Autorização do Bot Pendente (1º Acesso)',
-        detail: `Militar #${cleanId} (${extractedName}) possui cargo de Bombeiro. Pendente autorizar o Bot CBM no Discord para vincular máquina.`,
+        detail: `Militar #${cleanId} (${extractedName}) possui cargo de ${requiredRoleName}. Pendente autorizar o Bot CBM no Discord para vincular máquina.`,
         hwid: clientHwid || null,
         deviceType: deviceType,
         success: false
       });
-      const authUrl = `${baseUrl}/api/auth/discord/login?id=${encodeURIComponent(cleanId)}&hwid=${encodeURIComponent(clientHwid)}&type=${encodeURIComponent(deviceType)}`;
+      const authUrl = `${baseUrl}/api/auth/discord/login?id=${encodeURIComponent(cleanId)}&hwid=${encodeURIComponent(clientHwid)}&type=${encodeURIComponent(deviceType)}&panel=${encodeURIComponent(isSystemPanel ? 'avisos' : '')}`;
       return NextResponse.json(
         {
           sucesso: false,
           failedAtStep: 3,
           erro: `Primeiro acesso do militar #${cleanId}: autorização do Bot CBM necessária.`,
-          detail: `Militar ${extractedName} (#${cleanId}) confirmado com cargo de Bombeiro! Clique no botão abaixo para autorizar o Bot do CBM no seu Discord e vincular seu dispositivo.`,
+          detail: `Militar ${extractedName} (#${cleanId}) confirmado com cargo de ${requiredRoleName}! Clique no botão abaixo para autorizar o Bot do CBM no seu Discord e vincular seu dispositivo.`,
           action: 'AUTHORIZE_BOT',
           actionUrl: authUrl,
           actionLabel: 'Autorizar Bot no Discord',
           steps: [
             { id: 1, title: 'Estabelecendo conexão segura com o sistema de autenticação...', ok: true },
             { id: 2, title: 'Consultando registro militar no Discord do CBM...', ok: true, detail: `Militar localizado: ${extractedName} (#${cleanId})` },
-            { id: 3, title: 'Validando autorização do Bot e cargo militar...', ok: false, detail: 'Autorização do Bot CBM pendente (1º Acesso)' },
+            { id: 3, title: `Validando autorização do Bot e cargo militar (${requiredRoleName})...`, ok: false, detail: 'Autorização do Bot CBM pendente (1º Acesso)' },
             { id: 4, title: 'Identificando dispositivo e plataforma de acesso...', ok: null },
             { id: 5, title: 'Validando trava de máquina autorizada (HWID Lock)...', ok: null },
             { id: 6, title: 'Finalizando processo de autenticação militar...', ok: null }

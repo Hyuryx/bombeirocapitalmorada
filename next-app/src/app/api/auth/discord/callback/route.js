@@ -5,7 +5,8 @@ import {
   DISCORD_CLIENT_ID, 
   DISCORD_CLIENT_SECRET, 
   DISCORD_GUILD_ID, 
-  DISCORD_ROLE_BOMBEIRO, 
+  DISCORD_ROLE_BOMBEIRO,
+  DISCORD_ROLE_SYSTEM,
   DISCORD_BOT_TOKEN 
 } from '@/lib/discordConfig';
 
@@ -40,6 +41,11 @@ export async function GET(request) {
   const militarId = String(rawMilitarId).replace(/^[#\s]+/, '').trim();
   const hwid = stateData.hwid || '';
   const deviceType = stateData.deviceType || 'desktop';
+  const panel = stateData.panel || '';
+  const isSystemPanel = panel === 'avisos' || panel === 'system' || panel === 'admin';
+  const requiredRoleId = isSystemPanel ? DISCORD_ROLE_SYSTEM : DISCORD_ROLE_BOMBEIRO;
+  const roleName = isSystemPanel ? 'SYSTEM (Administrador)' : 'Bombeiro';
+  const targetUrl = isSystemPanel ? `${baseUrl}/painel-avisos` : baseUrl;
 
   try {
     // 1. Trocar o código de autorização pelo Access Token
@@ -60,7 +66,7 @@ export async function GET(request) {
     if (!tokenRes.ok) {
       const errBody = await tokenRes.text();
       console.error('Falha ao trocar token no Discord:', tokenRes.status, errBody);
-      return NextResponse.redirect(`${baseUrl}/?auth_error=${encodeURIComponent('Falha ao validar autorização com o Discord.')}`);
+      return NextResponse.redirect(`${targetUrl}?auth_error=${encodeURIComponent('Falha ao validar autorização com o Discord.')}`);
     }
 
     const tokenData = await tokenRes.json();
@@ -72,7 +78,7 @@ export async function GET(request) {
     });
 
     if (!userRes.ok) {
-      return NextResponse.redirect(`${baseUrl}/?auth_error=${encodeURIComponent('Não foi possível obter dados do seu Discord.')}`);
+      return NextResponse.redirect(`${targetUrl}?auth_error=${encodeURIComponent('Não foi possível obter dados do seu Discord.')}`);
     }
 
     const discordUser = await userRes.json();
@@ -90,13 +96,13 @@ export async function GET(request) {
 
     // Se o militar não estiver no servidor
     if (!memberData) {
-      return NextResponse.redirect(`${baseUrl}/?auth_error=${encodeURIComponent('Você precisa estar no servidor do Discord oficial dos Bombeiros.')}&action=join_discord`);
+      return NextResponse.redirect(`${targetUrl}?auth_error=${encodeURIComponent('Você precisa estar no servidor do Discord oficial dos Bombeiros.')}&action=join_discord`);
     }
 
-    // Conferir se possui a setagem do CBM
-    const hasRole = Array.isArray(memberData.roles) && memberData.roles.includes(DISCORD_ROLE_BOMBEIRO);
+    // Conferir se possui a setagem requerida (SYSTEM para o painel ou Bombeiro para o site)
+    const hasRole = Array.isArray(memberData.roles) && memberData.roles.includes(requiredRoleId);
     if (!hasRole) {
-      return NextResponse.redirect(`${baseUrl}/?auth_error=${encodeURIComponent('Você não possui a setagem de Bombeiro no Discord.')}`);
+      return NextResponse.redirect(`${targetUrl}?auth_error=${encodeURIComponent(`Você não possui a setagem oficial de ${roleName} no Discord.`)}`);
     }
 
     // 4. Salvar vínculo e HWID da máquina
@@ -130,14 +136,14 @@ export async function GET(request) {
     await addMilitarLog(militarId, {
       type: 'DISCORD_LINKED',
       title: 'Discord Autorizado e Vinculado',
-      detail: `Conta Discord vinculada: @${discordUser.username} (${discordUser.id}). Setagem CBM confirmada.`,
+      detail: `Conta Discord vinculada: @${discordUser.username} (${discordUser.id}). Setagem ${roleName} confirmada.`,
       hwid: hwid || null,
       deviceType: deviceType,
       success: true
     });
 
     // 5. Autenticar e redirecionar para a tela inicial
-    const response = NextResponse.redirect(`${baseUrl}/?discord_auth=success&militar_id=${encodeURIComponent(militarId)}`);
+    const response = NextResponse.redirect(`${targetUrl}?discord_auth=success&militar_id=${encodeURIComponent(militarId)}`);
     response.cookies.set('cbm_discord_auth', 'authorized', {
       path: '/',
       maxAge: 60 * 60 * 24 * 30, // 30 dias

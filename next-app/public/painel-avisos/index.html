@@ -12,38 +12,16 @@
 
   <link rel="icon" type="image/png" href="/assets/iconesite/icone.png?v=2">
   <link rel="stylesheet" href="/painel-avisos/painel.css">
+  <link rel="stylesheet" href="/painel-avisos/painel-login.css">
+  <script src="/js/deviceFingerprint.js"></script>
   <script>
       (function() {
           try {
-              var proto = window.location.protocol;
-              var host = window.location.hostname;
-              var isLocal = proto === 'file:' || host === 'localhost' || host === '127.0.0.1' || host === '' || host.endsWith('.local') || host.startsWith('192.168.') || host.startsWith('10.');
-
-              if (isLocal) {
-                  sessionStorage.setItem('cbm_auth_unlocked', 'true');
-                  document.documentElement.classList.add('cbm-unlocked');
-                  return;
-              }
-
-              var isUnlocked = sessionStorage.getItem('cbm_auth_unlocked') === 'true';
-              var sessionStart = parseInt(sessionStorage.getItem('cbm_session_start') || '0', 10);
-              var lastActivity = parseInt(sessionStorage.getItem('cbm_last_activity') || '0', 10);
+              var isUnlocked = sessionStorage.getItem('cbm_system_unlocked') === 'true';
+              var sessionTime = parseInt(sessionStorage.getItem('cbm_system_time') || '0', 10);
               var now = Date.now();
-              var INACTIVITY_LIMIT = 3 * 60 * 1000;
-              var ABSOLUTE_LIMIT = 6 * 60 * 1000;
-              var urlParams = new URLSearchParams(window.location.search);
-              var isSuccessParam = urlParams.get('login') === 'success';
-
-              if (isSuccessParam) {
-                  sessionStorage.setItem('cbm_auth_unlocked', 'true');
-                  sessionStorage.setItem('cbm_session_start', now.toString());
-                  sessionStorage.setItem('cbm_last_activity', now.toString());
-                  isUnlocked = true;
-                  sessionStart = now;
-                  lastActivity = now;
-              }
-
-              if (isUnlocked && (now - sessionStart < ABSOLUTE_LIMIT) && (now - lastActivity < INACTIVITY_LIMIT)) {
+              var TWO_HOURS = 2 * 60 * 60 * 1000;
+              if (isUnlocked && (now - sessionTime < TWO_HOURS)) {
                   document.documentElement.classList.add('cbm-unlocked');
               }
           } catch (e) {}
@@ -52,26 +30,183 @@
 </head>
 
 <body>
-  <!-- Tela de Login / Bloqueio -->
-  <div id="login-screen">
-      <div class="login-background"></div>
-      <div class="login-container">
-          <img src="/assets/fotos/logo-capital.png" alt="Logo Capital" class="login-logo">
-          <div id="login-clock" style="text-align: center; color: white; margin-bottom: 20px;">
-              <div id="login-time" style="font-size: 3rem; font-weight: 800; letter-spacing: 2px; line-height: 1;">00:00:00</div>
-              <div id="login-date" style="font-size: 1rem; color: #ccc; margin-top: 5px;">Data</div>
+  <!-- Fundo Parallax e Névoa (Fog & Light Rays) -->
+  <div class="cbm-parallax-bg-wrapper" id="cbm-parallax-bg">
+      <div class="cbm-light-rays" id="cbm-light-rays"></div>
+      <div class="cbm-fog-container">
+          <div class="cbm-fog-layer cbm-fog-1"></div>
+          <div class="cbm-fog-layer cbm-fog-2"></div>
+          <div class="cbm-fog-layer cbm-fog-3"></div>
+      </div>
+      <div class="cbm-ambient-sparks"></div>
+  </div>
+
+  <!-- Crachá com Cordão Retrátil (Lanyard Badge Screen) -->
+  <div id="cbm-lanyard-overlay" aria-label="Crachá de Acesso Militar">
+      <div class="lanyard-halo"></div>
+      <div class="lanyard-stage" id="lanyard-stage">
+          <div class="lanyard-strap"></div>
+          <div class="lanyard-clamp">
+              <div class="lanyard-clamp-rivet"></div>
           </div>
-          <h2>PAINEL DE AVISOS</h2>
-          <div class="login-input-group">
-              <input type="password" id="login-password" placeholder="Digite a senha de acesso..." autocomplete="off">
-              <button id="login-submit">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
+          <div class="lanyard-ring"></div>
+          <div class="lanyard-card-wrap">
+              <div class="lanyard-card-inner">
+                  <img src="/assets/telalogin/celular.png" alt="Crachá Oficial CBM" class="lanyard-card-img">
+                  <div class="lanyard-card-shine"></div>
+              </div>
+          </div>
+      </div>
+      <div class="lanyard-pull-hint">
+          <span class="lanyard-pull-tag">Acesso Restrito • Cargo SYSTEM</span>
+          <div class="lanyard-pull-text">
+              <span>PUXE O CRACHÁ PARA BAIXO</span>
+          </div>
+          <div class="lanyard-pull-arrow">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <polyline points="19 12 12 19 5 12"></polyline>
+              </svg>
+          </div>
+      </div>
+  </div>
+
+  <!-- Tela de Login Militar Futurista (HUD) -->
+  <div id="login-screen">
+      <div class="cbm-login-screen-frame" id="cbm-login-frame">
+          <!-- Cantoneiras Futuristas Vermelhas (HUD) -->
+          <span class="cbm-corner cbm-tl"></span>
+          <span class="cbm-corner cbm-tr"></span>
+          <span class="cbm-corner cbm-bl"></span>
+          <span class="cbm-corner cbm-br"></span>
+
+          <!-- Relógio HUD no Topo -->
+          <div id="login-clock">
+              <div id="login-time">00:00:00</div>
+              <div id="login-date">Data</div>
+          </div>
+
+          <!-- Brasão Oficial dos Bombeiros com Halo Neon -->
+          <div class="cbm-badge-wrap">
+              <div class="cbm-badge-halo"></div>
+              <img src="/assets/fotos/logo-capital.png" alt="Brasão Oficial Capital" class="cbm-badge-img">
+          </div>
+
+          <!-- Identificação Institucional -->
+          <div class="cbm-title-group">
+              <h2>CORPO DE BOMBEIROS</h2>
+              <p>CAPITAL MORADA</p>
+              <span class="cbm-system-badge">PAINEL ADMINISTRATIVO • CARGO SYSTEM</span>
+          </div>
+
+          <!-- FASE 1: FORMULÁRIO DE ENTRADA (ID MILITAR) -->
+          <div class="cbm-form-box" id="cbm-form-view">
+              <div class="cbm-input-container" id="cbm-input-wrap">
+                  <span class="cbm-lock-ico">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                      </svg>
+                  </span>
+                  <input type="text" id="login-password" class="cbm-input-text" placeholder="Digite seu ID Militar" autocomplete="off" inputmode="numeric">
+              </div>
+
+              <p id="login-error" class="cbm-error-alert" style="display: none; color: #ff5565; font-size: 13px; font-weight: 600; margin: 0; text-align: center;"></p>
+
+              <button id="login-submit" class="cbm-btn-entrar" type="button">
+                  <span>ENTRAR</span>
+              </button>
+
+              <button id="btn-show-cracha" class="btn-voltar-cracha" type="button">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M15 18l-6-6 6-6"/>
                   </svg>
+                  <span>Voltar ao Crachá</span>
               </button>
           </div>
-          <p id="login-error" style="display: none;">Senha incorreta. Tente novamente.</p>
+
+          <!-- FASE 2: ETAPAS DE AUTENTICAÇÃO MILITAR (6 ETAPAS REAIS) -->
+          <div class="cbm-auth-steps-box" id="cbm-steps-view" style="display: none;">
+              <div class="cbm-steps-header">
+                  <div class="cbm-steps-pulse-dot"></div>
+                  <span>SISTEMA DE AUTENTICAÇÃO MILITAR</span>
+              </div>
+              <div class="cbm-steps-list">
+                  <div class="cbm-step-item pending" id="step-1" data-step="1">
+                      <div class="cbm-step-icon"></div>
+                      <div class="cbm-step-content">
+                          <div class="cbm-step-title">Estabelecendo conexão segura com o sistema de autenticação...</div>
+                      </div>
+                  </div>
+                  <div class="cbm-step-item pending" id="step-2" data-step="2">
+                      <div class="cbm-step-icon"></div>
+                      <div class="cbm-step-content">
+                          <div class="cbm-step-title">Consultando registro militar no Discord do CBM...</div>
+                      </div>
+                  </div>
+                  <div class="cbm-step-item pending" id="step-3" data-step="3">
+                      <div class="cbm-step-icon"></div>
+                      <div class="cbm-step-content">
+                          <div class="cbm-step-title">Validando autorização do Bot e cargo militar SYSTEM...</div>
+                      </div>
+                  </div>
+                  <div class="cbm-step-item pending" id="step-4" data-step="4">
+                      <div class="cbm-step-icon"></div>
+                      <div class="cbm-step-content">
+                          <div class="cbm-step-title">Identificando dispositivo e plataforma de acesso...</div>
+                      </div>
+                  </div>
+                  <div class="cbm-step-item pending" id="step-5" data-step="5">
+                      <div class="cbm-step-icon"></div>
+                      <div class="cbm-step-content">
+                          <div class="cbm-step-title">Validando trava de máquina autorizada (HWID Lock)...</div>
+                      </div>
+                  </div>
+                  <div class="cbm-step-item pending" id="step-6" data-step="6">
+                      <div class="cbm-step-icon"></div>
+                      <div class="cbm-step-content">
+                          <div class="cbm-step-title">Finalizando processo de autenticação militar...</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <!-- FASE 3: ACESSO LIBERADO -->
+          <div class="cbm-result-box cbm-result-granted" id="cbm-success-view" style="display: none;">
+              <div class="cbm-result-icon-wrap cbm-icon-granted">
+                  <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+              </div>
+              <h3 class="cbm-result-title">ACESSO LIBERADO</h3>
+              <p class="cbm-result-status">Credencial de segurança SYSTEM validada.</p>
+              <p class="cbm-result-welcome">Bem-vindo ao Painel de Avisos, <span id="cbm-auth-militar-name">Militar</span>.</p>
+          </div>
+
+          <!-- FASE 4: ACESSO NEGADO -->
+          <div class="cbm-result-box cbm-result-denied" id="cbm-denied-view" style="display: none;">
+              <div class="cbm-result-icon-wrap cbm-icon-denied">
+                  <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                      <line x1="4" y1="4" x2="20" y2="20" stroke="#ff2638" stroke-width="2.5"></line>
+                  </svg>
+              </div>
+              <h3 class="cbm-result-title">ACESSO NEGADO</h3>
+              <p class="cbm-result-status" id="cbm-denied-msg">Não foi possível confirmar sua autorização de acesso.</p>
+              <p class="cbm-result-detail" id="cbm-denied-detail">Verifique seu ID militar ou entre em contato com o Comando para solicitar a liberação do cargo SYSTEM.</p>
+              
+              <a id="btn-auth-action" class="cbm-btn-entrar" style="display: none; text-decoration: none; margin-bottom: 12px; width: 100%; justify-content: center; align-items: center;" href="#">
+                  <span id="btn-auth-action-text">AÇÃO NECESSÁRIA</span>
+              </a>
+
+              <button id="btn-auth-retry" class="cbm-btn-retry" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                  </svg>
+                  <span>TENTAR NOVAMENTE</span>
+              </button>
+          </div>
       </div>
   </div>
 
@@ -80,7 +215,7 @@
       <div style="display: flex; align-items: center; gap: 20px;">
         <img src="/assets/iconesite/icone.png" alt="Logo Bombeiros" style="width: 80px; height: 80px; object-fit: contain;">
         <div>
-          <span class="etiqueta">Painel local</span>
+          <span class="etiqueta">Painel Administrativo</span>
           <h1 style="margin-top: 5px;">Gerenciador de avisos</h1>
           <p style="margin-top: 5px;">
             Crie, edite e exclua os avisos que serão publicados no site.
@@ -88,8 +223,17 @@
         </div>
       </div>
 
-      <div id="statusServidor" class="status">
-        Carregando avisos...
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div id="statusServidor" class="status">
+          Carregando avisos...
+        </div>
+        <button type="button" class="btn-lock-panel" id="btn-lock-screen" title="Bloquear e retornar ao crachá">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span>Bloquear Painel</span>
+        </button>
       </div>
     </header>
 
