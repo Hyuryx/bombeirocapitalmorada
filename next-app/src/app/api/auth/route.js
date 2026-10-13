@@ -14,9 +14,9 @@ let cachedMembers = null;
 let lastCacheTime = 0;
 const CACHE_DURATION = 60 * 1000;
 
-async function fetchGuildMembers() {
+async function fetchGuildMembers(forceRefresh = false) {
   const now = Date.now();
-  if (cachedMembers && now - lastCacheTime < CACHE_DURATION) {
+  if (!forceRefresh && cachedMembers && now - lastCacheTime < CACHE_DURATION) {
     return cachedMembers;
   }
 
@@ -103,35 +103,56 @@ export async function POST(request) {
     }
 
     // ETAPA 2: Consulta de presença no Discord oficial do CBM
+    const militarRecord = await getMilitarRecord(cleanId);
     const idNumber = parseInt(cleanId, 10);
-    const targetMember = members.find(m => {
-      const nick = m.nick || '';
-      const globalName = m.user?.global_name || '';
-      const username = m.user?.username || '';
-      const fullNames = [nick, globalName, username];
 
-      return fullNames.some(name => {
-        if (!name) return false;
-        // 1. Número exato em #(\d+) (ex: #35903, #01 -> 1)
-        if (!isNaN(idNumber)) {
-          const hashMatch = name.match(/#\s*(\d+)/i);
-          if (hashMatch && parseInt(hashMatch[1], 10) === idNumber) return true;
+    const matchMember = (list) => {
+      return list.find(m => {
+        // Se este militar já possui Discord vinculado na base de dados
+        if (militarRecord?.discordId && m.user?.id === militarRecord.discordId) {
+          return true;
         }
-        // 2. Procura com # (ex: #35903)
-        if (new RegExp(`#\\s*0*${cleanId}(?:\\b|\\s|$)`, 'i').test(name)) return true;
-        // 3. Procura com separadores (ex: [35903], - 35903, | 35903, ID 35903)
-        if (new RegExp(`(?:[\\[\\(\\|\\-]\\s*|\\b(?:id|rg)\\s*[:\\-]?\\s*)0*${cleanId}(?:\\b|\\s|[\\]\\)]|$)`, 'i').test(name)) return true;
-        // 4. Termina com o número do ID
-        if (new RegExp(`\\b0*${cleanId}$`, 'i').test(name.trim())) return true;
-        return false;
+
+        const nick = m.nick || '';
+        const globalName = m.user?.global_name || '';
+        const username = m.user?.username || '';
+        const fullNames = [nick, globalName, username];
+
+        return fullNames.some(name => {
+          if (!name) return false;
+          // 1. Número exato em #(\d+) (ex: #35904, #01 -> 1)
+          if (!isNaN(idNumber)) {
+            const hashMatch = name.match(/#\s*(\d+)/i);
+            if (hashMatch && parseInt(hashMatch[1], 10) === idNumber) return true;
+          }
+          // 2. Procura com # (ex: #35904 ou # 35904)
+          if (new RegExp(`#\\s*0*${cleanId}(?:\\b|\\s|$)`, 'i').test(name)) return true;
+          // 3. Procura com separadores (ex: [35904], - 35904, | 35904, ID 35904)
+          if (new RegExp(`(?:[\\[\\(\\|\\-]\\s*|\\b(?:id|rg)\\s*[:\\-]?\\s*)0*${cleanId}(?:\\b|\\s|[\\]\\)]|$)`, 'i').test(name)) return true;
+          // 4. Termina com o número do ID
+          if (new RegExp(`\\b0*${cleanId}$`, 'i').test(name.trim())) return true;
+          return false;
+        });
       });
-    });
+    };
+
+    let targetMember = matchMember(members);
+
+    // Se não encontrou no cache, força uma busca fresca em tempo real no Discord
+    if (!targetMember) {
+      try {
+        const freshMembers = await fetchGuildMembers(true);
+        targetMember = matchMember(freshMembers);
+      } catch (err) {
+        console.warn('Erro ao atualizar membros do Discord em tempo real:', err);
+      }
+    }
 
     if (!targetMember) {
       await addMilitarLog(cleanId, {
         type: 'DISCORD_NOT_FOUND',
-        title: 'Militar Não Encontrado no Discord',
-        detail: `Tentativa de login rejeitada: Militar com ID #${cleanId} não localizado no Servidor Oficial CBM.`,
+        title: 'ID Militar Não Localizado no Discord',
+        detail: `Tentativa de login: ID #${cleanId} não encontrado no apelido de nenhum membro do servidor CBM. Se já estiver no servidor, certifique-se de que seu apelido contenha "#${cleanId}".`,
         hwid: clientHwid || null,
         deviceType: deviceType,
         success: false
@@ -140,13 +161,14 @@ export async function POST(request) {
         {
           sucesso: false,
           failedAtStep: 2,
-          erro: `Militar com ID #${cleanId} não encontrado no Servidor Oficial CBM.`,
+          erro: `ID militar #${cleanId} não localizado no Servidor do Discord CBM.`,
+          detail: `Não localizamos nenhum membro com "#${cleanId}" no apelido. Se você já está no Discord dos Bombeiros, certifique-se de que o seu apelido no servidor termine com o seu ID (ex: "Seu Nome #${cleanId}"). Se ainda não entrou, clique abaixo para ingressar.`,
           action: 'JOIN_DISCORD',
           actionUrl: DISCORD_INVITE_URL,
           actionLabel: 'Entrar no Servidor do Discord',
           steps: [
             { id: 1, title: 'Estabelecendo conexão segura com o sistema de autenticação...', ok: true },
-            { id: 2, title: 'Consultando registro militar no Discord do CBM...', ok: false, detail: 'Militar não localizado no servidor' },
+            { id: 2, title: 'Consultando registro militar no Discord do CBM...', ok: false, detail: `ID #${cleanId} não encontrado no apelido de nenhum membro` },
             { id: 3, title: 'Validando autorização do Bot e cargo militar...', ok: null },
             { id: 4, title: 'Identificando dispositivo e plataforma de acesso...', ok: null },
             { id: 5, title: 'Validando trava de máquina autorizada (HWID Lock)...', ok: null },
@@ -170,8 +192,8 @@ export async function POST(request) {
     if (!hasRole) {
       await addMilitarLog(cleanId, {
         type: 'ROLE_MISSING',
-        title: 'Cargo Militar CBM Não Encontrado',
-        detail: `Tentativa de login rejeitada: Usuário "${extractedName}" (${targetMember.user?.id}) está no servidor mas não possui a setagem oficial de Bombeiro.`,
+        title: 'Setagem Oficial de Bombeiro Não Confirmada',
+        detail: `Tentativa de login: Usuário "${extractedName}" (${targetMember.user?.id}) está no Discord CBM, mas não possui a setagem oficial de Bombeiro.`,
         hwid: clientHwid || null,
         deviceType: deviceType,
         success: false
@@ -180,11 +202,15 @@ export async function POST(request) {
         {
           sucesso: false,
           failedAtStep: 3,
-          erro: `Vínculo com o Corpo de Bombeiros não confirmado para o militar #${cleanId}. É necessário o cargo oficial.`,
+          erro: `Setagem oficial de Bombeiro não confirmada para o militar #${cleanId}.`,
+          detail: `Seu usuário "${extractedName}" foi localizado no Discord dos Bombeiros, porém ainda não possui o cargo militar de Bombeiro. Solicite a sua setagem com um Oficial no Discord.`,
+          action: 'JOIN_DISCORD',
+          actionUrl: DISCORD_INVITE_URL,
+          actionLabel: 'Abrir Discord dos Bombeiros',
           steps: [
             { id: 1, title: 'Estabelecendo conexão segura com o sistema de autenticação...', ok: true },
-            { id: 2, title: 'Consultando registro militar no Discord do CBM...', ok: true, detail: `Militar #${cleanId} localizado no servidor` },
-            { id: 3, title: 'Validando autorização do Bot e cargo militar...', ok: false, detail: 'Cargo de Bombeiro não encontrado' },
+            { id: 2, title: 'Consultando registro militar no Discord do CBM...', ok: true, detail: `Militar localizado: ${extractedName} (#${cleanId})` },
+            { id: 3, title: 'Validando autorização do Bot e cargo militar...', ok: false, detail: 'Setagem oficial de Bombeiro não encontrada' },
             { id: 4, title: 'Identificando dispositivo e plataforma de acesso...', ok: null },
             { id: 5, title: 'Validando trava de máquina autorizada (HWID Lock)...', ok: null },
             { id: 6, title: 'Finalizando processo de autenticação militar...', ok: null }
@@ -195,15 +221,14 @@ export async function POST(request) {
     }
 
     // Verificar se o militar já autorizou o Bot do Discord
-    const militarRecord = await getMilitarRecord(cleanId);
     const isBotAuthorized = militarRecord && militarRecord.isBotAuthorized === true;
 
     // Se ainda não autorizou o bot, emitir a ação de autorizar via Discord OAuth2
     if (!isBotAuthorized) {
       await addMilitarLog(cleanId, {
         type: 'BOT_PENDING',
-        title: 'Autorização do Bot Pendente',
-        detail: `Primeiro acesso do militar #${cleanId} (${extractedName}): pendente autorizar o Bot CBM no Discord.`,
+        title: 'Autorização do Bot Pendente (1º Acesso)',
+        detail: `Militar #${cleanId} (${extractedName}) possui cargo de Bombeiro. Pendente autorizar o Bot CBM no Discord para vincular máquina.`,
         hwid: clientHwid || null,
         deviceType: deviceType,
         success: false
@@ -213,14 +238,15 @@ export async function POST(request) {
         {
           sucesso: false,
           failedAtStep: 3,
-          erro: 'Primeiro acesso detectado: é necessário autorizar o Bot do CBM no seu Discord.',
+          erro: `Primeiro acesso do militar #${cleanId}: autorização do Bot CBM necessária.`,
+          detail: `Militar ${extractedName} (#${cleanId}) confirmado com cargo de Bombeiro! Clique no botão abaixo para autorizar o Bot do CBM no seu Discord e vincular seu dispositivo.`,
           action: 'AUTHORIZE_BOT',
           actionUrl: authUrl,
           actionLabel: 'Autorizar Bot no Discord',
           steps: [
             { id: 1, title: 'Estabelecendo conexão segura com o sistema de autenticação...', ok: true },
-            { id: 2, title: 'Consultando registro militar no Discord do CBM...', ok: true, detail: `Militar #${cleanId} localizado no servidor` },
-            { id: 3, title: 'Validando autorização do Bot e cargo militar...', ok: false, detail: 'Autorização do Bot CBM pendente' },
+            { id: 2, title: 'Consultando registro militar no Discord do CBM...', ok: true, detail: `Militar localizado: ${extractedName} (#${cleanId})` },
+            { id: 3, title: 'Validando autorização do Bot e cargo militar...', ok: false, detail: 'Autorização do Bot CBM pendente (1º Acesso)' },
             { id: 4, title: 'Identificando dispositivo e plataforma de acesso...', ok: null },
             { id: 5, title: 'Validando trava de máquina autorizada (HWID Lock)...', ok: null },
             { id: 6, title: 'Finalizando processo de autenticação militar...', ok: null }

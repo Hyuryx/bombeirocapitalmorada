@@ -1,1 +1,44 @@
-{}
+{
+  "35904": {
+    "militarId": "35904",
+    "createdAt": "2026-10-13T20:19:18.124Z",
+    "logs": [
+      {
+        "id": "log_1791923018230_kptt",
+        "timestamp": "2026-10-13T20:23:38.230Z",
+        "type": "BOT_PENDING",
+        "title": "Autorização do Bot Pendente (1º Acesso)",
+        "detail": "Militar #35904 (ErreJota) possui cargo de Bombeiro. Pendente autorizar o Bot CBM no Discord para vincular máquina.",
+        "hwid": "test_pc_1",
+        "deviceType": "desktop",
+        "success": false
+      },
+      {
+        "id": "log_1791922758124_khj4",
+        "timestamp": "2026-10-13T20:19:18.124Z",
+        "type": "BOT_PENDING",
+        "title": "Autorização do Bot Pendente",
+        "detail": "Primeiro acesso do militar #35904 (ErreJota): pendente autorizar o Bot CBM no Discord.",
+        "hwid": "test_hwid",
+        "deviceType": "desktop",
+        "success": false
+      }
+    ]
+  },
+  "888888": {
+    "militarId": "888888",
+    "createdAt": "2026-10-13T20:28:39.835Z",
+    "logs": [
+      {
+        "id": "log_1791923319835_xu8r",
+        "timestamp": "2026-10-13T20:28:39.835Z",
+        "type": "DISCORD_NOT_FOUND",
+        "title": "ID Militar Não Localizado no Discord",
+        "detail": "Tentativa de login: ID #888888 não encontrado no apelido de nenhum membro do servidor CBM. Se já estiver no servidor, certifique-se de que seu apelido contenha \"#888888\".",
+        "hwid": "test_pc_1",
+        "deviceType": "desktop",
+        "success": false
+      }
+    ]
+  }
+}

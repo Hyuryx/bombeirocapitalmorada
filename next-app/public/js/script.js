@@ -940,10 +940,12 @@ window.initApp = function() {
                     }
 
                     if (deniedDetail) {
-                        if (data.action === 'AUTHORIZE_BOT') {
+                        if (data.detail) {
+                            deniedDetail.textContent = data.detail;
+                        } else if (data.action === 'AUTHORIZE_BOT') {
                             deniedDetail.textContent = "Clique no botão abaixo para autorizar o Bot do CBM no seu Discord e vincular esta máquina.";
                         } else if (data.action === 'JOIN_DISCORD') {
-                            deniedDetail.textContent = "Você precisa fazer parte do servidor oficial do Corpo de Bombeiros no Discord para ter acesso.";
+                            deniedDetail.textContent = "Se você já está no Discord, certifique-se de que seu apelido no servidor termine com '#" + enteredValue + "'. Se ainda não entrou, clique abaixo para ingressar.";
                         } else if (data.action === 'HWID_LOCKED') {
                             deniedDetail.textContent = "Seu cadastro militar já possui uma máquina vinculada. Solicite ao Comando a liberação do dispositivo.";
                         } else {
