@@ -85,13 +85,22 @@ export async function POST(request) {
 
     const cleanId = input.replace(/^[#\s]+/, '').trim();
 
-    // REGISTRO IMEDIATO DE HWID / DISPOSITIVO:
-    // Independentemente de o militar estar no Discord, ter cargo ou já ter autorizado o bot,
-    // o HWID da máquina/celular que efetuou a tentativa DEVE ser gravado na ficha do militar.
     let militarRecord = await getMilitarRecord(cleanId);
-    const deviceHwidField = isMobile ? 'mobileHwid' : 'desktopHwid';
-    const deviceNameField = isMobile ? 'mobileDeviceName' : 'desktopDeviceName';
-    const deviceLoginField = isMobile ? 'lastMobileLogin' : 'lastDesktopLogin';
+
+    // Diferenciação de slots de HWID:
+    // Painel de Avisos (Cargo SYSTEM): adminDesktopHwid / adminMobileHwid
+    // Site Principal (Cargo Bombeiro): siteDesktopHwid (fallback desktopHwid) / siteMobileHwid (fallback mobileHwid)
+    const deviceHwidField = isSystemPanel
+      ? (isMobile ? 'adminMobileHwid' : 'adminDesktopHwid')
+      : (isMobile ? 'siteMobileHwid' : 'siteDesktopHwid');
+
+    const deviceNameField = isSystemPanel
+      ? (isMobile ? 'adminMobileDeviceName' : 'adminDesktopDeviceName')
+      : (isMobile ? 'siteMobileDeviceName' : 'siteDesktopDeviceName');
+
+    const deviceLoginField = isSystemPanel
+      ? (isMobile ? 'lastAdminMobileLogin' : 'lastAdminDesktopLogin')
+      : (isMobile ? 'lastSiteMobileLogin' : 'lastSiteDesktopLogin');
 
     if (clientHwid) {
       const initialSave = {
@@ -100,14 +109,27 @@ export async function POST(request) {
         [deviceLoginField]: new Date().toISOString()
       };
 
-      // Se este slot ainda estiver livre, vincula o HWID imediatamente
-      if (!militarRecord || !militarRecord[deviceHwidField]) {
+      // Se este slot específico do painel correspondente ainda estiver livre, vincula o HWID
+      const currentSlotHwid = isSystemPanel
+        ? (isMobile ? militarRecord?.adminMobileHwid : militarRecord?.adminDesktopHwid)
+        : (isMobile ? (militarRecord?.siteMobileHwid || militarRecord?.mobileHwid) : (militarRecord?.siteDesktopHwid || militarRecord?.desktopHwid));
+
+      if (!militarRecord || !currentSlotHwid) {
         initialSave[deviceHwidField] = clientHwid;
-        initialSave[deviceNameField] = isMobile ? 'Dispositivo Móvel' : 'Computador Desktop';
+        initialSave[deviceNameField] = isSystemPanel
+          ? (isMobile ? 'Dispositivo Móvel (Painel de Avisos)' : 'Computador Desktop (Painel de Avisos)')
+          : (isMobile ? 'Dispositivo Móvel (Site)' : 'Computador Desktop (Site)');
+
+        // Para retrocompatibilidade no site principal
+        if (!isSystemPanel) {
+          if (isMobile && !militarRecord?.mobileHwid) initialSave.mobileHwid = clientHwid;
+          if (!isMobile && !militarRecord?.desktopHwid) initialSave.desktopHwid = clientHwid;
+        }
       }
 
       militarRecord = await saveMilitarRecord(cleanId, initialSave);
     }
+
 
     // ETAPA 1: Conexão segura com o sistema de autenticação
     let members;
@@ -300,33 +322,71 @@ export async function POST(request) {
     const platformLabel = isMobile ? 'Dispositivo Móvel (Smartphone / Tablet)' : 'Computador Desktop';
 
     // ETAPA 5: Validação da Trava de Máquina (HWID Lock)
-    // Regra: Cada militar tem direito a 1 PC (desktopHwid) e 1 Mobile (mobileHwid).
+    // Regra:
+    // Painel de Avisos (Cargo SYSTEM): cada militar tem direito a 1 PC (adminDesktopHwid) e 1 Celular (adminMobileHwid).
+    // Site Principal (Cargo Bombeiro): cada militar tem direito a 1 PC (siteDesktopHwid) e 1 Celular (siteMobileHwid).
     let isDeviceAuthorized = false;
     let hwidDetailMsg = '';
-    const registeredHwid = isMobile ? militarRecord.mobileHwid : militarRecord.desktopHwid;
+
+    // HWID registrado neste painel específico
+    const registeredHwid = isSystemPanel
+      ? (isMobile ? militarRecord?.adminMobileHwid : militarRecord?.adminDesktopHwid)
+      : (isMobile ? (militarRecord?.siteMobileHwid || militarRecord?.mobileHwid) : (militarRecord?.siteDesktopHwid || militarRecord?.desktopHwid));
+
+    // HWID já aprovado do mesmo militar no outro painel (Site <-> Avisos)
+    const otherPanelHwid = isSystemPanel
+      ? (isMobile ? (militarRecord?.siteMobileHwid || militarRecord?.mobileHwid) : (militarRecord?.siteDesktopHwid || militarRecord?.desktopHwid))
+      : (isMobile ? militarRecord?.adminMobileHwid : militarRecord?.adminDesktopHwid);
+
+    const systemNameLabel = isSystemPanel ? 'Painel de Avisos' : 'Site Principal';
 
     if (!registeredHwid) {
-      militarRecord = await saveMilitarRecord(cleanId, {
+      // 1. Primeiro vínculo no painel
+      const savePayload = {
         [deviceHwidField]: clientHwid,
-        [deviceNameField]: isMobile ? 'Dispositivo Móvel Autorizado' : 'Computador Desktop Autorizado',
+        [deviceNameField]: isSystemPanel
+          ? (isMobile ? 'Dispositivo Móvel Autorizado (Painel de Avisos)' : 'Computador Desktop Autorizado (Painel de Avisos)')
+          : (isMobile ? 'Dispositivo Móvel Autorizado (Site)' : 'Computador Desktop Autorizado (Site)'),
         [deviceLoginField]: new Date().toISOString()
-      });
+      };
+      // Retrocompatibilidade para o site principal
+      if (!isSystemPanel) {
+        if (isMobile && !militarRecord?.mobileHwid) savePayload.mobileHwid = clientHwid;
+        if (!isMobile && !militarRecord?.desktopHwid) savePayload.desktopHwid = clientHwid;
+      }
+      militarRecord = await saveMilitarRecord(cleanId, savePayload);
       isDeviceAuthorized = true;
-      hwidDetailMsg = `${isMobile ? 'Dispositivo móvel' : 'Computador'} registrado e vinculado`;
+      hwidDetailMsg = `${isMobile ? 'Dispositivo móvel' : 'Computador'} vinculado ao ${systemNameLabel}`;
     } else if (registeredHwid === clientHwid) {
+      // 2. Dispositivo reconhecido exatamente no slot deste painel
       isDeviceAuthorized = true;
-      hwidDetailMsg = `${isMobile ? 'Dispositivo móvel' : 'Computador'} reconhecido e autorizado`;
+      hwidDetailMsg = `${isMobile ? 'Dispositivo móvel' : 'Computador'} reconhecido e autorizado no ${systemNameLabel}`;
+    } else if (otherPanelHwid === clientHwid || (!isMobile && (militarRecord?.adminDesktopHwid === clientHwid || militarRecord?.siteDesktopHwid === clientHwid || militarRecord?.desktopHwid === clientHwid))) {
+      // 3. Máquina legítima do militar já autorizada no outro painel ou no cadastro: sincroniza automaticamente
+      const savePayload = {
+        [deviceHwidField]: clientHwid,
+        [deviceNameField]: isSystemPanel
+          ? (isMobile ? 'Dispositivo Móvel Sincronizado (Painel de Avisos)' : 'Computador Desktop Sincronizado (Painel de Avisos)')
+          : (isMobile ? 'Dispositivo Móvel Sincronizado (Site)' : 'Computador Desktop Sincronizado (Site)'),
+        [deviceLoginField]: new Date().toISOString()
+      };
+      if (!isSystemPanel) {
+        if (isMobile) savePayload.mobileHwid = clientHwid;
+        if (!isMobile) savePayload.desktopHwid = clientHwid;
+      }
+      militarRecord = await saveMilitarRecord(cleanId, savePayload);
+      isDeviceAuthorized = true;
+      hwidDetailMsg = `${isMobile ? 'Dispositivo móvel' : 'Computador'} reconhecido e sincronizado com sucesso`;
     } else {
       isDeviceAuthorized = false;
     }
 
     if (!isDeviceAuthorized) {
       const deviceName = isMobile ? 'dispositivo móvel' : 'computador';
-      const registeredHwid = isMobile ? militarRecord.mobileHwid : militarRecord.desktopHwid;
       await addMilitarLog(cleanId, {
         type: 'HWID_BLOCKED',
-        title: 'Acesso Bloqueado - Máquina Não Autorizada',
-        detail: `Acesso negado em outro ${deviceName}. HWID da tentativa: [${clientHwid ? clientHwid.substring(0, 16) + '...' : 'Nenhum'}]. HWID registrado: [${registeredHwid ? registeredHwid.substring(0, 16) + '...' : 'Nenhum'}]. Possível troca de dispositivo ou tentativa de acesso indevido.`,
+        title: `Acesso Bloqueado no ${systemNameLabel} - Máquina Não Autorizada`,
+        detail: `Acesso negado em outro ${deviceName} no ${systemNameLabel}. HWID da tentativa: [${clientHwid ? clientHwid.substring(0, 16) + '...' : 'Nenhum'}]. HWID registrado no ${systemNameLabel}: [${registeredHwid ? registeredHwid.substring(0, 16) + '...' : 'Nenhum'}].`,
         hwid: clientHwid || null,
         deviceType: deviceType,
         success: false
@@ -335,14 +395,14 @@ export async function POST(request) {
         {
           sucesso: false,
           failedAtStep: 5,
-          erro: `Acesso bloqueado: Este ID militar já está registrado em outro ${deviceName}. Solicite ao Comando a liberação da máquina.`,
+          erro: `Acesso bloqueado: Este ID militar já está registrado em outro ${deviceName} para o ${systemNameLabel}. Solicite ao Comando a liberação da máquina no ${systemNameLabel}.`,
           action: 'HWID_LOCKED',
           steps: [
             { id: 1, title: 'Estabelecendo conexão segura com o sistema de autenticação...', ok: true },
             { id: 2, title: 'Consultando registro militar no Discord do CBM...', ok: true, detail: `Militar #${cleanId} localizado no servidor` },
             { id: 3, title: 'Validando autorização do Bot e cargo militar...', ok: true, detail: `Bot autorizado | Militar: ${extractedName}` },
-            { id: 4, title: 'Identificando dispositivo e plataforma de acesso...', ok: true, detail: platformLabel },
-            { id: 5, title: 'Validando trava de máquina autorizada (HWID Lock)...', ok: false, detail: `Máquina não autorizada para #${cleanId}` },
+            { id: 4, title: 'Identificando dispositivo e plataforma de acesso...', ok: true, detail: `${platformLabel} • ${systemNameLabel}` },
+            { id: 5, title: `Validando trava de máquina autorizada no ${systemNameLabel}...`, ok: false, detail: `Máquina não autorizada para o ${systemNameLabel}` },
             { id: 6, title: 'Finalizando processo de autenticação militar...', ok: null }
           ]
         },

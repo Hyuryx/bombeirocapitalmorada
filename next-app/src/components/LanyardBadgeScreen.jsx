@@ -120,11 +120,8 @@ export default function LanyardBadgeScreen() {
       {/* Legenda visual "Tente arrastar" com seta */}
       <div
         className="lanyard-hint-container"
-        onClick={handleTriggerLogin}
-        style={{ cursor: 'pointer' }}
-        role="button"
-        tabIndex={0}
-        aria-label="Puxe o crachá ou clique para acessar"
+        style={{ pointerEvents: 'none' }}
+        aria-label="Puxe o crachá até embaixo para acessar"
       >
         <div className="lanyard-hint-text">
           <span>Tente arrastar</span>

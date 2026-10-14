@@ -561,7 +561,59 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (e) {}
     }
 
-    // 3. Controle do Crachá (Lanyard Badge Screen)
+    // 2.1 Inicialização das Partículas NASA (Formato oficial com partículas vermelhas caindo)
+    function initNasaParticles() {
+        if (typeof window.particlesJS === 'function') {
+            const nasaConfig = {
+                particles: {
+                    number: { value: 130, density: { enable: true, value_area: 800 } },
+                    color: { value: "#ff1f35" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.85, random: true, anim: { enable: true, speed: 1, opacity_min: 0.05, sync: false } },
+                    size: { value: 3.2, random: true, anim: { enable: false } },
+                    line_linked: { enable: false },
+                    move: {
+                        enable: true,
+                        speed: 1.4,
+                        direction: "bottom", // Formato NASA: partículas caindo verticalmente
+                        random: true,
+                        straight: false,
+                        out_mode: "out",
+                        bounce: false
+                    }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: { enable: true, mode: "bubble" },
+                        onclick: { enable: true, mode: "repulse" },
+                        resize: true
+                    },
+                    modes: {
+                        bubble: { distance: 180, size: 0, duration: 2, opacity: 0, speed: 3 },
+                        repulse: { distance: 220, duration: 0.35 }
+                    }
+                },
+                retina_detect: true
+            };
+
+            try {
+                if (document.getElementById('particles-cracha')) {
+                    window.particlesJS('particles-cracha', JSON.parse(JSON.stringify(nasaConfig)));
+                }
+                if (document.getElementById('particles-login')) {
+                    window.particlesJS('particles-login', JSON.parse(JSON.stringify(nasaConfig)));
+                }
+            } catch (err) {
+                console.warn('Erro ao carregar partículas NASA:', err);
+            }
+        } else {
+            setTimeout(initNasaParticles, 80);
+        }
+    }
+    initNasaParticles();
+
+    // 3. Controle do Crachá (Lanyard Badge Screen com Física e Puxar)
     const lanyardOverlay = document.getElementById('cbm-lanyard-overlay');
     const lanyardStage = document.getElementById('lanyard-stage');
     const btnShowCracha = document.getElementById('btn-show-cracha');
@@ -574,76 +626,90 @@ document.addEventListener("DOMContentLoaded", () => {
         lanyardOverlay.classList.add('is-hiding');
         setTimeout(() => {
             if (loginPassword) loginPassword.focus();
-        }, 550);
+        }, 500);
     }
 
     function showCracha() {
         if (!lanyardOverlay) return;
         lanyardOverlay.classList.remove('is-hiding');
+        if (lanyardStage) {
+            lanyardStage.style.transform = 'translateY(0) rotate(0deg)';
+        }
     }
 
     if (lanyardStage) {
         let isDragging = false;
         let startY = 0;
+        let startX = 0;
         let currentY = 0;
+        let currentX = 0;
+        let dragStartTime = 0;
 
-        lanyardStage.addEventListener('mousedown', (e) => {
+        const onPointerDown = (e) => {
             isDragging = true;
-            startY = e.clientY;
+            dragStartTime = Date.now();
+            startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+            startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+            currentY = 0;
+            currentX = 0;
             lanyardStage.style.transition = 'none';
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            currentY = e.clientY - startY;
-            if (currentY > 0) {
-                lanyardStage.style.transform = `translateY(${Math.min(currentY, 150)}px)`;
+            if (e.target && e.target.setPointerCapture && e.pointerId) {
+                try { e.target.setPointerCapture(e.pointerId); } catch(err) {}
             }
-        });
+        };
 
-        window.addEventListener('mouseup', () => {
+        const onPointerMove = (e) => {
+            if (!isDragging) return;
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+            const deltaY = clientY - startY;
+            const deltaX = clientX - startX;
+
+            if (deltaY > 0) {
+                // Resistência elástica
+                currentY = Math.min(deltaY * 0.85, 180);
+                currentX = Math.max(-40, Math.min(40, deltaX * 0.35));
+                const rotZ = currentX * 0.15;
+                const rotX = Math.min(18, currentY * 0.1);
+                lanyardStage.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) rotate(${rotZ}deg) rotateX(${-rotX}deg)`;
+            }
+        };
+
+        const onPointerUp = (e) => {
             if (!isDragging) return;
             isDragging = false;
-            lanyardStage.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-            if (currentY > 55) {
+            const duration = Date.now() - dragStartTime;
+            lanyardStage.style.transition = 'transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+
+            // Puxou para baixo (> 38px) OU foi um clique rápido (< 250ms com pouco movimento)
+            if (currentY > 38 || (duration < 280 && currentY < 10 && Math.abs(currentX) < 10)) {
+                lanyardStage.style.transform = 'translateY(120px) scale(0.96)';
                 dismissCracha();
             } else {
-                lanyardStage.style.transform = 'translateY(0)';
+                lanyardStage.style.transform = 'translateY(0) rotate(0deg)';
             }
             currentY = 0;
-        });
+            currentX = 0;
+        };
 
-        // Touch support para celular / mobile
-        lanyardStage.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            startY = e.touches[0].clientY;
-            lanyardStage.style.transition = 'none';
-        }, { passive: true });
+        // Suporte moderno unificado a PointerEvents (mouse, touch, stylus)
+        lanyardStage.addEventListener('pointerdown', onPointerDown);
+        window.addEventListener('pointermove', onPointerMove);
+        window.addEventListener('pointerup', onPointerUp);
+        window.addEventListener('pointercancel', onPointerUp);
 
-        window.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            currentY = e.touches[0].clientY - startY;
-            if (currentY > 0) {
-                lanyardStage.style.transform = `translateY(${Math.min(currentY, 150)}px)`;
-            }
-        }, { passive: true });
+        // Fallback touch para dispositivos específicos
+        lanyardStage.addEventListener('touchstart', onPointerDown, { passive: true });
+        window.addEventListener('touchmove', onPointerMove, { passive: true });
+        window.addEventListener('touchend', onPointerUp);
 
-        window.addEventListener('touchend', () => {
-            if (!isDragging) return;
-            isDragging = false;
-            lanyardStage.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-            if (currentY > 55) {
-                dismissCracha();
-            } else {
-                lanyardStage.style.transform = 'translateY(0)';
-            }
-            currentY = 0;
-        });
-
-        // Clique direto no crachá também abre
-        lanyardStage.addEventListener('click', () => {
-            dismissCracha();
-        });
+        // Clique na seta ou tag inferior também puxa o crachá
+        const pullHint = document.querySelector('.lanyard-pull-hint');
+        if (pullHint) {
+            pullHint.style.cursor = 'pointer';
+            pullHint.style.pointerEvents = 'auto';
+            pullHint.addEventListener('click', dismissCracha);
+        }
     }
 
     if (btnShowCracha) {

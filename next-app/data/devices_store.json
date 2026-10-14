@@ -1,71 +1,4 @@
 {
-  "1": {
-    "militarId": "1",
-    "createdAt": "2026-10-13T21:20:06.531Z",
-    "logs": [
-      {
-        "id": "log_1791926408115_zyp8",
-        "timestamp": "2026-10-13T21:20:08.115Z",
-        "type": "DISCORD_NOT_FOUND",
-        "title": "ID Militar Não Localizado no Discord",
-        "detail": "Tentativa de login: ID #1 não encontrado no apelido de nenhum membro do servidor CBM. Se já estiver no servidor, certifique-se de que seu apelido contenha \"#1\".",
-        "hwid": "pc_23c24f3589418f5137205e16",
-        "deviceType": "desktop",
-        "success": false
-      }
-    ],
-    "lastLogin": "2026-10-13T21:20:06.531Z",
-    "lastDesktopLogin": "2026-10-13T21:20:06.531Z",
-    "desktopHwid": "pc_23c24f3589418f5137205e16",
-    "desktopDeviceName": "Computador Desktop",
-    "updatedAt": "2026-10-13T21:20:06.531Z"
-  },
-  "666": {
-    "militarId": "666",
-    "createdAt": "2026-10-13T20:50:31.626Z",
-    "logs": [
-      {
-        "id": "log_1791924708104_l7jl",
-        "timestamp": "2026-10-13T20:51:48.104Z",
-        "type": "BOT_PENDING",
-        "title": "Autorização do Bot Pendente (1º Acesso)",
-        "detail": "Militar #666 (XING LING DO PARAGUAI) possui cargo de Bombeiro. Pendente autorizar o Bot CBM no Discord para vincular máquina.",
-        "hwid": "pc_a96335f2207c87c9f4c0541c",
-        "deviceType": "desktop",
-        "success": false
-      },
-      {
-        "id": "log_1791924685410_kpx3",
-        "timestamp": "2026-10-13T20:51:25.410Z",
-        "type": "BOT_PENDING",
-        "title": "Autorização do Bot Pendente (1º Acesso)",
-        "detail": "Militar #666 (XING LING DO PARAGUAI) possui cargo de Bombeiro. Pendente autorizar o Bot CBM no Discord para vincular máquina.",
-        "hwid": "pc_a96335f2207c87c9f4c0541c",
-        "deviceType": "desktop",
-        "success": false
-      },
-      {
-        "id": "log_1791924656078_04b9",
-        "timestamp": "2026-10-13T20:50:56.078Z",
-        "type": "BOT_PENDING",
-        "title": "Autorização do Bot Pendente (1º Acesso)",
-        "detail": "Militar #666 (XING LING DO PARAGUAI) possui cargo de Bombeiro. Pendente autorizar o Bot CBM no Discord para vincular máquina.",
-        "hwid": "pc_a96335f2207c87c9f4c0541c",
-        "deviceType": "desktop",
-        "success": false
-      },
-      {
-        "id": "log_1791924631626_r55c",
-        "timestamp": "2026-10-13T20:50:31.626Z",
-        "type": "BOT_PENDING",
-        "title": "Autorização do Bot Pendente (1º Acesso)",
-        "detail": "Militar #666 (XING LING DO PARAGUAI) possui cargo de Bombeiro. Pendente autorizar o Bot CBM no Discord para vincular máquina.",
-        "hwid": "pc_a96335f2207c87c9f4c0541c",
-        "deviceType": "desktop",
-        "success": false
-      }
-    ]
-  },
   "24216": {
     "militarId": "24216",
     "createdAt": "2026-10-13T21:20:33.967Z",
@@ -118,6 +51,86 @@
     "militarId": "35904",
     "createdAt": "2026-10-13T20:19:18.124Z",
     "logs": [
+      {
+        "id": "log_1791948199223_7f1a",
+        "timestamp": "2026-10-14T03:23:19.223Z",
+        "type": "LOGIN_SUCCESS",
+        "title": "Autenticação Militar Concluída com Sucesso",
+        "detail": "Militar ErreJota (#35904) autenticado com sucesso no Computador Desktop. Trava HWID validada.",
+        "hwid": "pc_6edc7634f4e317eab1a73279",
+        "deviceType": "desktop",
+        "success": true
+      },
+      {
+        "id": "log_1791948112505_2i64",
+        "timestamp": "2026-10-14T03:21:52.505Z",
+        "type": "LOGIN_SUCCESS",
+        "title": "Autenticação Militar Concluída com Sucesso",
+        "detail": "Militar ErreJota (#35904) autenticado com sucesso no Computador Desktop. Trava HWID validada.",
+        "hwid": "pc_6edc7634f4e317eab1a73279",
+        "deviceType": "desktop",
+        "success": true
+      },
+      {
+        "id": "log_1791946308564_rffb",
+        "timestamp": "2026-10-14T02:51:48.564Z",
+        "type": "LOGIN_SUCCESS",
+        "title": "Autenticação Militar Concluída com Sucesso",
+        "detail": "Militar ErreJota (#35904) autenticado com sucesso no Computador Desktop. Trava HWID validada.",
+        "hwid": "pc_6edc7634f4e317eab1a73279",
+        "deviceType": "desktop",
+        "success": true
+      },
+      {
+        "id": "log_1791946288552_73wp",
+        "timestamp": "2026-10-14T02:51:28.552Z",
+        "type": "HWID_BLOCKED",
+        "title": "Acesso Bloqueado no Site Principal - Máquina Não Autorizada",
+        "detail": "Acesso negado em outro computador no Site Principal. HWID da tentativa: [pc_6edc7634f4e31...]. HWID registrado no Site Principal: [hwid_desktop_359...].",
+        "hwid": "pc_6edc7634f4e317eab1a73279",
+        "deviceType": "desktop",
+        "success": false
+      },
+      {
+        "id": "log_1791946068695_008u",
+        "timestamp": "2026-10-14T02:47:48.695Z",
+        "type": "LOGIN_SUCCESS",
+        "title": "Autenticação Militar Concluída com Sucesso",
+        "detail": "Militar ErreJota (#35904) autenticado com sucesso no Computador Desktop. Trava HWID validada.",
+        "hwid": "pc_6edc7634f4e317eab1a73279",
+        "deviceType": "desktop",
+        "success": true
+      },
+      {
+        "id": "log_1791944408464_5pn3",
+        "timestamp": "2026-10-14T02:20:08.464Z",
+        "type": "LOGIN_SUCCESS",
+        "title": "Autenticação Militar Concluída com Sucesso",
+        "detail": "Militar ErreJota (#35904) autenticado com sucesso no Computador Desktop. Trava HWID validada.",
+        "hwid": "pc_6edc7634f4e317eab1a73279",
+        "deviceType": "desktop",
+        "success": true
+      },
+      {
+        "id": "log_1791943872466_sbei",
+        "timestamp": "2026-10-14T02:11:12.466Z",
+        "type": "HWID_BLOCKED",
+        "title": "Acesso Bloqueado - Máquina Não Autorizada",
+        "detail": "Acesso negado em outro computador. HWID da tentativa: [pc_6edc7634f4e31...]. HWID registrado: [hwid_desktop_359...]. Possível troca de dispositivo ou tentativa de acesso indevido.",
+        "hwid": "pc_6edc7634f4e317eab1a73279",
+        "deviceType": "desktop",
+        "success": false
+      },
+      {
+        "id": "log_1791943503462_6l7i",
+        "timestamp": "2026-10-14T02:05:03.462Z",
+        "type": "HWID_BLOCKED",
+        "title": "Acesso Bloqueado - Máquina Não Autorizada",
+        "detail": "Acesso negado em outro computador. HWID da tentativa: [pc_6edc7634f4e31...]. HWID registrado: [hwid_desktop_359...]. Possível troca de dispositivo ou tentativa de acesso indevido.",
+        "hwid": "pc_6edc7634f4e317eab1a73279",
+        "deviceType": "desktop",
+        "success": false
+      },
       {
         "id": "log_1791927209385_c3tg",
         "timestamp": "2026-10-13T21:33:29.385Z",
@@ -197,14 +210,22 @@
     "discordTag": "errejota.fps#0",
     "discordId": "1207045485907546192",
     "isBotAuthorized": true,
-    "desktopHwid": "hwid_desktop_35904_valido",
+    "desktopHwid": "pc_6edc7634f4e317eab1a73279",
     "desktopDeviceName": "Computador Desktop",
+    "siteDesktopHwid": "pc_6edc7634f4e317eab1a73279",
+    "siteDesktopDeviceName": "Computador Desktop (Site Principal)",
+    "adminDesktopHwid": "pc_6edc7634f4e317eab1a73279",
+    "adminDesktopDeviceName": "Computador Desktop (Painel de Avisos)",
     "mobileHwid": null,
-    "lastLogin": "2026-10-13T21:33:26.974Z",
-    "updatedAt": "2026-10-13T21:33:26.974Z",
-    "sessionToken": "cbm_sec_1791927206974_cjjf6sy6",
-    "lastDesktopLogin": "2026-10-13T21:33:22.703Z",
+    "siteMobileHwid": null,
+    "adminMobileHwid": null,
+    "lastLogin": "2026-10-14T03:23:18.010Z",
+    "updatedAt": "2026-10-14T03:23:18.010Z",
+    "sessionToken": "cbm_sec_1791948198010_2fp0wvq3",
+    "lastDesktopLogin": "2026-10-14T02:11:09.611Z",
     "globalName": "ErreJota",
-    "mobileDeviceName": null
+    "mobileDeviceName": null,
+    "lastAdminDesktopLogin": "2026-10-14T03:21:48.574Z",
+    "lastSiteDesktopLogin": "2026-10-14T03:23:15.754Z"
   }
 }

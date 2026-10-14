@@ -36,7 +36,7 @@ export async function POST(request) {
     const body = await request.json().catch(() => ({}));
     const militarId = String(body.militarId || '').trim();
     const action = String(body.action || '').toLowerCase();
-    const target = String(body.target || 'all').toLowerCase(); // 'all' | 'desktop' | 'mobile' | 'delete'
+    const target = String(body.target || body.deviceSlot || 'all').toLowerCase();
 
     if (!militarId) {
       return NextResponse.json(
@@ -72,10 +72,18 @@ export async function POST(request) {
     }
 
     let msg = `HWID de todos os dispositivos do militar #${militarId} foram resetados.`;
-    if (target === 'desktop') {
-      msg = `HWID do Computador (Desktop) do militar #${militarId} foi resetado.`;
-    } else if (target === 'mobile') {
-      msg = `HWID do Dispositivo Móvel (Celular) do militar #${militarId} foi resetado.`;
+    if (target === 'site_desktop' || target === 'desktop') {
+      msg = `HWID do Computador no Site Principal do militar #${militarId} foi resetado.`;
+    } else if (target === 'site_mobile' || target === 'mobile') {
+      msg = `HWID do Celular no Site Principal do militar #${militarId} foi resetado.`;
+    } else if (target === 'admin_desktop') {
+      msg = `HWID do Computador no Painel de Avisos do militar #${militarId} foi resetado.`;
+    } else if (target === 'admin_mobile') {
+      msg = `HWID do Celular no Painel de Avisos do militar #${militarId} foi resetado.`;
+    } else if (target === 'site_all') {
+      msg = `Todos os HWIDs do Site Principal do militar #${militarId} foram resetados.`;
+    } else if (target === 'admin_all') {
+      msg = `Todos os HWIDs do Painel de Avisos do militar #${militarId} foram resetados.`;
     }
 
     return NextResponse.json({

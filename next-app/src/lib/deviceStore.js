@@ -45,33 +45,63 @@ export async function getDeviceDatabase() {
   // 1. Tentar ler do Cloud Store no Discord (canal dedicado do bot)
   if (DISCORD_BOT_TOKEN && DISCORD_DATABASE_CHANNEL_ID) {
     try {
-      const pinsRes = await fetch(
-        `https://discord.com/api/v10/channels/${DISCORD_DATABASE_CHANNEL_ID}/pins`,
-        {
-          headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` },
-          cache: 'no-store'
-        }
-      );
+      let fileAttachment = null;
 
-      if (pinsRes.ok) {
-        const pins = await pinsRes.json();
-        const dbMsg = Array.isArray(pins) 
-          ? pins.find(p => p.attachments?.some(a => a.filename === 'cbm_devices_store.json'))
-          : null;
+      // 1a. Buscar mensagens recentes no canal (atualização em tempo real imediata)
+      try {
+        const msgsRes = await fetch(
+          `https://discord.com/api/v10/channels/${DISCORD_DATABASE_CHANNEL_ID}/messages?limit=15`,
+          {
+            headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` },
+            cache: 'no-store'
+          }
+        );
 
-        if (dbMsg) {
-          const fileAttachment = dbMsg.attachments.find(a => a.filename === 'cbm_devices_store.json');
-          if (fileAttachment?.url) {
-            const fileRes = await fetch(fileAttachment.url, { cache: 'no-store' });
-            if (fileRes.ok) {
-              const cloudDb = await fileRes.json();
-              if (cloudDb && typeof cloudDb === 'object') {
-                memoryDb = cloudDb;
-                lastFetchTime = now;
-                writeSafeLocal(getTmpStorePath(), JSON.stringify(cloudDb, null, 2));
-                return memoryDb;
-              }
+        if (msgsRes.ok) {
+          const msgs = await msgsRes.json();
+          if (Array.isArray(msgs)) {
+            const dbMsg = msgs.find(m => m.attachments?.some(a => a.filename === 'cbm_devices_store.json'));
+            if (dbMsg) {
+              fileAttachment = dbMsg.attachments.find(a => a.filename === 'cbm_devices_store.json');
             }
+          }
+        }
+      } catch (e) {
+        console.warn('Aviso: Falha ao buscar mensagens recentes no Discord:', e.message);
+      }
+
+      // 1b. Fallback para mensagens fixadas (pins)
+      if (!fileAttachment) {
+        const pinsRes = await fetch(
+          `https://discord.com/api/v10/channels/${DISCORD_DATABASE_CHANNEL_ID}/pins`,
+          {
+            headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` },
+            cache: 'no-store'
+          }
+        );
+
+        if (pinsRes.ok) {
+          const pins = await pinsRes.json();
+          const dbMsg = Array.isArray(pins) 
+            ? pins.find(p => p.attachments?.some(a => a.filename === 'cbm_devices_store.json'))
+            : null;
+
+          if (dbMsg) {
+            fileAttachment = dbMsg.attachments.find(a => a.filename === 'cbm_devices_store.json');
+          }
+        }
+      }
+
+      if (fileAttachment?.url) {
+        const fileRes = await fetch(fileAttachment.url, { cache: 'no-store' });
+        if (fileRes.ok) {
+          const cloudDb = await fileRes.json();
+          if (cloudDb && typeof cloudDb === 'object') {
+            memoryDb = cloudDb;
+            lastFetchTime = now;
+            writeSafeLocal(getTmpStorePath(), JSON.stringify(cloudDb, null, 2));
+            writeSafeLocal(getLocalStorePath(), JSON.stringify(cloudDb, null, 2));
+            return memoryDb;
           }
         }
       }
@@ -150,38 +180,42 @@ export async function saveDeviceDatabase(db) {
       if (uploadRes.ok) {
         const newMsg = await uploadRes.json();
 
-        // Fixar a nova mensagem
-        await fetch(
-          `https://discord.com/api/v10/channels/${DISCORD_DATABASE_CHANNEL_ID}/pins/${newMsg.id}`,
-          {
-            method: 'PUT',
-            headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` }
-          }
-        );
+        // Tentar fixar a nova mensagem (sem bloquear se o canal atingir o limite de 50 pins)
+        try {
+          await fetch(
+            `https://discord.com/api/v10/channels/${DISCORD_DATABASE_CHANNEL_ID}/pins/${newMsg.id}`,
+            {
+              method: 'PUT',
+              headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` }
+            }
+          );
+        } catch (_) {}
 
         // Limpar mensagens antigas de banco fixadas para manter apenas a mais recente
-        const pinsRes = await fetch(
-          `https://discord.com/api/v10/channels/${DISCORD_DATABASE_CHANNEL_ID}/pins`,
-          { headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` } }
-        );
+        try {
+          const pinsRes = await fetch(
+            `https://discord.com/api/v10/channels/${DISCORD_DATABASE_CHANNEL_ID}/pins`,
+            { headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` } }
+          );
 
-        if (pinsRes.ok) {
-          const pins = await pinsRes.json();
-          if (Array.isArray(pins)) {
-            const oldPins = pins.filter(
-              p => p.id !== newMsg.id && p.attachments?.some(a => a.filename === 'cbm_devices_store.json')
-            );
-            for (const oldPin of oldPins) {
-              await fetch(
-                `https://discord.com/api/v10/channels/${DISCORD_DATABASE_CHANNEL_ID}/messages/${oldPin.id}`,
-                {
-                  method: 'DELETE',
-                  headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` }
-                }
-              ).catch(() => {});
+          if (pinsRes.ok) {
+            const pins = await pinsRes.json();
+            if (Array.isArray(pins)) {
+              const oldPins = pins.filter(
+                p => p.id !== newMsg.id && p.attachments?.some(a => a.filename === 'cbm_devices_store.json')
+              );
+              for (const oldPin of oldPins) {
+                await fetch(
+                  `https://discord.com/api/v10/channels/${DISCORD_DATABASE_CHANNEL_ID}/messages/${oldPin.id}`,
+                  {
+                    method: 'DELETE',
+                    headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` }
+                  }
+                ).catch(() => {});
+              }
             }
           }
-        }
+        } catch (_) {}
       } else {
         const errText = await uploadRes.text();
         console.warn('Aviso: Falha ao fazer upload da base para o Discord:', uploadRes.status, errText);
@@ -226,7 +260,7 @@ export async function saveMilitarRecord(militarId, recordData) {
 }
 
 /**
- * Reseta o HWID de um militar
+ * Reseta o HWID de um militar (separado por Site e Painel de Avisos)
  */
 export async function resetMilitarHwid(militarId, targetType = 'all') {
   const db = await getDeviceDatabase();
@@ -234,13 +268,30 @@ export async function resetMilitarHwid(militarId, targetType = 'all') {
 
   if (!db[cleanId]) return null;
 
-  if (targetType === 'all' || targetType === 'desktop') {
+  const t = String(targetType).toLowerCase();
+
+  // Reset do Site Principal
+  if (t === 'all' || t === 'site_all' || t === 'site_desktop' || t === 'desktop') {
     db[cleanId].desktopHwid = null;
     db[cleanId].desktopDeviceName = null;
+    db[cleanId].siteDesktopHwid = null;
+    db[cleanId].siteDesktopDeviceName = null;
   }
-  if (targetType === 'all' || targetType === 'mobile') {
+  if (t === 'all' || t === 'site_all' || t === 'site_mobile' || t === 'mobile') {
     db[cleanId].mobileHwid = null;
     db[cleanId].mobileDeviceName = null;
+    db[cleanId].siteMobileHwid = null;
+    db[cleanId].siteMobileDeviceName = null;
+  }
+
+  // Reset do Painel de Avisos (Admin / SYSTEM)
+  if (t === 'all' || t === 'admin_all' || t === 'admin_desktop') {
+    db[cleanId].adminDesktopHwid = null;
+    db[cleanId].adminDesktopDeviceName = null;
+  }
+  if (t === 'all' || t === 'admin_all' || t === 'admin_mobile') {
+    db[cleanId].adminMobileHwid = null;
+    db[cleanId].adminMobileDeviceName = null;
   }
 
   db[cleanId].sessionToken = null;
@@ -265,6 +316,7 @@ export async function resetMilitarHwid(militarId, targetType = 'all') {
   await saveDeviceDatabase(db);
   return db[cleanId];
 }
+
 
 /**
  * Adiciona um evento de log de auditoria ao militar
