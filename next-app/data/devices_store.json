@@ -52,6 +52,16 @@
     "createdAt": "2026-10-13T20:19:18.124Z",
     "logs": [
       {
+        "id": "log_1791954505039_c3p4",
+        "timestamp": "2026-10-14T05:08:25.039Z",
+        "type": "LOGIN_SUCCESS",
+        "title": "Autenticação Militar Concluída com Sucesso",
+        "detail": "Militar ErreJota (#35904) autenticado com sucesso no Computador Desktop. Trava HWID validada.",
+        "hwid": "pc_6edc7634f4e317eab1a73279",
+        "deviceType": "desktop",
+        "success": true
+      },
+      {
         "id": "log_1791951435966_kaea",
         "timestamp": "2026-10-14T04:17:15.966Z",
         "type": "LOGIN_SUCCESS",
@@ -259,13 +269,13 @@
     "mobileHwid": null,
     "siteMobileHwid": null,
     "adminMobileHwid": null,
-    "lastLogin": "2026-10-14T04:17:14.882Z",
-    "updatedAt": "2026-10-14T04:17:14.882Z",
-    "sessionToken": "cbm_sec_1791951434882_8jn381ts",
+    "lastLogin": "2026-10-14T05:08:23.754Z",
+    "updatedAt": "2026-10-14T05:08:23.754Z",
+    "sessionToken": "cbm_sec_1791954503754_9b10st3h",
     "lastDesktopLogin": "2026-10-14T02:11:09.611Z",
     "globalName": "ErreJota",
     "mobileDeviceName": null,
     "lastAdminDesktopLogin": "2026-10-14T03:21:48.574Z",
-    "lastSiteDesktopLogin": "2026-10-14T04:17:11.360Z"
+    "lastSiteDesktopLogin": "2026-10-14T05:08:20.279Z"
   }
 }

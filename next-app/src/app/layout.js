@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700;800&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" href="/css/style.css?v=21" />
+        <link rel="stylesheet" href="/css/style.css?v=22" />
         <link rel="stylesheet" href="/css/notificacoes.css?v=21" />
         <link rel="stylesheet" href="/css/border-glow.css" />
         <script

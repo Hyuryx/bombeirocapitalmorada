@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import LightRays from './LightRays';
 import GradientWaves from './GradientWaves';
 import NasaParticles from './NasaParticles';
 
@@ -55,7 +54,10 @@ export default function ThemeBackground() {
           height: '100vh',
           zIndex: 0,
           pointerEvents: 'none',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          background: theme === 'light' 
+            ? 'transparent' 
+            : 'radial-gradient(circle at 50% 30%, #161014 0%, #0c090c 55%, #050406 100%)'
         }}
       >
         {theme === 'light' ? (
@@ -84,27 +86,12 @@ export default function ThemeBackground() {
             grainIntensity={0.04}
           />
         ) : (
-          /* Fundo do Tema Escuro: Feixes de luz LightRays originais */
-          <LightRays
-            key="theme-dark-rays"
-            raysOrigin="top-center"
-            raysColor="#ffffff"
-            raysSpeed={1}
-            lightSpread={0.5}
-            rayLength={3}
-            followMouse={true}
-            mouseInfluence={0.1}
-            noiseAmount={0}
-            distortion={0}
-            className="custom-rays"
-            pulsating={false}
-            fadeDistance={1}
-            saturation={1}
-          />
+          /* Fundo do Tema Escuro: Tonalidade idêntica ao Painel de Avisos com feixes avermelhados sutis */
+          <div className="cbm-light-rays" />
         )}
       </div>
 
-      {/* Partículas NASA Vermelhas Flutuantes (Ativas nas abas do portal) */}
+      {/* Partículas NASA Vermelhas Flutuantes (Idênticas ao Painel de Avisos) */}
       <NasaParticles
         id="particles-portal"
         style={{
