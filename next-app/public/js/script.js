@@ -681,8 +681,12 @@ window.initApp = function() {
         );
 
 
-        // Inicialização: a aplicação sempre inicia bloqueada exigindo a interação do crachá e o login militar
-        lockScreen(false);
+        // Inicialização: Se a sessão já estiver ativa (sessionStorage), mantém desbloqueado no F5
+        if (sessionStorage.getItem('cbm_auth_unlocked') === 'true') {
+            unlockApp();
+        } else {
+            lockScreen(false);
+        }
 
         // Tratamento de retorno da autorização do Discord
         const urlParams = new URLSearchParams(window.location.search);

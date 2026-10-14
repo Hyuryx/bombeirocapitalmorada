@@ -343,15 +343,16 @@ html.planilha-fullscreen-active .global-navbar {
 
 /* Seção Inferior: Botão Configurações, Botão Sair e Logo Capital Morada */
 .sidebar-bottom-section {
-    padding: 6px 6px 14px 6px;
+    padding: 2px 6px 18px 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
     box-sizing: border-box;
     flex-shrink: 0;
     border-top: none !important;
+    margin-top: auto;
 }
 
 /* Botão SAIR Tático Neon Vermelho (Estilo do Botão Entrar, Compacto e Centralizado) */
@@ -363,7 +364,7 @@ html.planilha-fullscreen-active .global-navbar {
     width: calc(100% - 14px);
     max-width: 220px;
     height: 35px;
-    margin: 0 auto;
+    margin: 0 auto 2px auto;
     border: none;
     border-radius: 9px;
     background: linear-gradient(135deg, #ff2638 0%, #b81223 100%);
@@ -407,26 +408,31 @@ html.planilha-fullscreen-active .global-navbar {
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 2px 0 0 0;
+    padding: 4px 0 2px 0;
 }
 
 .sidebar-capital-logo {
-    max-width: 64px;
+    width: 85%;
+    max-width: 58px;
+    height: auto;
     max-height: 38px;
     object-fit: contain;
-    opacity: 0.85;
+    border-radius: 0;
+    opacity: 0.92;
+    filter: drop-shadow(0 0 8px rgba(220, 38, 38, 0.45));
     transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sidebar:hover .sidebar-capital-logo {
-    max-width: 165px;
-    max-height: 56px;
+    max-width: 175px;
+    max-height: 65px;
     opacity: 1;
+    filter: drop-shadow(0 0 16px rgba(239, 68, 68, 0.8));
 }
 
 .sidebar-capital-logo:hover {
-    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.35));
-    transform: scale(1.05);
+    filter: drop-shadow(0 0 22px rgba(255, 60, 60, 0.95)) brightness(1.1);
+    transform: scale(1.06);
 }
 
 /* Ocultar nav-brand na barra superior quando não estiver no Início */

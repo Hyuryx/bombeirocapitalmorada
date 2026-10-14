@@ -761,14 +761,24 @@ export default function PainelAvisosPage() {
                       <option value="Avisos Gerais">Avisos Gerais</option>
                       <option value="Regras">Regras</option>
                       <option value="Uniformes">Uniformes</option>
-                      <optgroup label="Cursos Específicos">
+                      <optgroup label="Cursos (Aba Geral e Específicos)">
+                        <option value="Cursos">Cursos (Geral)</option>
                         <option value="Curso de Piloto">Curso de Piloto</option>
                         <option value="Resgate Aquático">Resgate Aquático</option>
                         <option value="Resgate Montanha">Resgate Montanha</option>
                         <option value="Paraquedismo">Paraquedismo</option>
                         <option value="Evoluir">Evoluir</option>
+                        <option value="COER">COER</option>
+                        <option value="Tripulantes">Tripulantes</option>
+                        <option value="GTM">GTM</option>
                       </optgroup>
-                      <option value="Modulação">Modulação</option>
+                      <optgroup label="Modulação (Aba Geral e Sub-itens)">
+                        <option value="Modulação">Modulação (Geral)</option>
+                        <option value="Códigos Q">Códigos Q</option>
+                        <option value="Alfabeto Fonético">Alfabeto Fonético</option>
+                        <option value="Numeração Fonética">Numeração Fonética</option>
+                        <option value="Padrão de Rádio">Padrão de Rádio</option>
+                      </optgroup>
                       <option value="Viaturas">Viaturas</option>
                       <option value="Hierarquia">Hierarquia</option>
                       <option value="Planilhas">Planilhas</option>

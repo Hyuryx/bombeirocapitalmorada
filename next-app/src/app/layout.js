@@ -25,16 +25,18 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700;800&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" href="/css/style.css?v=20" />
-        <link rel="stylesheet" href="/css/notificacoes.css?v=20" />
+        <link rel="stylesheet" href="/css/style.css?v=21" />
+        <link rel="stylesheet" href="/css/notificacoes.css?v=21" />
         <link rel="stylesheet" href="/css/border-glow.css" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                localStorage.removeItem('cbm_auth_unlocked');
-                sessionStorage.removeItem('cbm_auth_unlocked');
-                document.documentElement.classList.remove('cbm-unlocked');
+                if (sessionStorage.getItem('cbm_auth_unlocked') === 'true') {
+                  document.documentElement.classList.add('cbm-unlocked');
+                } else {
+                  document.documentElement.classList.remove('cbm-unlocked');
+                }
                 if (localStorage.getItem('cbm_theme') === 'light') {
                   document.documentElement.classList.add('light-theme');
                 }
@@ -51,7 +53,7 @@ export default function RootLayout({ children }) {
         <Script src="/js/deviceFingerprint.js" strategy="beforeInteractive" />
         <Script src="/js/particles.min.js?v=2" strategy="beforeInteractive" />
         <Script src="/js/script.js?v=12" strategy="afterInteractive" />
-        <Script src="/js/notificacoes.js" strategy="afterInteractive" />
+        <Script src="/js/notificacoes.js?v=21" strategy="afterInteractive" />
         <Script src="/js/inicio-videos.js" strategy="afterInteractive" />
         <Script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js" strategy="afterInteractive" />
         <Script src="/js/animations.js" strategy="afterInteractive" />

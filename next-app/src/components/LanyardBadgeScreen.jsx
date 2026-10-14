@@ -6,12 +6,21 @@ import NasaParticles from './NasaParticles';
 import './LanyardBadgeScreen.css';
 
 export default function LanyardBadgeScreen() {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('cbm_auth_unlocked') !== 'true';
+    }
+    return true;
+  });
   const [isHiding, setIsHiding] = useState(false);
   const isTransitioningRef = useRef(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+
+    if (sessionStorage.getItem('cbm_auth_unlocked') === 'true') {
+      setIsVisible(false);
+    }
 
     // Eventos para abrir ou fechar o crachá
     const handleShowCracha = () => {

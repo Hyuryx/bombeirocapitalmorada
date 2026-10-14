@@ -99,16 +99,7 @@ export default function ReactAvisosGerais() {
   useEffect(() => {
     async function carregar() {
       try {
-        let res;
-        try {
-          res = await fetch('http://localhost:3001/api/avisos');
-        } catch (e) {
-          res = await fetch('/api/avisos');
-        }
-        
-        if (!res || !res.ok) {
-          res = await fetch('/api/avisos');
-        }
+        const res = await fetch('/api/avisos', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           const agora = new Date();

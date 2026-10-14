@@ -128,19 +128,12 @@ export default function FuturisticLogin({
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const isLocal =
-      window.location.hostname === 'localhost' ||
-      window.location.hostname === '127.0.0.1' ||
-      window.location.hostname.endsWith('.local');
-
-    if (!isLocal) {
-      const isSessionStored = sessionStorage.getItem('cbm_auth_unlocked') === 'true';
-      if (isSessionStored) {
-        document.documentElement.classList.add('cbm-unlocked');
-        document.body.classList.remove('locked');
-        setIsUnlocked(true);
-        return;
-      }
+    const isSessionStored = sessionStorage.getItem('cbm_auth_unlocked') === 'true';
+    if (isSessionStored) {
+      document.documentElement.classList.add('cbm-unlocked');
+      document.body.classList.remove('locked');
+      setIsUnlocked(true);
+      return;
     }
 
     document.body.classList.add('locked');

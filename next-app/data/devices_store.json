@@ -52,6 +52,46 @@
     "createdAt": "2026-10-13T20:19:18.124Z",
     "logs": [
       {
+        "id": "log_1791951435966_kaea",
+        "timestamp": "2026-10-14T04:17:15.966Z",
+        "type": "LOGIN_SUCCESS",
+        "title": "Autenticação Militar Concluída com Sucesso",
+        "detail": "Militar ErreJota (#35904) autenticado com sucesso no Computador Desktop. Trava HWID validada.",
+        "hwid": "pc_6edc7634f4e317eab1a73279",
+        "deviceType": "desktop",
+        "success": true
+      },
+      {
+        "id": "log_1791950438849_0jc7",
+        "timestamp": "2026-10-14T04:00:38.849Z",
+        "type": "LOGIN_SUCCESS",
+        "title": "Autenticação Militar Concluída com Sucesso",
+        "detail": "Militar ErreJota (#35904) autenticado com sucesso no Computador Desktop. Trava HWID validada.",
+        "hwid": "pc_6edc7634f4e317eab1a73279",
+        "deviceType": "desktop",
+        "success": true
+      },
+      {
+        "id": "log_1791950431109_nne0",
+        "timestamp": "2026-10-14T04:00:31.109Z",
+        "type": "LOGIN_SUCCESS",
+        "title": "Autenticação Militar Concluída com Sucesso",
+        "detail": "Militar ErreJota (#35904) autenticado com sucesso no Computador Desktop. Trava HWID validada.",
+        "hwid": "pc_6edc7634f4e317eab1a73279",
+        "deviceType": "desktop",
+        "success": true
+      },
+      {
+        "id": "log_1791948524363_6nso",
+        "timestamp": "2026-10-14T03:28:44.363Z",
+        "type": "LOGIN_SUCCESS",
+        "title": "Autenticação Militar Concluída com Sucesso",
+        "detail": "Militar ErreJota (#35904) autenticado com sucesso no Computador Desktop. Trava HWID validada.",
+        "hwid": "pc_6edc7634f4e317eab1a73279",
+        "deviceType": "desktop",
+        "success": true
+      },
+      {
         "id": "log_1791948199223_7f1a",
         "timestamp": "2026-10-14T03:23:19.223Z",
         "type": "LOGIN_SUCCESS",
@@ -219,13 +259,13 @@
     "mobileHwid": null,
     "siteMobileHwid": null,
     "adminMobileHwid": null,
-    "lastLogin": "2026-10-14T03:23:18.010Z",
-    "updatedAt": "2026-10-14T03:23:18.010Z",
-    "sessionToken": "cbm_sec_1791948198010_2fp0wvq3",
+    "lastLogin": "2026-10-14T04:17:14.882Z",
+    "updatedAt": "2026-10-14T04:17:14.882Z",
+    "sessionToken": "cbm_sec_1791951434882_8jn381ts",
     "lastDesktopLogin": "2026-10-14T02:11:09.611Z",
     "globalName": "ErreJota",
     "mobileDeviceName": null,
     "lastAdminDesktopLogin": "2026-10-14T03:21:48.574Z",
-    "lastSiteDesktopLogin": "2026-10-14T03:23:15.754Z"
+    "lastSiteDesktopLogin": "2026-10-14T04:17:11.360Z"
   }
 }

@@ -1,534 +1,64 @@
+/**
+ * Sistema Unificado de Notificações Pop-up (Toasts Laterais) e Marcação de Abas CBM
+ * Exclusivo para o site dos bombeiros (inibido no /painel-avisos)
+ */
+
+// 1. Verificação de Ambiente: NUNCA rodar nem exibir no /painel-avisos
+function estaNoPainelAvisos() {
+  if (typeof window === 'undefined') return true;
+  return window.location.pathname.startsWith('/painel-avisos');
+}
+
+// 2. Busca de dados atualizada via API
 async function fetchAvisosData() {
-  let avisos = null;
-  if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    try {
-      const resLocal = await fetch('http://localhost:3001/api/avisos');
-      if (resLocal.ok) {
-        avisos = await resLocal.json();
-      }
-    } catch (e) {
-      // Ignora erro e tenta buscar o arquivo local
-    }
-  }
-
-  if (!avisos) {
-    try {
-      const respostaApi = await fetch(`/api/avisos`);
-      if (respostaApi.ok) {
-        avisos = await respostaApi.json();
-      }
-    } catch (e) {
-      // Ignora erro da API
-    }
-  }
-
-  if (!avisos) {
-    throw new Error(`Erro ao carregar avisos via API`);
-  }
-
-  if (!Array.isArray(avisos)) {
-    throw new Error("O conteúdo de avisos é inválido.");
-  }
-
-  return avisos;
-}
-
-(() => {
-  const INTERVALO_ATUALIZACAO = 60_000;
-
-  const prioridades = {
-    urgente: 1,
-    importante: 2,
-    normal: 3
-  };
-
-  let container = null;
-
-  function escaparHtml(valor = "") {
-    return String(valor)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
-
-  function obterContainer() {
-    if (container) {
-      return container;
-    }
-
-    container = document.createElement("aside");
-    container.id = "central-notificacoes";
-    container.setAttribute(
-      "aria-label",
-      "Avisos importantes"
-    );
-
-    document.body.appendChild(container);
-
-    return container;
-  }
-
-  function estaAtivo(aviso, agora) {
-    if (!aviso.ativo || !aviso.mostrarPopup) {
-      return false;
-    }
-
-    const inicio = new Date(aviso.inicio);
-
-    if (Number.isNaN(inicio.getTime())) {
-      return false;
-    }
-
-    if (aviso.fim && String(aviso.fim).trim() !== "" && String(aviso.fim) !== "null") {
-      const fim = new Date(aviso.fim);
-      if (Number.isNaN(fim.getTime())) return true; // keep if invalid
-      return agora >= inicio && agora < fim;
-    }
-    
-    return agora >= inicio;
-  }
-
-  function formatarEncerramento(valor) {
-    return new Intl.DateTimeFormat("pt-BR", {
-      dateStyle: "short",
-      timeStyle: "short",
-      timeZone: "America/Sao_Paulo"
-    }).format(new Date(valor));
-  }
-
-  function obterAvisosFechados() {
-    try {
-      const salvos = localStorage.getItem('avisosFechados');
-      return salvos ? new Set(JSON.parse(salvos)) : new Set();
-    } catch (e) {
-      return new Set();
-    }
-  }
-
-  const avisosFechados = obterAvisosFechados();
-
-  function salvarAvisoFechado(id) {
-    avisosFechados.add(id);
-    try {
-      localStorage.setItem('avisosFechados', JSON.stringify([...avisosFechados]));
-    } catch (e) {}
-  }
-
-  function montarAviso(aviso) {
-    const elemento = document.createElement("article");
-
-    elemento.className = [
-      "notificacao-site",
-      `notificacao-${aviso.prioridade}`,
-      aviso.piscar ? "notificacao-destaque" : "",
-      "border-glow-card"
-    ]
-      .filter(Boolean)
-      .join(" ");
-
-    elemento.dataset.avisoId = aviso.id;
-    elemento.style.setProperty('--border-radius', '12px');
-    elemento.style.setProperty('--card-bg', '#120F17');
-
-    elemento.innerHTML = `
-      <span class="edge-light"></span>
-      <div class="border-glow-inner" style="padding: 16px; display: flex; flex-direction: column;">
-        <button
-          type="button"
-          class="notificacao-fechar"
-          aria-label="Fechar aviso"
-          style="position: absolute; top: 10px; right: 10px; background: transparent; border: none; color: #aaa; font-size: 20px; cursor: pointer; z-index: 10;"
-        >
-          ×
-        </button>
-
-        <div class="notificacao-cabecalho" style="display: flex; gap: 8px; margin-bottom: 12px; z-index: 2;">
-          <span class="notificacao-categoria" style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase;">
-            ${escaparHtml(aviso.categoria)}
-          </span>
-
-          <span class="notificacao-prioridade" style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase;">
-            ${escaparHtml(aviso.prioridade)}
-          </span>
-        </div>
-
-        <h2 style="font-size: 18px; margin: 0 0 8px 0; color: white; z-index: 2;">${escaparHtml(aviso.titulo)}</h2>
-
-        <p style="font-size: 14px; margin: 0; color: #ccc; z-index: 2;">${formatarTextoMarkdown(aviso.resumo || aviso.descricao)}</p>
-
-        ${["curso", "evento", "manutencao"].includes(aviso.categoria) && aviso.fim ? `
-        <div class="notificacao-rodape" style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 12px; color: #888; z-index: 2;">
-          <small>
-            Disponível até ${formatarEncerramento(aviso.fim)}
-          </small>
-          <small class="cronometro-aviso" data-fim="${aviso.fim}" style="font-weight: bold;"></small>
-        </div>
-        ` : ''}
-      </div>
-    `;
-
-    // Se já foi fechado antes pelo usuário, mantem escondido
-    if (avisosFechados.has(aviso.id)) {
-      elemento.style.display = "none";
-    }
-
-    elemento
-      .querySelector(".notificacao-fechar")
-      .addEventListener("click", () => {
-        elemento.style.display = "none";
-        salvarAvisoFechado(aviso.id); // Registra que o usuário fechou e salva no localStorage
-      });
-
-    // Animação do BorderGlow (mouse move)
-    elemento.addEventListener('mousemove', (e) => {
-        const rect = elemento.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        const cx = rect.width / 2;
-        const cy = rect.height / 2;
-        const dx = x - cx;
-        const dy = y - cy;
-        
-        let kx = Infinity, ky = Infinity;
-        if (dx !== 0) kx = cx / Math.abs(dx);
-        if (dy !== 0) ky = cy / Math.abs(dy);
-        const edge = Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
-        
-        let degrees = 0;
-        if (dx !== 0 || dy !== 0) {
-            const radians = Math.atan2(dy, dx);
-            degrees = radians * (180 / Math.PI) + 90;
-            if (degrees < 0) degrees += 360;
-        }
-
-        elemento.style.setProperty('--edge-proximity', (edge * 100).toFixed(3));
-        elemento.style.setProperty('--cursor-angle', degrees.toFixed(3) + 'deg');
-    });
-
-    elemento.addEventListener('mouseleave', () => {
-        elemento.style.setProperty('--edge-proximity', '0');
-    });
-
-    // Auto animação inicial (sweep-active)
-    elemento.classList.add('sweep-active');
-    setTimeout(() => {
-        elemento.classList.remove('sweep-active');
-    }, 4000); // Remove after animation
-
-    return elemento;
-  }
-
-  function renderizar(avisos) {
-    const central = obterContainer();
-
-    if (window.notificacoesExpiradas) {
-        central.style.display = "none";
-        return;
-    }
-
-    // Mantem apenas os elementos novos, atualizando o html
-    central.innerHTML = "";
-
-    avisos.forEach((aviso) => {
-      central.appendChild(montarAviso(aviso));
-    });
-
-    // Se todos estiverem escondidos (display: none), esconde o central
-    const todosEscondidos = Array.from(central.children).every(el => el.style.display === 'none');
-    central.hidden = (avisos.length === 0 || todosEscondidos);
-    
-    if (!central.hidden && document.querySelector('#view-inicio.active')) {
-        central.style.display = 'flex';
-    }
-  }
-
-  async function carregarAvisos() {
-    try {
-      const avisos = await fetchAvisosData();
-
-      const agora = new Date();
-
-      const ativos = avisos
-        .filter((aviso) => estaAtivo(aviso, agora))
-        .sort((a, b) => {
-          return (
-            (prioridades[a.prioridade] || 99) -
-            (prioridades[b.prioridade] || 99)
-          );
-        });
-
-      renderizar(ativos);
-    } catch (erro) {
-      console.error(erro);
-
-      if (container) {
-        container.hidden = true;
-      }
-    }
-  }
-
-  function atualizarCronometros() {
-    const cronometros = document.querySelectorAll('.cronometro-aviso');
-    const agora = new Date().getTime();
-
-    cronometros.forEach(cron => {
-      const fim = new Date(cron.dataset.fim).getTime();
-      const diff = fim - agora;
-
-      if (diff <= 0) {
-        const notificacao = cron.closest('.notificacao-site, .aviso-geral, .aviso-curso-banner');
-        if (notificacao && notificacao.style.display !== 'none') {
-          notificacao.style.display = 'none';
-          if (notificacao.classList.contains('notificacao-site')) {
-            const central = obterContainer();
-            const todosEscondidos = Array.from(central.children).every(el => el.style.display === 'none');
-            central.hidden = todosEscondidos;
-          }
-        }
-      } else {
-        const totalHoras = Math.floor(diff / (1000 * 60 * 60));
-        const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-        if (totalHoras >= 24) {
-          const dias = Math.floor(totalHoras / 24);
-          const horasRestantes = totalHoras % 24;
-          const textoDias = dias === 1 ? "1 dia" : `${dias} dias`;
-          
-          cron.textContent = `${textoDias} ${horasRestantes.toString().padStart(2, '0')}h ${minutos.toString().padStart(2, '0')}m`;
-        } else {
-          const segundos = Math.floor((diff % (1000 * 60)) / 1000);
-          cron.textContent = `${totalHoras.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
-        }
-      }
-    });
-  }
-
-  function iniciar() {
-    carregarAvisos();
-
-    window.setInterval(
-      carregarAvisos,
-      INTERVALO_ATUALIZACAO
-    );
-
-    window.setInterval(atualizarCronometros, 1000);
-
-    setTimeout(() => {
-        window.notificacoesExpiradas = true;
-        const central = document.getElementById("central-notificacoes");
-        if (central) {
-            central.style.display = 'none';
-        }
-    }, 60000);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", iniciar);
-  } else {
-    iniciar();
-  }
-})();
-
-async function carregarAvisosGerais() {
-  // A aba Avisos Gerais agora é renderizada por um componente React (ReactAvisosGerais.jsx).
-  // Não fazemos mais innerHTML aqui para não quebrar o React.
-  
-  // Apenas populamos a variavel global caso o modal antigo precise (opcional)
+  if (estaNoPainelAvisos()) return [];
   try {
-    const avisos = await fetchAvisosData();
-    const agora = new Date();
-    const avisosGerais = avisos.filter((aviso) => {
-      const inicio = new Date(aviso.inicio);
-      let isValidFim = false;
-      let expired = false;
-      if (aviso.fim && String(aviso.fim).trim() !== "" && String(aviso.fim) !== "null") {
-        const fim = new Date(aviso.fim);
-        if (!Number.isNaN(fim.getTime())) {
-          isValidFim = true;
-          expired = agora >= fim;
-        }
-      }
-      return (aviso.ativo && aviso.mostrarAvisosGerais && agora >= inicio && !expired);
-    }).sort((a, b) => new Date(b.inicio) - new Date(a.inicio));
-    
-    window.avisosData = avisosGerais; 
-  } catch (erro) {
-    console.error("Erro ao carregar avisos gerais no vanilla:", erro);
+    const res = await fetch('/api/avisos', { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) return data;
+    }
+  } catch (e) {
+    console.warn('Aviso: Falha ao obter dados da API /api/avisos:', e.message);
   }
+  return [];
 }
 
-function abrirModalAviso(index) {
-  const aviso = window.avisosData[index];
-  if (!aviso) return;
+// 3. Mapeamento de Destinos para Global Navbar e Sidebars
+const MAPA_DESTINOS_AVISOS = {
+  // Abas Globais Padrão
+  "Início": { globalTarget: "view-inicio" },
+  "Avisos Gerais": { globalTarget: "view-avisos" },
+  "Regras": { globalTarget: "view-regras" },
+  "Uniformes": { globalTarget: "view-uniformes" },
 
-  let modal = document.getElementById("modal-aviso-geral");
-  if (!modal) {
-    modal = document.createElement("div");
-    modal.id = "modal-aviso-geral";
-    document.body.appendChild(modal);
-  }
+  // Cursos (Global + Sub-itens)
+  "Cursos": { globalTarget: "view-cursos" },
+  "Curso de Piloto": { globalTarget: "view-cursos", subnavTarget: "curso-aereo" },
+  "Resgate Aquático": { globalTarget: "view-cursos", subnavTarget: "curso-aquatico" },
+  "Resgate Montanha": { globalTarget: "view-cursos", subnavTarget: "curso-montanha" },
+  "Paraquedismo": { globalTarget: "view-cursos", subnavTarget: "curso-paraquedismo" },
+  "Evoluir": { globalTarget: "view-cursos", subnavTarget: "curso-evoluir" },
+  "COER": { globalTarget: "view-cursos", subnavTarget: "curso-coer" },
+  "Tripulantes": { globalTarget: "view-cursos", subnavTarget: "curso-tripulantes" },
+  "GTM": { globalTarget: "view-cursos", subnavTarget: "curso-gtm" },
 
-  const formatarDataModal = (valor) => {
-    return new Intl.DateTimeFormat("pt-BR", {
-      dateStyle: "short",
-      timeStyle: "short",
-      timeZone: "America/Sao_Paulo"
-    }).format(new Date(valor));
-  };
+  // Modulação (Global + Sub-itens)
+  "Modulação": { globalTarget: "view-modulacao" },
+  "Códigos Q": { globalTarget: "view-modulacao", subnavTarget: "codigos-q" },
+  "Alfabeto Fonético": { globalTarget: "view-modulacao", subnavTarget: "alfabeto-fonetico" },
+  "Numeração Fonética": { globalTarget: "view-modulacao", subnavTarget: "numeracao-fonetica" },
+  "Padrão de Rádio": { globalTarget: "view-modulacao", subnavTarget: "padrao-radio" },
 
-  const linkHTML = aviso.link 
-    ? `<a href="${aviso.link}" class="modal-aviso-link" target="_blank">Acessar Link</a>` 
-    : `<a class="modal-aviso-link inativo">Acessar Link</a>`;
-    
-  const imagemHTML = aviso.imagem
-    ? `<img src="${aviso.imagem}" alt="Imagem do Aviso" style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 8px; margin: 15px 0;">`
-    : "";
+  // Outras Abas
+  "Viaturas": { globalTarget: "view-viaturas" },
+  "Hierarquia": { globalTarget: "view-hierarquia" },
+  "Planilhas": { globalTarget: "view-planilhas" },
+  "Galeria": { globalTarget: "view-galeria" }
+};
 
-  modal.innerHTML = `
-    <div class="modal-aviso-conteudo">
-      <button class="modal-aviso-fechar" onclick="document.getElementById('modal-aviso-geral').style.display='none'">×</button>
-      <h2>${aviso.titulo}</h2>
-      <div class="modal-aviso-badges">
-        <span class="aviso-badge">${aviso.categoria}</span>
-        <span class="aviso-badge prioridade-${aviso.prioridade}">${aviso.prioridade}</span>
-      </div>
-      ${imagemHTML}
-      ${aviso.resumo ? `<p class="modal-aviso-resumo" style="font-weight: bold; margin-bottom: 10px; white-space: pre-wrap;">${formatarTextoMarkdown(aviso.resumo)}</p>` : ''}
-      <p class="modal-aviso-desc">${formatarTextoMarkdown(aviso.descricao)}</p>
-      <div class="modal-aviso-datas">
-        <p><strong>Início:</strong> ${formatarDataModal(aviso.inicio)}</p>
-        ${["curso", "evento", "manutencao"].includes(aviso.categoria) && aviso.fim ? `
-        <p><strong>Encerramento:</strong> ${formatarDataModal(aviso.fim)}</p>
-        ` : ''}</div>
-      ${linkHTML}
-    </div>
-  `;
-
-  modal.style.display = "flex";
-}
-
-// Ensure carregarAvisosGerais runs when DOM is loaded, and also whenever #view-avisos is shown
-document.addEventListener('DOMContentLoaded', () => {
-  carregarAvisosGerais();
-  carregarAvisosCursos();
-
-  // Silent refresh das abas também
-  window.setInterval(() => {
-    carregarAvisosGerais();
-    carregarAvisosCursos();
-  }, 30000);
-});
-
-async function carregarAvisosCursos() {
-  try {
-    const avisos = await fetchAvisosData();
-    const agora = new Date();
-
-    const avisosAtivos = avisos.filter((aviso) => {
-      const inicio = new Date(aviso.inicio);
-      if (aviso.fim && String(aviso.fim).trim() !== "" && String(aviso.fim) !== "null") {
-        const dataFim = new Date(aviso.fim);
-        if (!isNaN(dataFim.getTime())) {
-          return aviso.ativo && agora >= inicio && agora < dataFim;
-        }
-      }
-      return aviso.ativo && agora >= inicio;
-    });
-
-    const mapaAbas = {
-      "Curso de Piloto": { id: "curso-aereo", selector: ".sidebar-nav li[data-target='curso-aereo']" },
-      "Resgate Aquático": { id: "curso-aquatico", selector: ".sidebar-nav li[data-target='curso-aquatico']" },
-      "Resgate Montanha": { id: "curso-montanha", selector: ".sidebar-nav li[data-target='curso-montanha']" },
-      "Paraquedismo": { id: "curso-paraquedismo", selector: ".sidebar-nav li[data-target='curso-paraquedismo']" },
-      "Evoluir": { id: "curso-evoluir", selector: ".sidebar-nav li[data-target='curso-evoluir']" },
-      "Início": { id: "view-inicio", selector: ".nav-item[data-global-target='view-inicio']" },
-      "Avisos Gerais": { id: "view-avisos", selector: ".nav-item[data-global-target='view-avisos']" },
-      "Regras": { id: "view-regras", selector: ".nav-item[data-global-target='view-regras']" },
-      "Uniformes": { id: "view-uniformes", selector: ".nav-item[data-global-target='view-uniformes']" },
-      "Cursos": { id: "view-cursos", selector: ".nav-item[data-global-target='view-cursos']" },
-      "Modulação": { id: "view-modulacao", selector: ".nav-item[data-global-target='view-modulacao']" },
-      "Viaturas": { id: "view-viaturas", selector: ".nav-item[data-global-target='view-viaturas']" },
-      "Hierarquia": { id: "view-hierarquia", selector: ".nav-item[data-global-target='view-hierarquia']" },
-      "Planilhas": { id: "view-planilhas", selector: ".nav-item[data-global-target='view-planilhas']" },
-      "Galeria": { id: "view-galeria", selector: ".nav-item[data-global-target='view-galeria']" }
-    };
-
-    // Reset current notifications
-    Object.values(mapaAbas).forEach(aba => {
-      const el = document.getElementById(aba.id);
-      if(el) {
-        const notif = el.querySelector('.aviso-curso-banner');
-        if(notif) notif.remove();
-      }
-      const navItem = document.querySelector(aba.selector);
-      if(navItem) navItem.classList.remove('tem-aviso');
-    });
-
-    // Add new notifications
-    avisosAtivos.forEach(aviso => {
-      if (mapaAbas[aviso.titulo]) {
-        const aba = mapaAbas[aviso.titulo];
-        const el = document.getElementById(aba.id);
-        if(el && !el.querySelector('.aviso-curso-banner')) {
-          const temFim = aviso.fim && String(aviso.fim).trim() !== "" && String(aviso.fim) !== "null";
-          const isCurso = ["Curso de Piloto", "Resgate Aquático", "Resgate Montanha", "Paraquedismo", "Evoluir"].includes(aviso.titulo);
-          const tituloBanner = isCurso 
-            ? "Há um aviso ativo para este curso. Veja a aba Avisos Gerais." 
-            : "Há um aviso ativo para esta categoria.";
-            
-          const banner = document.createElement('div');
-          banner.className = 'aviso-curso-banner';
-          banner.innerHTML = `
-            ${temFim ? `<span class="cronometro-aviso" data-fim="${aviso.fim}" style="display:none;"></span>` : ''}
-            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-            <div>
-              <strong>Atenção:</strong> ${tituloBanner} <br>
-              <span style="font-size: 0.85em; opacity: 0.9;">${formatarTextoMarkdown(aviso.resumo || aviso.descricao)}</span>
-            </div>
-          `;
-          const header = el.querySelector('header') || el.querySelector('.section-header');
-          if (header) {
-            header.insertAdjacentElement('afterend', banner);
-          } else {
-            el.prepend(banner);
-          }
-        }
-        
-        const navItem = document.querySelector(aba.selector);
-        if(navItem) {
-          navItem.classList.add('tem-aviso');
-        }
-      }
-      
-      if (aviso.mostrarAvisosGerais) {
-        const navItemGeral = document.querySelector(mapaAbas["Avisos Gerais"].selector);
-        if(navItemGeral) {
-          navItemGeral.classList.add('tem-aviso');
-        }
-      }
-      
-      const isCurso = ["Curso de Piloto", "Resgate Aquático", "Resgate Montanha", "Paraquedismo"].includes(aviso.titulo);
-      if (isCurso) {
-        const navItemCursos = document.querySelector(mapaAbas["Cursos"].selector);
-        if (navItemCursos) {
-          navItemCursos.classList.add('tem-aviso');
-        }
-      }
-    });
-
-  } catch (erro) {
-    console.error("Erro ao carregar avisos de cursos:", erro);
-  }
-}
-
-function escaparHtmlLocal(valor = "") {
+// Funções Utilitárias de Texto e Escape
+function escaparHtml(valor = "") {
   return String(valor)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
@@ -538,69 +68,411 @@ function escaparHtmlLocal(valor = "") {
 }
 
 function formatarTextoMarkdown(valor = "") {
-  let texto = escaparHtmlLocal(valor);
-  // Negrito: **texto**
+  let texto = escaparHtml(valor);
   texto = texto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  // Itálico: *texto* ou _texto_
   texto = texto.replace(/\*(.*?)\*/g, '<em>$1</em>');
   texto = texto.replace(/_(.*?)_/g, '<em>$1</em>');
   return texto;
 }
 
-window.addEventListener('tabChanged', async (e) => {
-  const targetId = e.detail.targetId;
+function formatarDataEncerramento(valor) {
+  try {
+    return new Intl.DateTimeFormat("pt-BR", {
+      dateStyle: "short",
+      timeStyle: "short",
+      timeZone: "America/Sao_Paulo"
+    }).format(new Date(valor));
+  } catch (e) {
+    return String(valor);
+  }
+}
 
-  const central = document.getElementById("central-notificacoes");
-  if (central) {
-      if (targetId !== 'view-inicio' && targetId !== 'login-event') {
-          central.style.display = 'none';
-      } else if (!window.notificacoesExpiradas && !central.hidden) {
-          central.style.display = 'flex';
-      }
+// Verifica se um aviso está ativo no momento
+function estaAtivo(aviso, agora = new Date()) {
+  if (!aviso || aviso.ativo === false) return false;
+  const inicio = new Date(aviso.inicio);
+  if (isNaN(inicio.getTime())) return false;
+
+  if (aviso.fim && String(aviso.fim).trim() !== "" && String(aviso.fim) !== "null") {
+    const fim = new Date(aviso.fim);
+    if (!isNaN(fim.getTime())) {
+      return agora >= inicio && agora < fim;
+    }
+  }
+  return agora >= inicio;
+}
+
+// 4. Central de Notificações Toast Lateral Compacta
+let containerNotificacoes = null;
+
+function obterContainerCentral() {
+  if (estaNoPainelAvisos()) {
+    const centralExistente = document.getElementById("central-notificacoes");
+    if (centralExistente) centralExistente.remove();
+    return null;
   }
 
+  if (containerNotificacoes && document.getElementById("central-notificacoes")) {
+    return containerNotificacoes;
+  }
+  let central = document.getElementById("central-notificacoes");
+  if (!central) {
+    central = document.createElement("aside");
+    central.id = "central-notificacoes";
+    central.setAttribute("aria-label", "Avisos Operacionais Bombeiros");
+    document.body.appendChild(central);
+  }
+  containerNotificacoes = central;
+  return containerNotificacoes;
+}
+
+function obterAvisosFechadosSessao() {
+  try {
+    const raw = sessionStorage.getItem('cbm_avisos_fechados');
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  } catch (e) {
+    return new Set();
+  }
+}
+
+function salvarAvisoFechadoSessao(id) {
+  try {
+    const set = obterAvisosFechadosSessao();
+    set.add(id);
+    sessionStorage.setItem('cbm_avisos_fechados', JSON.stringify([...set]));
+  } catch (e) {}
+}
+
+function montarCardToast(aviso) {
+  const elemento = document.createElement("article");
+
+  // Configuração de cores por intensidade/prioridade
+  const prioridade = String(aviso.prioridade || 'normal').toLowerCase();
+  let prioridadeCor = '#22c55e'; // Verde para normal
+  let prioridadeBg = 'rgba(34, 197, 94, 0.16)';
+  let prioridadeBorder = 'rgba(34, 197, 94, 0.45)';
+  let prioridadeNome = 'Normal';
+
+  if (prioridade === 'importante') {
+    prioridadeCor = '#f59e0b'; // Amarelo/Laranja para importante
+    prioridadeBg = 'rgba(245, 158, 11, 0.16)';
+    prioridadeBorder = 'rgba(245, 158, 11, 0.45)';
+    prioridadeNome = 'Importante';
+  } else if (prioridade === 'urgente') {
+    prioridadeCor = '#ef4444'; // Vermelho para urgente
+    prioridadeBg = 'rgba(239, 68, 68, 0.2)';
+    prioridadeBorder = 'rgba(239, 68, 68, 0.55)';
+    prioridadeNome = 'Urgente';
+  }
+
+  elemento.className = [
+    "notificacao-site",
+    `notificacao-${prioridade}`,
+    aviso.piscar ? "notificacao-destaque" : ""
+  ].filter(Boolean).join(" ");
+
+  elemento.dataset.avisoId = aviso.id;
+  elemento.style.borderLeft = `3.5px solid ${prioridadeCor}`;
+
+  const destinoInfo = MAPA_DESTINOS_AVISOS[aviso.titulo] || {};
+  const globalTarget = destinoInfo.globalTarget || (aviso.mostrarAvisosGerais ? "view-avisos" : "");
+
+  elemento.innerHTML = `
+    <!-- Fundo Estrelado Parallax NASA -->
+    <div class="toast-bg-stars"></div>
+
+    <!-- Bolinhas Vermelhas NASA Flutuantes -->
+    <div class="toast-nasa-dots">
+      <span class="dot d1"></span>
+      <span class="dot d2"></span>
+      <span class="dot d3"></span>
+      <span class="dot d4"></span>
+      <span class="dot d5"></span>
+    </div>
+
+    <!-- Cantoneiras Táticas HUD nos Cantos -->
+    <span class="toast-hud-corner tl"></span>
+    <span class="toast-hud-corner br"></span>
+
+    <!-- Conteúdo Interno Estruturado e Compacto -->
+    <div style="padding: 8px 10px; display: flex; flex-direction: column; position: relative; z-index: 2;">
+      <button
+        type="button"
+        class="notificacao-fechar"
+        aria-label="Fechar aviso"
+        style="position: absolute; top: 4px; right: 4px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; width: 18px; height: 18px; border-radius: 50%; font-size: 10px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
+      >
+        ✕
+      </button>
+
+      <div class="notificacao-cabecalho" style="display: flex; gap: 5px; margin-bottom: 4px; align-items: center; padding-right: 20px;">
+        <span class="notificacao-prioridade" style="background: ${prioridadeBg}; border: 1px solid ${prioridadeBorder}; color: ${prioridadeCor}; padding: 1.5px 6px; border-radius: 4px; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px;">
+          ${escaparHtml(prioridadeNome)}
+        </span>
+        <span class="notificacao-categoria" style="background: rgba(255,255,255,0.08); color: #94a3b8; padding: 1.5px 5px; border-radius: 4px; font-size: 9px; font-weight: 600; text-transform: uppercase;">
+          ${escaparHtml(aviso.categoria || 'Aviso')}
+        </span>
+      </div>
+
+      <h2 style="font-size: 13px; font-weight: 700; margin: 0 0 3px 0; color: #ffffff; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.3px; line-height: 1.25;">
+        ${escaparHtml(aviso.titulo)}
+      </h2>
+
+      <p style="font-size: 11px; line-height: 1.35; margin: 0; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+        ${formatarTextoMarkdown(aviso.resumo || aviso.descricao)}
+      </p>
+
+      ${aviso.fim ? `
+      <div class="notificacao-rodape" style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px; font-size: 9.5px; color: #64748b;">
+        <small>Até ${formatarDataEncerramento(aviso.fim)}</small>
+        <small class="cronometro-aviso" data-fim="${aviso.fim}" style="font-weight: bold; color: ${prioridadeCor};"></small>
+      </div>` : ''}
+
+      <div class="toast-btn-acessar" style="margin-top: 6px; padding: 3px 8px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 5px; font-size: 10px; color: #38bdf8; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; cursor: pointer; transition: all 0.2s;">
+        <span>Clique aqui para acessar</span>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </div>
+    </div>
+  `;
+
+  // Fechar aviso individual
+  const btnClose = elemento.querySelector(".notificacao-fechar");
+  if (btnClose) {
+    btnClose.addEventListener("click", (e) => {
+      e.stopPropagation();
+      elemento.style.display = "none";
+      salvarAvisoFechadoSessao(aviso.id);
+      verificarVisibilidadeCentral();
+    });
+  }
+
+  // Ação de navegar até a aba ou sub-aba
+  const triggerNavegacao = () => {
+    if (globalTarget && typeof window.switchGlobalView === 'function') {
+      window.switchGlobalView(globalTarget);
+    } else {
+      const navItem = document.querySelector(`.nav-item[data-global-target='${globalTarget}']`);
+      if (navItem) navItem.click();
+    }
+    if (destinoInfo.subnavTarget) {
+      setTimeout(() => {
+        const subBtn = document.querySelector(`[data-target='${destinoInfo.subnavTarget}']`);
+        if (subBtn) subBtn.click();
+      }, 120);
+    }
+  };
+
+  const btnAcessar = elemento.querySelector('.toast-btn-acessar');
+  if (btnAcessar) {
+    btnAcessar.addEventListener('click', (e) => {
+      e.stopPropagation();
+      triggerNavegacao();
+    });
+  }
+
+  elemento.addEventListener("click", (e) => {
+    if (e.target.closest('.notificacao-fechar')) return;
+    triggerNavegacao();
+  });
+
+  return elemento;
+}
+
+// 5. Verificação Robusta de Visibilidade da Central
+function isSiteDesbloqueado() {
+  if (typeof window === 'undefined') return false;
+  if (estaNoPainelAvisos()) return false;
+
+  // 1. Session Storage desbloqueado
+  if (sessionStorage.getItem('cbm_auth_unlocked') === 'true') {
+    return true;
+  }
+
+  // 2. Classe cbm-unlocked no html ou body
+  if (document.documentElement.classList.contains('cbm-unlocked') || document.body.classList.contains('cbm-unlocked')) {
+    return true;
+  }
+
+  // 3. Se estiver locked no body
+  if (document.body.classList.contains('locked')) {
+    return false;
+  }
+
+  // 4. Se tiver crachá ou tela de login ativa
+  const lanyard = document.getElementById('lanyard-screen');
+  if (lanyard && window.getComputedStyle(lanyard).display !== 'none' && lanyard.style.opacity !== '0') {
+    return false;
+  }
   const loginScreen = document.getElementById('login-screen');
-  if (loginScreen && window.getComputedStyle(loginScreen).display !== 'none' && loginScreen.style.opacity !== '0') return;
+  if (loginScreen && window.getComputedStyle(loginScreen).display !== 'none' && loginScreen.style.opacity !== '0') {
+    return false;
+  }
+
+  return true;
+}
+
+function verificarVisibilidadeCentral() {
+  if (estaNoPainelAvisos()) {
+    const central = document.getElementById("central-notificacoes");
+    if (central) central.remove();
+    return;
+  }
+
+  const central = obterContainerCentral();
+  if (!central) return;
+
+  const temVisiveis = Array.from(central.children).some(el => el.style.display !== 'none');
+  const unlocked = isSiteDesbloqueado();
+
+  if (!temVisiveis || !unlocked) {
+    central.style.display = 'none';
+  } else {
+    central.style.display = 'flex';
+  }
+}
+
+function renderizarCentralToasts(avisosAtivos) {
+  if (estaNoPainelAvisos()) return;
+
+  const central = obterContainerCentral();
+  if (!central) return;
+  central.innerHTML = "";
+
+  const fechados = obterAvisosFechadosSessao();
+  const avisosComPopup = avisosAtivos.filter(a => a.mostrarPopup !== false);
+
+  avisosComPopup.forEach(aviso => {
+    const card = montarCardToast(aviso);
+    if (fechados.has(aviso.id)) {
+      card.style.display = 'none';
+    }
+    central.appendChild(card);
+  });
+
+  verificarVisibilidadeCentral();
+}
+
+// 6. Marcação Visual Tática nas Abas e Sub-abas
+function aplicarMarcacaoAbas(avisosAtivos) {
+  if (estaNoPainelAvisos()) return;
+
+  // Limpar marcações anteriores
+  document.querySelectorAll('.tem-aviso').forEach(el => el.classList.remove('tem-aviso'));
+  document.querySelectorAll('.aviso-card-piscar').forEach(el => el.classList.remove('aviso-card-piscar'));
+  document.querySelectorAll('.aviso-curso-banner').forEach(el => el.remove());
+
+  // Aplicar novas marcações
+  avisosAtivos.forEach(aviso => {
+    if (aviso.mostrarAvisosGerais !== false) {
+      const navItemGeral = document.querySelector(".nav-item[data-global-target='view-avisos']");
+      if (navItemGeral) navItemGeral.classList.add('tem-aviso');
+    }
+
+    const destino = MAPA_DESTINOS_AVISOS[aviso.titulo];
+    if (destino) {
+      if (destino.globalTarget) {
+        const navGlobal = document.querySelector(`.nav-item[data-global-target='${destino.globalTarget}']`);
+        if (navGlobal) navGlobal.classList.add('tem-aviso');
+      }
+
+      if (destino.subnavTarget) {
+        const sideItems = document.querySelectorAll(`[data-target='${destino.subnavTarget}']`);
+        sideItems.forEach(el => {
+          el.classList.add('tem-aviso');
+          if (aviso.piscar) el.classList.add('aviso-card-piscar');
+        });
+      }
+    }
+  });
+}
+
+// 7. Atualização Geral Periódica
+async function atualizarSistemaAvisos() {
+  if (estaNoPainelAvisos()) {
+    const central = document.getElementById("central-notificacoes");
+    if (central) central.remove();
+    return;
+  }
 
   try {
     const avisos = await fetchAvisosData();
     const agora = new Date();
+    const ativos = avisos.filter(a => estaAtivo(a, agora));
 
-    const avisosAtivos = avisos.filter((aviso) => {
-      const inicio = new Date(aviso.inicio);
-      if (aviso.fim && String(aviso.fim).trim() !== "" && String(aviso.fim) !== "null") {
-        const dataFim = new Date(aviso.fim);
-        if (!isNaN(dataFim.getTime())) {
-          return aviso.ativo && agora >= inicio && agora < dataFim;
-        }
-      }
-      return aviso.ativo && agora >= inicio;
-    });
+    aplicarMarcacaoAbas(ativos);
+    renderizarCentralToasts(ativos);
 
-    const mapaAbas = {
-      "Curso de Piloto": { id: "curso-aereo" },
-      "Resgate Aquático": { id: "curso-aquatico" },
-      "Resgate Montanha": { id: "curso-montanha" },
-      "Paraquedismo": { id: "curso-paraquedismo" },
-      "Evoluir": { id: "curso-evoluir" },
-      "Início": { id: "view-inicio" },
-      "Avisos Gerais": { id: "view-avisos" },
-      "Regras": { id: "view-regras" },
-      "Uniformes": { id: "view-uniformes" },
-      "Cursos": { id: "view-cursos" },
-      "Modulação": { id: "view-modulacao" },
-      "Viaturas": { id: "view-viaturas" },
-      "Hierarquia": { id: "view-hierarquia" },
-      "Planilhas": { id: "view-planilhas" },
-      "Galeria": { id: "view-galeria" }
-    };
-
+    // Certificar de que o modal grande de destaque NUNCA abra automaticamente
     const modalDestaque = document.getElementById('modal-destaque');
     if (modalDestaque) {
-        modalDestaque.style.display = 'none';
+      modalDestaque.style.display = 'none';
     }
-
   } catch (err) {
-    console.error("Erro ao verificar destaque da aba", err);
+    console.error("Erro na rotina de atualização de avisos:", err);
   }
+}
+
+// Atualização de Cronômetros
+function tickCronometros() {
+  if (estaNoPainelAvisos()) return;
+  const cronometros = document.querySelectorAll('.cronometro-aviso');
+  const agora = Date.now();
+
+  cronometros.forEach(cron => {
+    const fim = new Date(cron.dataset.fim).getTime();
+    const diff = fim - agora;
+    if (diff <= 0) {
+      cron.textContent = "Encerrado";
+    } else {
+      const totalHoras = Math.floor(diff / (1000 * 60 * 60));
+      const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((diff % (1000 * 60)) / 1000);
+      if (totalHoras >= 24) {
+        const dias = Math.floor(totalHoras / 24);
+        cron.textContent = `${dias}d ${totalHoras % 24}h ${minutos}m`;
+      } else {
+        cron.textContent = `${String(totalHoras).padStart(2,'0')}:${String(minutos).padStart(2,'0')}:${String(segundos).padStart(2,'0')}`;
+      }
+    }
+  });
+}
+
+// Event Listeners Globais
+window.addEventListener('tabChanged', () => {
+  atualizarSistemaAvisos();
 });
+
+window.addEventListener('cbm_auth_unlocked', () => {
+  setTimeout(() => {
+    atualizarSistemaAvisos();
+    verificarVisibilidadeCentral();
+  }, 200);
+});
+
+// Observador para detectar desbloqueio dinâmico imediato
+if (typeof MutationObserver !== 'undefined' && typeof document !== 'undefined') {
+  const observer = new MutationObserver(() => {
+    verificarVisibilidadeCentral();
+  });
+  if (document.documentElement) {
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  }
+  if (document.body) {
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  }
+}
+
+// Inicialização
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    atualizarSistemaAvisos();
+    setInterval(atualizarSistemaAvisos, 20000);
+    setInterval(tickCronometros, 1000);
+    setInterval(verificarVisibilidadeCentral, 2000);
+  });
+} else {
+  atualizarSistemaAvisos();
+  setInterval(atualizarSistemaAvisos, 20000);
+  setInterval(tickCronometros, 1000);
+  setInterval(verificarVisibilidadeCentral, 2000);
+}

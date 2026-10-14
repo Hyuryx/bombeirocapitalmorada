@@ -191,10 +191,10 @@ export default function ReactSidebarDefault() {
 
         <div className="sidebar-capital-container">
           <img
-            src="assets/fotos/logo-capital.png"
+            src="/assets/fotos/logo-capita2l.png"
             className="sidebar-capital-logo"
-            alt="Capital Morada"
-            title="Capital Morada"
+            alt="Corpo de Bombeiros Capital"
+            title="Corpo de Bombeiros Capital"
           />
         </div>
       </div>
