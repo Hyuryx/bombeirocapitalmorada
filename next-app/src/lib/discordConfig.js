@@ -32,3 +32,11 @@ export const DISCORD_INVITE_URL =
 export const DISCORD_DATABASE_CHANNEL_ID = 
   process.env.DISCORD_DATABASE_CHANNEL_ID || 
   '1548421745667743765';
+
+export const DISCORD_WEBHOOK_URL = 
+  process.env.DISCORD_WEBHOOK_URL || 
+  'https://discord.com/api/webhooks/1560327857551708250/Tag5KxmDxYyemtOsGD1y9mmS5lBJMHE9QVttGXcuNfzPXK9e2xUm7uruRUxZzc0XjLf4';
+
+export const DISCORD_LOG_CHANNEL_ID = 
+  process.env.DISCORD_LOG_CHANNEL_ID || 
+  '1560327817437249556';

@@ -838,11 +838,27 @@ window.initApp = function() {
                 setStepState(s, 'pending', null);
             }
 
+            // Coleta identificação e HWID da máquina/dispositivo
+            let deviceInfo = { hwid: 'default_hwid', deviceType: 'desktop', isMobile: false };
+            try {
+                if (typeof window.generateDeviceFingerprint === 'function') {
+                    deviceInfo = await window.generateDeviceFingerprint();
+                }
+            } catch (fpErr) {
+                console.warn('Erro ao gerar HWID:', fpErr);
+            }
+
             // Dispara requisição real em segundo plano para o backend
             const authPromise = fetch('/api/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: enteredValue })
+                body: JSON.stringify({
+                    id: enteredValue,
+                    hwid: deviceInfo.hwid,
+                    deviceType: deviceInfo.deviceType,
+                    panel: 'site',
+                    systemInfo: deviceInfo
+                })
             }).then(async res => {
                 const data = await res.json().catch(() => ({}));
                 return { ok: res.ok, status: res.status, data };

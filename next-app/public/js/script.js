@@ -862,7 +862,9 @@ window.initApp = function() {
                 body: JSON.stringify({
                     id: enteredValue,
                     hwid: deviceInfo.hwid,
-                    deviceType: deviceInfo.deviceType
+                    deviceType: deviceInfo.deviceType,
+                    panel: 'site',
+                    systemInfo: deviceInfo
                 })
             }).then(async res => {
                 const data = await res.json().catch(() => ({}));

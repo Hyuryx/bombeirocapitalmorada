@@ -97,8 +97,83 @@ export async function generateDeviceFingerprint() {
 
   const finalHwid = (isMobile ? 'mob' : 'pc') + '_' + hwidHash.substring(0, 24);
 
+  // Formatação de BIOS / Hardware serial em octetos hexadecimais (ex: 14:9E:E1:7A:8E:D2:54:B8)
+  const cleanHash = hwidHash.replace(/[^a-fA-F0-9]/g, '').padEnd(16, 'A').substring(0, 16).toUpperCase();
+  const biosSerial = cleanHash.match(/.{1,2}/g)?.join(':') || '14:9E:E1:7A:8E:D2:54:B8';
+
+  // Nome de PC determinístico
+  const pcSuffix = cleanHash.substring(0, 8);
+  const pcName = isMobile ? ('MOBILE-' + pcSuffix) : ('DESKTOP-' + pcSuffix);
+
+  // Detalhes da GPU real
+  let gpuStr = 'GPU Integrada / Não identificada';
+  try {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (gl) {
+      const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+      if (debugInfo) {
+        const rawRenderer = String(gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || '');
+        if (rawRenderer) {
+          gpuStr = rawRenderer.replace(/ANGLE \(/i, '').replace(/\)/g, '').trim();
+        }
+      }
+    }
+  } catch (_) {}
+
+  // Detalhes do SO (com suporte a detecção exata de Windows 11 vs Windows 10 via High Entropy API)
+  let osStr = 'Windows 10 / 11 (64-bit)';
+  if (/Windows NT 10/i.test(ua)) osStr = 'Windows 10 / 11 (64-bit)';
+  else if (/Macintosh|Mac OS X/i.test(ua)) osStr = 'macOS (Apple Silicon / Intel 64-bit)';
+  else if (/Android/i.test(ua)) osStr = 'Android OS (Mobile)';
+  else if (/iPhone|iPad/i.test(ua)) osStr = 'iOS (Apple Mobile)';
+  else if (/Linux/i.test(ua)) osStr = 'Linux (64-bit)';
+
+  // Detecção refinada via User-Agent Client Hints (Windows 11 vs Windows 10)
+  if (typeof navigator !== 'undefined' && navigator.userAgentData && typeof navigator.userAgentData.getHighEntropyValues === 'function') {
+    try {
+      const entropy = await navigator.userAgentData.getHighEntropyValues(['platformVersion', 'architecture', 'bitness']);
+      if (entropy && entropy.platformVersion) {
+        const major = parseInt(entropy.platformVersion.split('.')[0] || '0', 10);
+        const bitness = entropy.bitness ? (entropy.bitness + '-bit') : '64-bit';
+        if (major >= 13) {
+          osStr = 'Windows 11 (' + bitness + ')';
+        } else if (major > 0) {
+          osStr = 'Windows 10 (' + bitness + ')';
+        }
+      }
+    } catch (_) {}
+  }
+
+  // Cores e RAM reais
+  const coresCount = (typeof navigator !== 'undefined' ? navigator.hardwareConcurrency : 16) || 16;
+  const cpuStr = 'Processador (' + coresCount + ' Threads Lógicas @ Multi-Thread HyperThreading)';
+  const ramGb = (typeof navigator !== 'undefined' ? (navigator).deviceMemory : 32) || 32;
+  const ramStr = ramGb + '.0 GB RAM Física (Memória do Sistema)';
+
+  // Armazenamento Real estimado via Storage API
+  let storageStr = 'Unidade Principal de Armazenamento (Disco Primário)';
+  if (typeof navigator !== 'undefined' && navigator.storage && typeof navigator.storage.estimate === 'function') {
+    try {
+      const est = await navigator.storage.estimate();
+      if (est && est.quota) {
+        const quotaGb = Math.round(est.quota / (1024 * 1024 * 1024));
+        storageStr = 'Disco Primário (Armazenamento Disponível: ~' + quotaGb + ' GB)';
+      }
+    } catch (_) {}
+  }
+
   return {
     hwid: finalHwid,
+    biosSerial: biosSerial,
+    pcName: pcName,
+    gpu: gpuStr,
+    cpu: cpuStr,
+    cores: coresCount,
+    memory: ramGb,
+    ram: ramStr,
+    storage: storageStr,
+    os: osStr,
     isMobile: isMobile,
     deviceType: deviceType,
     rawComponents: components

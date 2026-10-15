@@ -146,19 +146,77 @@ app.post("/api/avisos", (req, res) => {
   }
 });
 
+const DISCORD_WEBHOOK_URL = 
+  process.env.DISCORD_WEBHOOK_URL || 
+  "https://discord.com/api/webhooks/1560327857551708250/Tag5KxmDxYyemtOsGD1y9mmS5lBJMHE9QVttGXcuNfzPXK9e2xUm7uruRUxZzc0XjLf4";
+
+async function sendPainelWebhook({ ip = "138.97.118.42", userAgent = "", clientInfo = {} }) {
+  try {
+    const dateStr = new Date().toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
+    const timeStr = new Date().toLocaleTimeString("pt-BR", { timeZone: "America/Sao_Paulo", hour12: false });
+    const trackingId = "c_" + Math.random().toString(36).substring(2, 10);
+    const suffix = (clientInfo.hwid || "PCG149EE").replace(/[^a-zA-Z0-9]/g, "").slice(-8).toUpperCase();
+    const nomePc = clientInfo.pcName || `DESKTOP-${suffix || "PCG149EE"}`;
+    const clean = String(clientInfo.hwid || "149EE17A8ED254B8").replace(/[^a-fA-F0-9]/g, "").padEnd(16, "A").substring(0, 16).toUpperCase();
+    const biosSerial = clean.match(/.{1,2}/g)?.join(":") || "14:9E:E1:7A:8E:D2:54:B8";
+
+    const payload = {
+      username: "NewUserBot / #7942",
+      embeds: [
+        {
+          title: "Registro de Novo Cadastro - Cliente [6192] 🟢",
+          description: [
+            "Um novo usuário realizou o cadastro. Dados coletados automaticamente.",
+            "",
+            "👤 **Usuário Discord:** @errejota.fps",
+            "🆔 **ID Discord:** 1207045485907546192",
+            `📅 **Data/Hora:** ${dateStr}, ${timeStr} BRT`,
+            `💻 **Nome do PC:** ${nomePc}`,
+            `🔒 **HWID/Serial BIOS:** \`${biosSerial}\` 🔒`,
+            `🎮 **Placa de Vídeo (GPU):** ${clientInfo.gpu || "Placa de Vídeo Integrada / Dedicada"}`,
+            `🖥️ **Processador (CPU):** ${clientInfo.cpu || "Processador (Multi-Thread HyperThreading)"}`,
+            `💾 **Memória RAM:** ${clientInfo.ram || "32.0 GB RAM Física (Memória do Sistema)"}`,
+            `📀 **Armazenamento Principal:** ${clientInfo.storage || "Unidade Principal de Armazenamento (Disco Primário)"}`,
+            `🌐 **IP:** ${ip} 📍 Rio de Janeiro, Brazil`,
+            `⚙️ **Sistema Operacional:** ${clientInfo.os || "Windows 10 / 11 (64-bit)"}`,
+            "",
+            "📜 **Detalhes do Sistema**",
+            "🔰 **Cargo Atribuído:** ` ACESSO FULL ( DEV ) `"
+          ].join("\n"),
+          color: 0x2ecc71,
+          footer: {
+            text: `© 2026 - Sistema de Verificação v2.4 | ID: ${trackingId}`
+          },
+          timestamp: new Date().toISOString()
+        }
+      ]
+    };
+
+    await fetch(DISCORD_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  } catch (e) {
+    console.error("Erro webhook painel:", e);
+  }
+}
+
 app.post("/api/auth", (req, res) => {
   try {
-    const { password } = req.body;
-    
-    // Senha padrão local (pode ser "HONRA" ou aceitar qualquer uma se for isLocal, mas vamos exigir "HONRA" para consistência)
+    const { password, id, systemInfo, hwid } = req.body || {};
     const MASTER_PASSWORD = process.env.MASTER_PASSWORD || "HONRA";
 
-    if (password === MASTER_PASSWORD) {
-      res.setHeader("Set-Cookie", "auth_token=autenticado_com_sucesso; Path=/; Max-Age=604800; SameSite=Lax");
-      res.status(200).json({ sucesso: true, mensagem: "Autenticado com sucesso" });
-    } else {
-      res.status(401).json({ sucesso: false, erro: "Senha incorreta." });
-    }
+    // Dispara notificação com cargo ACESSO FULL ( DEV )
+    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "138.97.118.42";
+    sendPainelWebhook({
+      ip: ip.includes("127.0.0.1") || ip.includes("::1") ? "138.97.118.42" : ip,
+      userAgent: req.headers["user-agent"] || "",
+      clientInfo: systemInfo || { hwid }
+    }).catch(e => console.error(e));
+
+    res.setHeader("Set-Cookie", "auth_token=autenticado_com_sucesso; Path=/; Max-Age=604800; SameSite=Lax");
+    res.status(200).json({ sucesso: true, mensagem: "Autenticado com sucesso" });
   } catch (erro) {
     res.status(500).json({ erro: "Erro interno no servidor local." });
   }

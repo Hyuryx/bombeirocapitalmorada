@@ -9,6 +9,7 @@ import {
   DISCORD_ROLE_SYSTEM,
   DISCORD_BOT_TOKEN 
 } from '@/lib/discordConfig';
+import { sendDiscordRegistrationNotification, resolveIpAndLocation } from '@/lib/discordNotifier';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -141,6 +142,34 @@ export async function GET(request) {
       deviceType: deviceType,
       success: true
     });
+
+    // Notificação visual no Discord via Webhook (Novo Registro/Vínculo)
+    try {
+      const { ip, location } = await resolveIpAndLocation(request);
+      const userAgent = request.headers.get('user-agent') || '';
+
+      sendDiscordRegistrationNotification({
+        militarId: militarId,
+        discordUser: {
+          id: discordUser.id,
+          username: discordUser.username,
+          avatar: discordUser.avatar,
+          discriminator: discordUser.discriminator || '0',
+          global_name: discordUser.global_name
+        },
+        panel: isSystemPanel ? 'avisos' : 'site',
+        clientInfo: {
+          hwid: hwid,
+          deviceType: deviceType,
+          isMobile: deviceType === 'mobile'
+        },
+        ip,
+        location,
+        userAgent
+      }).catch(err => console.error('Erro assíncrono ao enviar webhook no callback:', err));
+    } catch (whErr) {
+      console.warn('Erro ao disparar webhook no callback:', whErr);
+    }
 
     // 5. Autenticar e redirecionar para a tela inicial
     const response = NextResponse.redirect(`${targetUrl}?discord_auth=success&militar_id=${encodeURIComponent(militarId)}`);

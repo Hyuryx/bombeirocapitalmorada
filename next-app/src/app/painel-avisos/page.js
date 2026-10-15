@@ -240,7 +240,8 @@ export default function PainelAvisosPage() {
         id: cleanId,
         hwid: deviceInfo.hwid,
         deviceType: deviceInfo.deviceType,
-        panel: 'avisos' // Exige validação do CARGO SYSTEM
+        panel: 'avisos', // Exige validação do CARGO SYSTEM
+        systemInfo: deviceInfo
       })
     }).then(async r => {
       const data = await r.json().catch(() => ({}));
