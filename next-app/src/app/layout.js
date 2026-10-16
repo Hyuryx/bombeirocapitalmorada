@@ -11,6 +11,14 @@ const inter = Inter({
 export const metadata = {
   title: "Bombeiros - PORTAL CBM",
   description: "Sistema de modulação e consulta de códigos operacionais.",
+  icons: {
+    icon: [
+      { url: "/assets/iconesite/icone.png?v=3", type: "image/png" },
+      { url: "/icon.png?v=3", type: "image/png" },
+    ],
+    shortcut: "/assets/iconesite/icone.png?v=3",
+    apple: "/assets/iconesite/icone.png?v=3",
+  },
 };
 
 import Script from "next/script";
@@ -21,7 +29,9 @@ export default function RootLayout({ children }) {
       <head>
         <meta name="darkreader-lock" />
         <meta name="color-scheme" content="dark" />
-        <link rel="icon" type="image/png" href="/assets/iconesite/icone.png" />
+        <link rel="icon" type="image/png" sizes="any" href="/assets/iconesite/icone.png?v=3" />
+        <link rel="shortcut icon" type="image/png" href="/assets/iconesite/icone.png?v=3" />
+        <link rel="apple-touch-icon" href="/assets/iconesite/icone.png?v=3" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700;800&display=swap" rel="stylesheet" />
