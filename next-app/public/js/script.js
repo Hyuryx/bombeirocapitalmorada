@@ -2,7 +2,7 @@
 (function() {
     const host = window.location.hostname;
     const isLocalhost = host === 'localhost' || host === '127.0.0.1' || host === '' || host.endsWith('.local') || host.startsWith('192.168.') || host.startsWith('10.');
-    const isAllowedDomain = host.includes('bombeirocapitalmorada.vercel.app');
+    const isAllowedDomain = host.includes('bombeirocapitalmorada') || host.includes('capitalmorada') || host.endsWith('.vercel.app');
 
     if (!isLocalhost && !isAllowedDomain) {
         document.body.innerHTML = `
@@ -18,6 +18,9 @@
 })();
 
 window.initApp = function() {
+    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/painel-avisos')) {
+        return;
+    }
 
     // Lógica da Navegação Global
     const globalNavItems = document.querySelectorAll('.nav-item');

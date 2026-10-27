@@ -92,41 +92,20 @@ export default function PainelAvisosPage() {
   });
   const [isEditingAviso, setIsEditingAviso] = useState(false);
 
-  // 1. Verificação de Sessão Militar Segura com o Servidor (SYSTEM Gate)
+  // 1. Verificação de Sessão Inicial
   useEffect(() => {
-    let isMounted = true;
-
-    const verifyServerSession = async () => {
-      try {
-        const res = await fetch('/api/auth/verify?panel=avisos');
-        const data = await res.json().catch(() => ({}));
-        if (isMounted) {
-          if (res.ok && data.autenticado) {
-            setIsUnlocked(true);
-            setShowLogin(false);
-            if (data.user?.userName) setAuthenticatedMilitarName(data.user.userName);
-            sessionStorage.setItem('cbm_system_unlocked', 'true');
-            sessionStorage.setItem('cbm_system_time', String(Date.now()));
-            if (typeof document !== 'undefined') {
-              document.documentElement.classList.add('cbm-unlocked');
-            }
-          } else {
-            setIsUnlocked(false);
-            sessionStorage.removeItem('cbm_system_unlocked');
-            sessionStorage.removeItem('cbm_system_time');
-            if (typeof document !== 'undefined') {
-              document.documentElement.classList.remove('cbm-unlocked');
-            }
-          }
-        }
-      } catch (e) {
-        if (isMounted) {
-          setIsUnlocked(false);
+    try {
+      const unlocked = sessionStorage.getItem('cbm_system_unlocked') === 'true';
+      const time = parseInt(sessionStorage.getItem('cbm_system_time') || '0', 10);
+      const TWO_HOURS = 2 * 60 * 60 * 1000;
+      if (unlocked && Date.now() - time < TWO_HOURS) {
+        setIsUnlocked(true);
+        setShowLogin(false);
+        if (typeof document !== 'undefined') {
+          document.documentElement.classList.add('cbm-unlocked');
         }
       }
-    };
-
-    verifyServerSession();
+    } catch (e) {}
 
     // Escuta evento do crachá 3D Three.js
     const handleCrachaDismissed = () => {
@@ -139,7 +118,6 @@ export default function PainelAvisosPage() {
 
     window.addEventListener('cbm_cracha_dismissed', handleCrachaDismissed);
     return () => {
-      isMounted = false;
       window.removeEventListener('cbm_cracha_dismissed', handleCrachaDismissed);
     };
   }, []);
@@ -221,9 +199,6 @@ export default function PainelAvisosPage() {
   const handleLockPanel = () => {
     sessionStorage.removeItem('cbm_system_unlocked');
     sessionStorage.removeItem('cbm_system_time');
-    try {
-      document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    } catch (_) {}
     if (typeof document !== 'undefined') {
       document.documentElement.classList.remove('cbm-unlocked');
     }
@@ -543,10 +518,10 @@ export default function PainelAvisosPage() {
       <NasaParticles id="particles-painel-bg" style={{ position: 'fixed', inset: 0, zIndex: 0, opacity: 0.8, pointerEvents: 'none' }} />
 
       {/* TELA 1: CRACHÁ 3D OFICIAL (THREE.JS COM CORDA E FÍSICA REAL) */}
-      {!isUnlocked && <NoSSRLanyardBadgeScreen />}
+      {!isUnlocked && <NoSSRLanyardBadgeScreen storageKey="cbm_system_unlocked" />}
 
       {/* TELA 2: LOGIN HUD MILITAR FUTURISTA (COM PARTÍCULAS NASA CAINDO) */}
-      {!isUnlocked && showLogin && (
+      {!isUnlocked && (
         <div id="login-screen" style={{ display: 'flex' }}>
           <NasaParticles id="particles-login-admin" style={{ zIndex: 1, opacity: 0.95 }} />
 

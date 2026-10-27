@@ -2,7 +2,6 @@ import { Inter } from "next/font/google";
 import "./style.css";
 import "./globals.css";
 import "@/components/FuturisticLogin.css";
-import AntiCloneGuard from "@/components/AntiCloneGuard";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -60,7 +59,6 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body suppressHydrationWarning>
-        <AntiCloneGuard />
         {children}
         <Script src="/js/deviceFingerprint.js" strategy="beforeInteractive" />
         <Script src="/js/particles.min.js?v=2" strategy="beforeInteractive" />

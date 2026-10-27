@@ -5,10 +5,20 @@ import Lanyard from './Lanyard';
 import NasaParticles from './NasaParticles';
 import './LanyardBadgeScreen.css';
 
-export default function LanyardBadgeScreen() {
+export default function LanyardBadgeScreen({ storageKey }) {
+  const getStorageKey = useCallback(() => {
+    if (storageKey) return storageKey;
+    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/painel-avisos')) {
+      return 'cbm_system_unlocked';
+    }
+    return 'cbm_auth_unlocked';
+  }, [storageKey]);
+
   const [isVisible, setIsVisible] = useState(() => {
     if (typeof window !== 'undefined') {
-      return sessionStorage.getItem('cbm_auth_unlocked') !== 'true';
+      const isPainel = window.location.pathname.startsWith('/painel-avisos');
+      const key = storageKey || (isPainel ? 'cbm_system_unlocked' : 'cbm_auth_unlocked');
+      return sessionStorage.getItem(key) !== 'true';
     }
     return true;
   });
@@ -18,7 +28,8 @@ export default function LanyardBadgeScreen() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    if (sessionStorage.getItem('cbm_auth_unlocked') === 'true') {
+    const key = getStorageKey();
+    if (sessionStorage.getItem(key) === 'true') {
       setIsVisible(false);
     }
 
@@ -42,7 +53,7 @@ export default function LanyardBadgeScreen() {
       window.removeEventListener('cbm_show_cracha', handleShowCracha);
       window.removeEventListener('cbm_lock_screen', handleLockScreen);
     };
-  }, []);
+  }, [getStorageKey]);
 
   const playPullSound = useCallback(() => {
     try {
