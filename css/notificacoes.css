@@ -448,12 +448,7 @@ body.locked #central-notificacoes {
   height: 8px;
   background-color: #dc3545;
   border-radius: 50%;
-  box-shadow: 0 0 8px #dc3545;
-  animation: piscar-aviso-center 1.2s infinite alternate;
-}
-@keyframes piscar-aviso-center {
-  0% { opacity: 0.2; transform: translateX(-50%) scale(0.7); }
-  100% { opacity: 1; transform: translateX(-50%) scale(1.3); }
+  box-shadow: 0 0 6px #dc3545;
 }
 
 /* Modal Destaque Aba */

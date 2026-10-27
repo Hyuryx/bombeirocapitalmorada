@@ -187,19 +187,17 @@ function initAnimations() {
         });
     });
 
-    // 5. Interceptar as trocas de Aba para resetar animações dos cards visíveis
+    // 5. Interceptar as trocas de Aba sem zerar opacidade (previne piscar da tela)
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(item => {
         item.addEventListener('click', () => {
-            // Pequeno delay para esperar a nova aba ficar ativa
             setTimeout(() => {
                 const activeView = document.querySelector('.global-view.active');
                 if (activeView) {
                     const viewElements = activeView.querySelectorAll('.card-evoluir, .info-card, .viatura-card, .card, img:not(.sidebar-logo)');
                     viewElements.forEach(el => {
-                        el.style.opacity = '0';
+                        el.style.opacity = '1';
                         scrollObserver.unobserve(el);
-                        scrollObserver.observe(el); // Re-observa para disparar animação de entrada
                     });
                 }
             }, 50);

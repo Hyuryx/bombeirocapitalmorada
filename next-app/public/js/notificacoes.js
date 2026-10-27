@@ -439,7 +439,7 @@ function tickCronometros() {
 
 // Event Listeners Globais
 window.addEventListener('tabChanged', () => {
-  atualizarSistemaAvisos();
+  verificarVisibilidadeCentral();
 });
 
 window.addEventListener('cbm_auth_unlocked', () => {
@@ -462,17 +462,20 @@ if (typeof MutationObserver !== 'undefined' && typeof document !== 'undefined') 
   }
 }
 
-// Inicialização
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => {
+// Inicialização segura com controle de execução única
+if (!window.notificacoesSistemaIniciado) {
+  window.notificacoesSistemaIniciado = true;
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      atualizarSistemaAvisos();
+      setInterval(atualizarSistemaAvisos, 30000);
+      setInterval(tickCronometros, 1000);
+      setInterval(verificarVisibilidadeCentral, 3000);
+    });
+  } else {
     atualizarSistemaAvisos();
-    setInterval(atualizarSistemaAvisos, 20000);
+    setInterval(atualizarSistemaAvisos, 30000);
     setInterval(tickCronometros, 1000);
-    setInterval(verificarVisibilidadeCentral, 2000);
-  });
-} else {
-  atualizarSistemaAvisos();
-  setInterval(atualizarSistemaAvisos, 20000);
-  setInterval(tickCronometros, 1000);
-  setInterval(verificarVisibilidadeCentral, 2000);
+    setInterval(verificarVisibilidadeCentral, 3000);
+  }
 }

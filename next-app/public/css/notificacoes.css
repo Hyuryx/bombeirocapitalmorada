@@ -11,7 +11,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: 4px;
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 #central-notificacoes::-webkit-scrollbar {
@@ -46,6 +46,7 @@ body.locked #central-notificacoes {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
   cursor: pointer;
+  pointer-events: auto;
 }
 
 /* Efeito Parallax NASA com Estrelas e Partículas Vermelhas no Fundo do Card */
@@ -542,7 +543,6 @@ body.locked #central-notificacoes {
 .nav-item.tem-aviso {
   position: relative;
   border-bottom: 2px solid #ef4444 !important;
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4) !important;
 }
 
 .nav-item.tem-aviso::after {
@@ -560,8 +560,7 @@ body.locked #central-notificacoes {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 10px #ef4444, 0 0 20px rgba(255, 30, 30, 0.8);
-  animation: pulse-aviso-badge 1s infinite alternate;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.7);
   z-index: 5;
 }
 
@@ -571,8 +570,7 @@ body.locked #central-notificacoes {
 [data-target].tem-aviso {
   position: relative;
   border-color: rgba(239, 68, 68, 0.8) !important;
-  box-shadow: 0 0 22px rgba(239, 68, 68, 0.45) !important;
-  animation: pulse-border-red 2s infinite !important;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.35) !important;
 }
 
 .sidebar-nav-li.tem-aviso::after,
@@ -589,34 +587,17 @@ body.locked #central-notificacoes {
   letter-spacing: 0.5px;
   padding: 2px 7px;
   border-radius: 6px;
-  box-shadow: 0 0 12px rgba(239, 68, 68, 0.85);
-  animation: piscar-aviso-tag 1.2s infinite alternate;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
   z-index: 10;
   pointer-events: none;
 }
 
-@keyframes pulse-aviso-badge {
-  0% { transform: scale(0.9); opacity: 0.85; }
-  100% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 16px #ff0000; }
-}
-
-@keyframes piscar-aviso-tag {
-  0% { transform: scale(0.92); opacity: 0.75; }
-  100% { transform: scale(1.08); opacity: 1; box-shadow: 0 0 18px #ff2222; }
-}
-
-/* Card ou Sub-item com Animação de Destaque (Piscar / Glow Tático) */
+/* Card ou Sub-item com Destaque Tático Fixo (Sem Piscar) */
 .aviso-card-piscar,
 .card-evoluir.tem-aviso,
 .cursos-card.tem-aviso {
   border: 1px solid rgba(239, 68, 68, 0.8) !important;
-  box-shadow: 0 0 25px rgba(239, 68, 68, 0.45) !important;
-  animation: piscar-aviso-card 1.5s infinite alternate !important;
-}
-
-@keyframes piscar-aviso-card {
-  0% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); border-color: rgba(239, 68, 68, 0.4); }
-  100% { box-shadow: 0 0 35px rgba(239, 68, 68, 0.75); border-color: rgba(255, 60, 60, 0.95); }
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.35) !important;
 }
 
 /* Modal Destaque Aba */
