@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getMilitarRecord, saveMilitarRecord, addMilitarLog } from '@/lib/deviceStore';
+import { signToken } from '@/lib/sessionGuard';
 
 import { 
   DISCORD_BOT_TOKEN, 
@@ -89,7 +90,12 @@ export async function POST(request) {
     // 0. Autenticação Direta via Senha de Comando Operacional (MORADA / HONRA)
     const isMasterPassword = cleanId.toUpperCase() === 'MORADA' || cleanId.toUpperCase() === 'HONRA';
     if (isMasterPassword) {
-      const sessionToken = `cbm_sec_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`;
+      const sessionToken = signToken({
+        militarId: '6192',
+        role: isSystemPanel ? 'SYSTEM' : 'BOMBEIRO',
+        userName: isSystemPanel ? 'Comando Geral' : 'Bombeiro Autorizado',
+        isMaster: true
+      });
       
       try {
         const { ip, location } = await resolveIpAndLocation(request);
@@ -124,6 +130,7 @@ export async function POST(request) {
         userId: '6192',
         displayName: 'Comando CBM',
         deviceType: deviceType,
+        sessionToken,
         steps: [
           { id: 1, title: 'Estabelecendo conexão segura com o sistema de autenticação...', ok: true },
           { id: 2, title: 'Consultando registro militar no Discord do CBM...', ok: true, detail: 'Credencial de Comando autorizada' },
@@ -137,7 +144,9 @@ export async function POST(request) {
       response.cookies.set('auth_token', sessionToken, {
         path: '/',
         maxAge: 604800,
-        sameSite: 'lax'
+        sameSite: 'lax',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production'
       });
 
       return response;
@@ -452,7 +461,14 @@ export async function POST(request) {
     }
 
     // ETAPA 6: Finalizando autenticação militar com Sessão Única Criptografada
-    const sessionToken = `cbm_sec_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`;
+    const sessionToken = signToken({
+      militarId: cleanId,
+      role: isSystemPanel ? 'SYSTEM' : 'BOMBEIRO',
+      userName: extractedName,
+      hwid: clientHwid || null,
+      deviceType: deviceType,
+      isMaster: false
+    });
     await saveMilitarRecord(cleanId, {
       sessionToken,
       lastLogin: new Date().toISOString()
@@ -508,6 +524,7 @@ export async function POST(request) {
         userId: cleanId,
         displayName: rawNick,
         deviceType: deviceType,
+        sessionToken,
         steps: [
           { id: 1, title: 'Estabelecendo conexão segura com o sistema de autenticação...', ok: true },
           { id: 2, title: 'Consultando registro militar no Discord do CBM...', ok: true, detail: `Militar #${cleanId} localizado no servidor` },
@@ -523,7 +540,9 @@ export async function POST(request) {
     response.cookies.set('auth_token', sessionToken, {
       path: '/',
       maxAge: 604800,
-      sameSite: 'lax'
+      sameSite: 'lax',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production'
     });
 
     return response;

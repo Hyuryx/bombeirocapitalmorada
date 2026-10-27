@@ -76,7 +76,7 @@ export default `<div id="view-modulacao" class="global-view" style="display: non
                                 <path d="M14 4c1.2 1.2 1.2 3.6 0 4.8"></path>
                                 <path d="M17 2c2.5 2.5 2.5 7.5 0 10"></path>
                             </svg>
-                            <h1 class="radio-atual-title">RÁDIO ATUAL - 2213</h1>
+                            <h1 class="radio-atual-title">RÁDIO ATUAL - 187</h1>
                         </div>
                     </div>
                     <div id="modulacao-bounce-cards-grid" class="cards-grid">
@@ -149,7 +149,7 @@ export default `<div id="view-modulacao" class="global-view" style="display: non
                         
                         <!-- Terminal Header -->
                         <div style="display: flex; justify-content: space-between; color: var(--primary-blue); border-bottom: 1px solid rgba(0, 240, 255, 0.2); padding-bottom: 10px; margin-bottom: 15px; font-size: 0.9rem;">
-                            <span><strong style="color: #00f0ff;">[FREQ: 2213 MHz]</strong> SECURE COMMS</span>
+                            <span><strong style="color: #00f0ff;">[FREQ: 187 MHz]</strong> SECURE COMMS</span>
                             <span class="blinking-cursor" style="animation: blink 1s step-end infinite;">REC_</span>
                         </div>
                         

@@ -1,11 +1,19 @@
 import { NextResponse } from 'next/server';
 import { getDeviceDatabase, resetMilitarHwid, deleteMilitarRecord } from '@/lib/deviceStore';
-
+import { verifySession } from '@/lib/sessionGuard';
 import { DISCORD_GUILD_ID } from '@/lib/discordConfig';
 
 // GET: Retorna todos os militares registrados e seus dispositivos vinculados
-export async function GET() {
+export async function GET(request) {
   try {
+    const auth = await verifySession(request, 'SYSTEM');
+    if (!auth.valid) {
+      return NextResponse.json(
+        { sucesso: false, erro: 'ACESSO NEGADO: Sessão de administrador SYSTEM não autorizada.' },
+        { status: 401 }
+      );
+    }
+
     const db = await getDeviceDatabase();
     const militaresList = Object.values(db);
 
@@ -33,6 +41,14 @@ export async function GET() {
 // POST: Executa reset de HWID ou Exclusão total do registro militar
 export async function POST(request) {
   try {
+    const auth = await verifySession(request, 'SYSTEM');
+    if (!auth.valid) {
+      return NextResponse.json(
+        { sucesso: false, erro: 'ACESSO NEGADO: Operação restrita a administradores SYSTEM.' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json().catch(() => ({}));
     const militarId = String(body.militarId || '').trim();
     const action = String(body.action || '').toLowerCase();

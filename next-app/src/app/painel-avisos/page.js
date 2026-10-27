@@ -92,20 +92,41 @@ export default function PainelAvisosPage() {
   });
   const [isEditingAviso, setIsEditingAviso] = useState(false);
 
-  // 1. Verificação de Sessão Inicial
+  // 1. Verificação de Sessão Militar Segura com o Servidor (SYSTEM Gate)
   useEffect(() => {
-    try {
-      const unlocked = sessionStorage.getItem('cbm_system_unlocked') === 'true';
-      const time = parseInt(sessionStorage.getItem('cbm_system_time') || '0', 10);
-      const TWO_HOURS = 2 * 60 * 60 * 1000;
-      if (unlocked && Date.now() - time < TWO_HOURS) {
-        setIsUnlocked(true);
-        setShowLogin(false);
-        if (typeof document !== 'undefined') {
-          document.documentElement.classList.add('cbm-unlocked');
+    let isMounted = true;
+
+    const verifyServerSession = async () => {
+      try {
+        const res = await fetch('/api/auth/verify?panel=avisos');
+        const data = await res.json().catch(() => ({}));
+        if (isMounted) {
+          if (res.ok && data.autenticado) {
+            setIsUnlocked(true);
+            setShowLogin(false);
+            if (data.user?.userName) setAuthenticatedMilitarName(data.user.userName);
+            sessionStorage.setItem('cbm_system_unlocked', 'true');
+            sessionStorage.setItem('cbm_system_time', String(Date.now()));
+            if (typeof document !== 'undefined') {
+              document.documentElement.classList.add('cbm-unlocked');
+            }
+          } else {
+            setIsUnlocked(false);
+            sessionStorage.removeItem('cbm_system_unlocked');
+            sessionStorage.removeItem('cbm_system_time');
+            if (typeof document !== 'undefined') {
+              document.documentElement.classList.remove('cbm-unlocked');
+            }
+          }
+        }
+      } catch (e) {
+        if (isMounted) {
+          setIsUnlocked(false);
         }
       }
-    } catch (e) {}
+    };
+
+    verifyServerSession();
 
     // Escuta evento do crachá 3D Three.js
     const handleCrachaDismissed = () => {
@@ -118,6 +139,7 @@ export default function PainelAvisosPage() {
 
     window.addEventListener('cbm_cracha_dismissed', handleCrachaDismissed);
     return () => {
+      isMounted = false;
       window.removeEventListener('cbm_cracha_dismissed', handleCrachaDismissed);
     };
   }, []);
@@ -199,6 +221,9 @@ export default function PainelAvisosPage() {
   const handleLockPanel = () => {
     sessionStorage.removeItem('cbm_system_unlocked');
     sessionStorage.removeItem('cbm_system_time');
+    try {
+      document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    } catch (_) {}
     if (typeof document !== 'undefined') {
       document.documentElement.classList.remove('cbm-unlocked');
     }

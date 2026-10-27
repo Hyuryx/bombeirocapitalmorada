@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import Redis from 'ioredis';
+import { verifySession } from '@/lib/sessionGuard';
 
 // Helper para obter o caminho do arquivo JSON (usado no localhost)
 const getAvisosFilePath = () => {
@@ -55,6 +56,14 @@ export async function GET() {
 
 export async function POST(request) {
   try {
+    const auth = await verifySession(request, 'SYSTEM');
+    if (!auth.valid) {
+      return NextResponse.json(
+        { error: 'ACESSO NEGADO: Apenas administradores SYSTEM podem alterar avisos.' },
+        { status: 401 }
+      );
+    }
+
     const newAvisos = await request.json();
     
     if (!Array.isArray(newAvisos)) {

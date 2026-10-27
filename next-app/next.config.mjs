@@ -1,13 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
+  outputFileTracingIncludes: {
+    '/*': ['./src/components/abas/**/*.html'],
   },
-  experimental: {
-    outputFileTracingIncludes: {
-      '/*': ['./src/components/abas/**/*.html'],
-    },
-  }
 };
 
 export default nextConfig;

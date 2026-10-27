@@ -731,6 +731,8 @@ window.initApp = function() {
                 localStorage.removeItem('cbm_auth_unlocked');
             } catch (e) {}
 
+            window.dispatchEvent(new CustomEvent('cbm_auth_unlocked'));
+
             if (loginError) loginError.style.display = 'none';
             if (loginScreen) {
                 loginScreen.style.opacity = '0';

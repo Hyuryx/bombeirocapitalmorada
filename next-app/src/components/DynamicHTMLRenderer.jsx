@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import parse, { domToReact, attributesToProps } from 'html-react-parser';
 import GooeyNav from './GooeyNav';
 import ReactAvisosGerais from './ReactAvisosGerais';
@@ -31,6 +31,64 @@ import ConfiguracoesModal from './ConfiguracoesModal';
 const Livro3D = dynamic(() => import('./Livro3D'), { ssr: false });
 
 export default function DynamicHTMLRenderer({ htmlString }) {
+  const [renderedHtml, setRenderedHtml] = useState(htmlString || '');
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Carrega abas confidenciais do servidor apenas com sessão militar válida
+  const loadProtectedTabs = useCallback(async () => {
+    try {
+      const res = await fetch('/api/content');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.sucesso && data.content) {
+          setRenderedHtml((prev) => {
+            if (prev.includes('global-view-container')) return prev;
+            return prev + data.content;
+          });
+          setIsLoaded(true);
+
+          setTimeout(() => {
+            if (typeof window !== 'undefined' && window.initApp) {
+              window.appInitialized = false;
+              window.initApp();
+              if (window.initAnimations) window.initAnimations();
+              if (window.initSecondaryApp) window.initSecondaryApp();
+              if (window.initBackgroundVideos) window.initBackgroundVideos();
+            }
+          }, 80);
+        }
+      } else if (res.status === 401) {
+        try {
+          sessionStorage.removeItem('cbm_auth_unlocked');
+        } catch (_) {}
+        if (typeof document !== 'undefined') {
+          document.documentElement.classList.remove('cbm-unlocked');
+        }
+      }
+    } catch (err) {
+      console.warn('Aviso ao carregar abas confidenciais:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isUnlocked = sessionStorage.getItem('cbm_auth_unlocked') === 'true' ||
+                         document.documentElement.classList.contains('cbm-unlocked');
+      if (isUnlocked && !isLoaded) {
+        loadProtectedTabs();
+      }
+
+      const onAuthUnlocked = () => {
+        loadProtectedTabs();
+      };
+
+      window.addEventListener('cbm_auth_unlocked', onAuthUnlocked);
+      return () => {
+        window.removeEventListener('cbm_auth_unlocked', onAuthUnlocked);
+      };
+    }
+  }, [loadProtectedTabs, isLoaded]);
+
   useEffect(() => {
     // Inicialização da parte Vanilla
     const initVanilla = () => {
@@ -312,7 +370,7 @@ export default function DynamicHTMLRenderer({ htmlString }) {
 
   return (
     <>
-      {parse(htmlString, options)}
+      {parse(renderedHtml, options)}
       <ConfiguracoesModal />
     </>
   );

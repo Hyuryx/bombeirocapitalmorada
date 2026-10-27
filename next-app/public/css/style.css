@@ -3036,7 +3036,7 @@ body.no-effects .sidebar {
     animation: none !important;
 }
 
-/* Rádio Atual 2213: Totalmente sem piscar, sem brilho neon azul */
+/* Rádio Atual 187: Totalmente sem piscar, sem brilho neon azul */
 body.no-effects .radio-atual-container,
 html.no-effects .radio-atual-container {
     animation: none !important;
