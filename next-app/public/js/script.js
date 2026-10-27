@@ -38,7 +38,8 @@ window.initApp = function() {
             }
         }
 
-        globalNavItems.forEach(nav => {
+        const currentNavItems = document.querySelectorAll('.nav-item');
+        currentNavItems.forEach(nav => {
             if(nav.getAttribute('data-global-target') === targetId) {
                 nav.classList.add('active');
             } else {
@@ -46,10 +47,11 @@ window.initApp = function() {
             }
         });
 
-        globalViews.forEach(view => {
+        const currentViews = document.querySelectorAll('.global-view');
+        currentViews.forEach(view => {
             if(view.id === targetId) {
                 view.classList.add('active');
-                view.style.display = '';
+                view.style.display = 'block';
                 
                 // Reset to the first sidebar item and section to ensure it is always active upon entry
                 const sidebarNavItems = view.querySelectorAll('.sidebar-nav li');
@@ -1313,28 +1315,52 @@ window.initSecondaryApp = function() {
     }
 
     // =========================================================================
-    // Modal Aviso de Preços / Eventos (Abertura Inicial e ao Atualizar F5)
+    // Modal Aviso de Preços / Eventos (Abertura Única Controlada com Fechamento Firme)
     // =========================================================================
+    function closeModalPrecos() {
+        try {
+            sessionStorage.setItem('cbm_modal_precos_dismissed', 'true');
+        } catch (_) {}
+        const modal = document.getElementById('modal-evento-precos');
+        if (modal) {
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+            setTimeout(() => {
+                if (!modal.classList.contains('active')) {
+                    modal.style.display = 'none';
+                }
+            }, 300);
+        }
+    }
+    window.closeModalPrecos = closeModalPrecos;
+
+    function openModalPrecos() {
+        try {
+            if (sessionStorage.getItem('cbm_modal_precos_dismissed') === 'true') {
+                return; // Usuário já fechou o anúncio. NÃO reabrir!
+            }
+        } catch (_) {}
+        const modal = document.getElementById('modal-evento-precos');
+        if (modal) {
+            modal.style.display = 'flex';
+            requestAnimationFrame(() => {
+                modal.classList.add('active');
+                modal.setAttribute('aria-hidden', 'false');
+            });
+        }
+    }
+    window.openModalPrecos = openModalPrecos;
+
     const modalPrecos = document.getElementById('modal-evento-precos');
     if (modalPrecos) {
         const closeBtn = document.getElementById('modal-evento-close');
         const backdrop = modalPrecos.querySelector('.modal-evento-backdrop');
 
-        function openModalPrecos() {
-            modalPrecos.classList.add('active');
-            modalPrecos.setAttribute('aria-hidden', 'false');
-        }
-
-        function closeModalPrecos() {
-            modalPrecos.classList.remove('active');
-            modalPrecos.setAttribute('aria-hidden', 'true');
-        }
-
-        if (closeBtn) closeBtn.addEventListener('click', closeModalPrecos);
-        if (backdrop) backdrop.addEventListener('click', closeModalPrecos);
-        modalPrecos.addEventListener('click', (e) => {
-            if (e.target === modalPrecos) closeModalPrecos();
-        });
+        if (closeBtn) closeBtn.onclick = closeModalPrecos;
+        if (backdrop) backdrop.onclick = closeModalPrecos;
+        modalPrecos.onclick = (e) => {
+            if (e.target === modalPrecos || e.target === backdrop) closeModalPrecos();
+        };
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modalPrecos.classList.contains('active')) {
@@ -1343,21 +1369,17 @@ window.initSecondaryApp = function() {
         });
 
         function checkAndOpenModalPrecos() {
+            try {
+                if (sessionStorage.getItem('cbm_modal_precos_dismissed') === 'true') {
+                    return;
+                }
+            } catch (_) {}
+
             const loginScreenEl = document.getElementById('login-screen');
             const isLocked = document.body.classList.contains('locked') || 
                 (loginScreenEl && window.getComputedStyle(loginScreenEl).display !== 'none' && loginScreenEl.style.opacity !== '0');
 
-            if (isLocked) {
-                // Se a tela estiver bloqueada pelo login, aguarda o desbloqueio
-                const handleUnlock = (e) => {
-                    if (e.detail && e.detail.targetId === 'login-event') {
-                        window.removeEventListener('tabChanged', handleUnlock);
-                        setTimeout(openModalPrecos, 400);
-                    }
-                };
-                window.addEventListener('tabChanged', handleUnlock);
-            } else {
-                // Já desbloqueado ou sem tela de login (primeiro acesso ou F5)
+            if (!isLocked) {
                 setTimeout(openModalPrecos, 350);
             }
         }
